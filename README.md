@@ -2,6 +2,8 @@
 
 用 CNN、LSTM、SVM（未完成）、MLP 进行语音情感识别。
 
+[English Readme](https://github.com/Renovamen/Speech-Emotion-Recognition/blob/master/README-EN.md)
+
 
 
 ## Environment
@@ -41,7 +43,7 @@ Python 3.6.7
 
 
 
-## Database
+## Dataset
 
 1. [RAVDESS](https://zenodo.org/record/1188976)
 
@@ -182,7 +184,7 @@ np.argmax(model.predict(np.array([get_feature(filename, flatten)])))
 
 ```python
 from Utilities import load_model
-# load_moedl 为模型种类(DNN / ML)
+# load_model 为模型种类(DNN / ML)
 model.load_model(model_name, load_model)
 ```
 
@@ -198,13 +200,37 @@ model.save_model(model_name)
 
 
 
-### 雷达图
+### Radar Chart
+
+画出置信概率的雷达图。
 
 来源：[Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
 ```python
 from Utilities import Radar
 Radar(result_prob, class_labels, num_of_classes)
+```
+
+
+
+### Waveform
+
+画出音频的波形图。
+
+```python
+from Utilities import Waveform
+Waveform(path_of_audio)
+```
+
+
+
+### Spectrogram
+
+画出音频的频谱图。
+
+```python
+from Utilities import Spectrogram
+Spectrogram(path_of_audio)
 ```
 
 
