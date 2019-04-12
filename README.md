@@ -43,7 +43,7 @@ Python 3.6.7
 
 
 
-## Dataset
+## Datasets
 
 1. [RAVDESS](https://zenodo.org/record/1188976)
 
@@ -69,6 +69,13 @@ Python 3.6.7
 
 数据集放在 `/DataSet` 目录下，相同情感的音频放在同一个文件夹里（见 Structure 部分）。可以考虑使用 `File.py` 整理数据。
 
+在 `SER.py` 中填入数据集路径 `DATA_PATH` 和标签名称 `CLASS_LABELS`，如：
+
+```python
+DATA_PATH = 'DataSet/CASIA'
+CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
+```
+
 
 ```python
 from SER import LSTM
@@ -76,17 +83,11 @@ from SER import CNN
 from SER import SVM
 from SER import MLP
 
-LSTM(DATA_PATH, CLASS_LABELS)
-CNN(DATA_PATH, CLASS_LABELS)
-SVM(DATA_PATH, CLASS_LABELS)
-MLP(DATA_PATH, CLASS_LABELS)
-```
-
-`DATA_PATH` 为数据集路径，`CLASS_LABELS` 为标签名称，举例：
-
-```python
-DATA_PATH = 'DataSet/CASIA'
-CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
+# file_path 为要测试的音频的路径
+LSTM(file_path)
+CNN(file_path)
+SVM(file_path)
+MLP(file_path)
 ```
 
 

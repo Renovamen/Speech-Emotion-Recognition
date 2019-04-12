@@ -67,23 +67,24 @@ Python 3.6.7
 
 Dataset should be put in  `/DataSet` directory and audios which express the same emotion should be put in the same folder (the Structure section has given an example).  `File.py` can be used to organize the data.
 
+Put the path of dataset `DATA_PATH` and the names of labels `CLASS_LABELS` in `SER.py`, for example:
+
+```python
+DATA_PATH = 'DataSet/CASIA'
+CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
+```
+
 ```python
 from SER import LSTM
 from SER import CNN
 from SER import SVM
 from SER import MLP
 
-LSTM(DATA_PATH, CLASS_LABELS)
-CNN(DATA_PATH, CLASS_LABELS)
-SVM(DATA_PATH, CLASS_LABELS)
-MLP(DATA_PATH, CLASS_LABELS)
-```
-
-`DATA_PATH` is the path of dataset, `CLASS_LABELS` is the names of labels, for example:
-
-```python
-DATA_PATH = 'DataSet/CASIA'
-CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
+# file_path: the path of the test audio
+LSTM(file_path)
+CNN(file_path)
+SVM(file_path)
+MLP(file_path)
 ```
 
 

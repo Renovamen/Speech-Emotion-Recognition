@@ -12,8 +12,12 @@ from Utilities import get_data
 from Utilities import load_model
 from Utilities import Radar
 
+DATA_PATH = 'DataSet/Berlin'
+CLASS_LABELS = ("Angry", "Happy", "Neutral", "Sad")
+# CLASS_LABELS = ("Angry", "Fearful", "Happy", "Neutral", "Sad", "Surprise")
+# CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
 
-def LSTM(DATA_PATH, CLASS_LABELS):
+def LSTM(file_path: str):
     FLATTEN = False
     LOAD_MODEL = 'DNN'
     NUM_LABELS = len(CLASS_LABELS)
@@ -28,10 +32,8 @@ def LSTM(DATA_PATH, CLASS_LABELS):
     model.train(x_train, y_train, x_test, y_test_train, n_epochs = 50)
     model.evaluate(x_test, y_test)
     model.save_model("LSTM1")
-    filename = '03-01-05-01-01-01-01.wav'
 
-
-    result, result_prob = model.recognize_one(get_feature(filename))
+    result, result_prob = model.recognize_one(get_feature(file_path))
     print('Recogntion: ', CLASS_LABELS[result])
     print('Probability: ', result_prob)
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
@@ -44,16 +46,15 @@ def LSTM(DATA_PATH, CLASS_LABELS):
     '''
     # 加载json
     model = load_model(model_name = "LSTM1", load_model = LOAD_MODEL)
-    filename = '03-01-05-01-01-01-01.wav'
 
-    result = np.argmax(model.predict(np.array([get_feature(filename)])))
-    result_prob = model.predict(np.array([get_feature(filename)]))[0]
+    result = np.argmax(model.predict(np.array([get_feature(file_path)])))
+    result_prob = model.predict(np.array([get_feature(file_path)]))[0]
     print('Recogntion: ', CLASS_LABELS[result])
     print('Probability: ', result_prob)
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
     '''
 
-def CNN(DATA_PATH, CLASS_LABELS):
+def CNN(file_path: str):
     FLATTEN = False
     LOAD_MODEL = "DNN"
     NUM_LABELS = len(CLASS_LABELS)
@@ -81,15 +82,14 @@ def CNN(DATA_PATH, CLASS_LABELS):
     '''
     # 加载json
     model = load_model(model_name = "CNN1", load_model = LOAD_MODEL)
-    filename = '03-01-05-01-01-01-01.wav'
 
-    test = np.array([get_feature(filename, flatten = FLATTEN)])
+    test = np.array([get_feature(file_path, flatten = FLATTEN)])
     in_shape = test[0].shape
     test = test.reshape(test.shape[0], in_shape[0], in_shape[1], 1)
     print('Recogntion: ', CLASS_LABELS[np.argmax(model.predict(test))])
     '''
 
-def MLP(DATA_PATH, CLASS_LABELS):
+def MLP(file_path: str):
     FLATTEN = True
     LOAD_MODEL = "ML"
     NUM_LABELS = len(CLASS_LABELS)
@@ -101,9 +101,8 @@ def MLP(DATA_PATH, CLASS_LABELS):
     model.train(x_train, y_train)
     model.evaluate(x_test, y_test)
     # model.save_model("MLP1")
-    filename = '03-01-05-01-01-01-01.wav'
 
-    result, result_prob = model.recognize_one(get_feature(filename, flatten = FLATTEN))
+    result, result_prob = model.recognize_one(get_feature(file_path, flatten = FLATTEN))
     print('Recogntion: ', result)
     print('Probability: ', result_prob)
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
@@ -115,15 +114,15 @@ def MLP(DATA_PATH, CLASS_LABELS):
     '''
     '''
     model = load_model(model_name = "MLP1", load_model = LOAD_MODEL)
-    filename = '03-01-05-01-01-01-01.wav'
-    result = model.predict(np.array([get_feature(filename, flatten = FLATTEN)]))
-    result_prob = model.predict_proba(np.array([get_feature(filename, flatten = FLATTEN)]))
+
+    result = model.predict(np.array([get_feature(file_path, flatten = FLATTEN)]))
+    result_prob = model.predict_proba(np.array([get_feature(file_path, flatten = FLATTEN)]))
     print('Recogntion: ', result)
     print('Probability: ', result_prob)
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
     '''
 
-def SVM(DATA_PATH, CLASS_LABELS):
+def SVM(file_path: str):
     FLATTEN = True
     LOAD_MODEL = "ML"
     NUM_LABELS = len(CLASS_LABELS)
@@ -134,9 +133,8 @@ def SVM(DATA_PATH, CLASS_LABELS):
     print('--------------------------------  Start --------------------------------')
     model.train(x_train, y_train)
     model.save_model("SVM1")
-    filename = '03-01-05-01-01-01-01.wav'
 
-    result, result_prob = model.recognize_one(get_feature_svm(filename, mfcc_len = 48))
+    result, result_prob = model.recognize_one(get_feature_svm(file_path, mfcc_len = 48))
     print('Recogntion: ', result)
     print('Probability: ', result_prob)
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
@@ -147,16 +145,12 @@ def SVM(DATA_PATH, CLASS_LABELS):
     '''
     '''
     model = load_model(model_name = "SVM1", load_model = LOAD_MODEL)
-    filename = '03-01-05-01-01-01-01.wav'
-    result = model.predict(np.array([get_feature_svm(filename, mfcc_len = 48)]))
-    result_prob = model.predict_proba(np.array([get_feature_svm(filename, mfcc_len = 48)]))
+
+    result = model.predict(np.array([get_feature_svm(file_path, mfcc_len = 48)]))
+    result_prob = model.predict_proba(np.array([get_feature_svm(file_path, mfcc_len = 48)]))
     print('Recogntion: ', result)
     print('Probability: ', result_prob)
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
     '''
 
-DATA_PATH = 'DataSet/Berlin'
-CLASS_LABELS = ("Angry", "Happy", "Neutral", "Sad")
-# CLASS_LABELS = ("Angry", "Fearful", "Happy", "Neutral", "Sad", "Surprise")
-# CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
-SVM(DATA_PATH, CLASS_LABELS)
+SVM("test.wav")
