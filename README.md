@@ -1,6 +1,6 @@
 # Speech Emotion Recognition 
 
-用 CNN、LSTM、SVM（未完成）、MLP 进行语音情感识别。
+用 CNN、LSTM、SVM、MLP 进行语音情感识别。
 
 [English Readme](https://github.com/Renovamen/Speech-Emotion-Recognition/blob/master/README-EN.md)
 
@@ -70,24 +70,23 @@ Python 3.6.7
 数据集放在 `/DataSet` 目录下，相同情感的音频放在同一个文件夹里（见Structure部分）。可以考虑使用 `File.py` 整理数据。
 
 
-
-在 `SER.py` 中填入数据集路径和标签内容：
-
-```python
-DATA_PATH = 'DataSet/CASIA'
-CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
-```
-
 ```python
 from SER import LSTM
 from SER import CNN
 from SER import SVM
 from SER import MLP
 
-LSTM()
-CNN()
-SVM()
-MLP()
+LSTM(DATA_PATH, CLASS_LABELS)
+CNN(DATA_PATH, CLASS_LABELS)
+SVM(DATA_PATH, CLASS_LABELS)
+MLP(DATA_PATH, CLASS_LABELS)
+```
+
+`DATA_PATH` 为数据集路径，`CLASS_LABELS`为标签名称，举例：
+
+```python
+DATA_PATH = 'DataSet/CASIA'
+CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
 ```
 
 
@@ -96,7 +95,8 @@ MLP()
 
 ```python
 from Utilities import get_data
-x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels)
+# 使用 SVM 模型时，_svm = True；否则 _svm = False
+x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels, _svm)
 ```
 
 - x_train：训练集样本
@@ -110,9 +110,12 @@ x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels)
 
 ```python
 from Utilities import get_feature
-# 使用 SVM & MLP 模型时要将数据降维，flatten = True
+# 使用 MLP 模型时要将数据降维，flatten = True
 # 使用 LSTM & CNN 模型时，flatten = False
 get_feature(path_of_the_audio, number_of_mfcc, flatten)
+
+# 使用 SVM 模型时提取特征
+get_feature_svm(path_of_the_audio, number_of_mfcc)
 ```
 
 
@@ -135,8 +138,6 @@ model_cnn.train(x_train, y_train, x_test, y_test_train, n_epochs)
 
 
 #### SVM & MLP
-
-P.S. SVM模型还没有加进来，但如果我的预感没有错的话应该就是这样调用...
 
 ```python
 from ML_Model import SVM_Model
@@ -237,4 +238,4 @@ Spectrogram(path_of_audio)
 
 ## Acknowledgements
 
-SVM模型和雷达图的代码来源于 [@Zhaofan-Su](https://github.com/Zhaofan-Su) 的 [SpeechEmotionRecognition](https://github.com/Zhaofan-Su/SpeechEmotionRecognition)。
+SVM模型和雷达图的代码来源于 [@Zhaofan-Su](https://github.com/Zhaofan-Su) 和 [@Guo Hui](https://github.com/guohui15661353950) 的 [SpeechEmotionRecognition](https://github.com/Zhaofan-Su/SpeechEmotionRecognition)。

@@ -14,7 +14,7 @@ from keras.models import model_from_json
 from sklearn.externals import joblib
 import matplotlib.pyplot as plt
 
-mean_signal_length = 32000
+mean_signal_length = 48000
 
 """
 get_feature(): 提取某个音频的MFCC特征向量
@@ -32,6 +32,8 @@ def get_feature(file_path: str, mfcc_len: int = 39, flatten: bool = False):
     # 似乎是因为scipy只能读pcm和float格式，而有的wav不是这两种格式...
     # fs, signal = wav.read(file_path)
     signal, fs = librosa.load(file_path)
+
+
     s_len = len(signal)
 
     # 如果音频信号小于mean_signal_length，则扩充它
@@ -48,12 +50,34 @@ def get_feature(file_path: str, mfcc_len: int = 39, flatten: bool = False):
         signal = signal[pad_len:pad_len + mean_signal_length]
 
     mel_coefficients = mfcc(signal, fs, num_cepstral = mfcc_len)
-    
     #  用 SVM & MLP 模型时要降维数据
     if flatten:
         mel_coefficients = np.ravel(mel_coefficients)
 
     return mel_coefficients
+
+def get_feature_svm(file_path: str, mfcc_len: int = 48):
+    y, sr = librosa.load(file_path)
+
+    # 对于每一个音频文件提取其mfcc特征
+    # y:音频时间序列;
+    # n_mfcc:要返回的MFCC数量
+    mfcc_feature = librosa.feature.mfcc(y, sr, n_mfcc = 48)
+    zcr_feature = librosa.feature.zero_crossing_rate(y)
+    energy_feature = librosa.feature.rmse(y)
+    rms_feature = librosa.feature.rmse(y)
+
+    mfcc_feature = mfcc_feature.T.flatten()[:mfcc_len]
+    zcr_feature = zcr_feature.flatten()
+    energy_feature = energy_feature.flatten()
+    rms_feature = rms_feature.flatten()
+
+    zcr_feature = np.array([np.mean(zcr_feature)])
+    energy_feature = np.array([np.mean(energy_feature)])
+    rms_feature = np.array([np.mean(rms_feature)])
+
+    data_feature = np.concatenate((mfcc_feature, zcr_feature, energy_feature, rms_feature))
+    return data_feature
 
 '''
 get_data(): 
@@ -69,15 +93,15 @@ get_data():
     训练集和测试集的MFCC数组和对应的labels数组(numpy.ndarray)
     标签数量(int)
 '''
-def get_data(data_path: str, mfcc_len: int = 39, class_labels: Tuple = ("angry", "fear", "happy", "neutral", "sad", "surprise"), flatten: bool = False):
+def get_data(data_path: str, mfcc_len: int = 39, class_labels: Tuple = ("angry", "fear", "happy", "neutral", "sad", "surprise"), flatten: bool = False, _svm: bool = False):
     data = []
     labels = []
     cur_dir = os.getcwd()
-    sys.stderr.write('curdir: %s\n' % cur_dir)
+    sys.stderr.write('Curdir: %s\n' % cur_dir)
     os.chdir(data_path)
     # 遍历文件夹
     for i, directory in enumerate(class_labels):
-        sys.stderr.write("started reading folder %s\n" % directory)
+        sys.stderr.write("Started reading folder %s\n" % directory)
         os.chdir(directory)
         # 读取该文件夹下的音频
         for filename in os.listdir('.'):
@@ -85,10 +109,13 @@ def get_data(data_path: str, mfcc_len: int = 39, class_labels: Tuple = ("angry",
                 continue
             filepath = os.getcwd() + '/' + filename
             # 提取该音频的特征向量
-            feature_vector = get_feature(file_path = filepath, mfcc_len = mfcc_len, flatten = flatten)
+            if _svm:
+                feature_vector = get_feature_svm(file_path = filepath, mfcc_len = mfcc_len)
+            else:
+                feature_vector = get_feature(file_path = filepath, mfcc_len = mfcc_len, flatten = flatten)
             data.append(feature_vector)
             labels.append(i)
-        sys.stderr.write("ended reading folder %s\n" % directory)
+        sys.stderr.write("Ended reading folder %s\n" % directory)
         os.chdir('..')
     os.chdir(cur_dir)
 

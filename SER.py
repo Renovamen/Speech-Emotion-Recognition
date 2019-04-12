@@ -7,27 +7,25 @@ from ML_Model import MLP_Model
 from DNN_Model import CNN_Model
 
 from Utilities import get_feature
+from Utilities import get_feature_svm
 from Utilities import get_data
 from Utilities import load_model
 from Utilities import Radar
 
-DATA_PATH = 'DataSet/Berlin'
-CLASS_LABELS = ("Angry", "Happy", "Neutral", "Sad")
-# CLASS_LABELS = ("Angry", "Fearful", "Happy", "Neutral", "Sad", "Surprise")
-# CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
 
-def LSTM():
+def LSTM(DATA_PATH, CLASS_LABELS):
     FLATTEN = False
     LOAD_MODEL = 'DNN'
     NUM_LABELS = len(CLASS_LABELS)
+    SVM = False
 
-    x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels = CLASS_LABELS, flatten = FLATTEN)
+    x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels = CLASS_LABELS, flatten = FLATTEN, _svm = SVM)
     y_train = np_utils.to_categorical(y_train)
     y_test_train = np_utils.to_categorical(y_test)
 
     print('-------------------------------- LSTM Start --------------------------------')
     model = LSTM_Model(input_shape = x_train[0].shape, num_classes = NUM_LABELS)
-    model.train(x_train, y_train, x_test, y_test_train, n_epochs = 1)
+    model.train(x_train, y_train, x_test, y_test_train, n_epochs = 50)
     model.evaluate(x_test, y_test)
     model.save_model("LSTM1")
     filename = '03-01-05-01-01-01-01.wav'
@@ -55,17 +53,18 @@ def LSTM():
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
     '''
 
-def CNN():
+def CNN(DATA_PATH, CLASS_LABELS):
     FLATTEN = False
     LOAD_MODEL = "DNN"
+    NUM_LABELS = len(CLASS_LABELS)
+    SVM = False
 
-    x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels = CLASS_LABELS, flatten = FLATTEN)
+    x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels = CLASS_LABELS, flatten = FLATTEN, _svm = SVM)
     y_train = np_utils.to_categorical(y_train)
     y_test_train = np_utils.to_categorical(y_test)
     in_shape = x_train[0].shape
     x_train = x_train.reshape(x_train.shape[0], in_shape[0], in_shape[1], 1)
     x_test = x_test.reshape(x_test.shape[0], in_shape[0], in_shape[1], 1)
-    NUM_LABELS = len(CLASS_LABELS)
     
     print('-------------------------------- CNN Start --------------------------------')
     model = CNN_Model(input_shape = x_train[0].shape, num_classes = NUM_LABELS)
@@ -90,12 +89,13 @@ def CNN():
     print('Recogntion: ', CLASS_LABELS[np.argmax(model.predict(test))])
     '''
 
-def MLP():
+def MLP(DATA_PATH, CLASS_LABELS):
     FLATTEN = True
-    LOAD_MODEL = "MLP"
+    LOAD_MODEL = "ML"
     NUM_LABELS = len(CLASS_LABELS)
+    SVM = False
 
-    x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels = CLASS_LABELS, flatten = FLATTEN)
+    x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels = CLASS_LABELS, flatten = FLATTEN, _svm = SVM)
     model = MLP_Model() # 要用的方法（SVM / MLP）
     print('--------------------------------  Start --------------------------------')
     model.train(x_train, y_train)
@@ -123,3 +123,40 @@ def MLP():
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
     '''
 
+def SVM(DATA_PATH, CLASS_LABELS):
+    FLATTEN = True
+    LOAD_MODEL = "ML"
+    NUM_LABELS = len(CLASS_LABELS)
+    SVM = True
+
+    x_train, x_test, y_train, y_test = get_data(DATA_PATH, mfcc_len = 48, class_labels = CLASS_LABELS, flatten = FLATTEN, _svm = SVM)
+    model = SVM_Model()
+    print('--------------------------------  Start --------------------------------')
+    model.train(x_train, y_train)
+    model.save_model("SVM1")
+    filename = '03-01-05-01-01-01-01.wav'
+
+    result, result_prob = model.recognize_one(get_feature_svm(filename, mfcc_len = 48))
+    print('Recogntion: ', result)
+    print('Probability: ', result_prob)
+    Radar(result_prob, CLASS_LABELS, NUM_LABELS)
+
+    print('---------------------------------- End ----------------------------------')
+    '''
+    ---------------------------- 加载模型 ----------------------------
+    '''
+    '''
+    model = load_model(model_name = "SVM1", load_model = LOAD_MODEL)
+    filename = '03-01-05-01-01-01-01.wav'
+    result = model.predict(np.array([get_feature_svm(filename, mfcc_len = 48)]))
+    result_prob = model.predict_proba(np.array([get_feature_svm(filename, mfcc_len = 48)]))
+    print('Recogntion: ', result)
+    print('Probability: ', result_prob)
+    Radar(result_prob, CLASS_LABELS, NUM_LABELS)
+    '''
+
+DATA_PATH = 'DataSet/Berlin'
+CLASS_LABELS = ("Angry", "Happy", "Neutral", "Sad")
+# CLASS_LABELS = ("Angry", "Fearful", "Happy", "Neutral", "Sad", "Surprise")
+# CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
+SVM(DATA_PATH, CLASS_LABELS)

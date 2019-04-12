@@ -1,6 +1,6 @@
 # Speech Emotion Recognition 
 
-Speech emotion recognition using CNN, LSTM, SVM(unfinished) and MLP.
+Speech emotion recognition using CNN, LSTM, SVM and MLP.
 
 
 
@@ -41,7 +41,7 @@ Python 3.6.7
 
 
 
-## Dataset
+## Datasets
 
 1. [RAVDESS](https://zenodo.org/record/1188976)
 
@@ -67,25 +67,23 @@ Python 3.6.7
 
 Dataset should be put in  `/DataSet` directory and audios which express the same emotion should be put in the same folder (the Structure section has given an example).  `File.py` can be used to organize the data.
 
-
-
-Put the names of labels and the path of dataset in `SER.py` , for example:
-
-```python
-DATA_PATH = 'DataSet/CASIA'
-CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
-```
-
 ```python
 from SER import LSTM
 from SER import CNN
 from SER import SVM
 from SER import MLP
 
-LSTM()
-CNN()
-SVM()
-MLP()
+LSTM(DATA_PATH, CLASS_LABELS)
+CNN(DATA_PATH, CLASS_LABELS)
+SVM(DATA_PATH, CLASS_LABELS)
+MLP(DATA_PATH, CLASS_LABELS)
+```
+
+`DATA_PATH` is the path of dataset, `CLASS_LABELS` is the names of labels, for example:
+
+```python
+DATA_PATH = 'DataSet/CASIA'
+CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
 ```
 
 
@@ -94,6 +92,7 @@ MLP()
 
 ```python
 from Utilities import get_data
+# When using SVM, _svm = True, or _svm = False
 x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels)
 ```
 
@@ -108,9 +107,12 @@ x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels)
 
 ```python
 from Utilities import get_feature
-# Data should be flattened when using SVM & MLP, flatten = True
+# Data should be flattened when using SVM, flatten = True
 # When usin LSTM & CNN, flatten = False
 get_feature(path_of_the_audio, number_of_mfcc, flatten)
+
+# Get features when using SVM
+get_feature_svm(path_of_the_audio, number_of_mfcc)
 ```
 
 
@@ -233,4 +235,5 @@ Spectrogram(path_of_audio)
 
 ## Acknowledgements
 
-The codes of SVM model and radar chart are from [SpeechEmotionRecognition](https://github.com/Zhaofan-Su/SpeechEmotionRecognition) of [@Zhaofan-Su](https://github.com/Zhaofan-Su).
+The codes of SVM model and radar chart are from [SpeechEmotionRecognition](https://github.com/Zhaofan-Su/SpeechEmotionRecognition) of [@Zhaofan-Su](https://github.com/Zhaofan-Su) and [@Guo Hui](https://github.com/guohui15661353950).
+
