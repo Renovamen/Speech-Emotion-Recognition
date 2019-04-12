@@ -57,7 +57,7 @@ Python 3.6.7
 
 4. CASIA
 
-   Chinese, around 1200 audios from 4 people including 6 different emotions: neutral, happy, sad, angry, fearful and surprised.
+   Chinese, around 1200 audios from 4 people (2 male and 2 female) including 6 different emotions: neutral, happy, sad, angry, fearful and surprised.
 
 
 

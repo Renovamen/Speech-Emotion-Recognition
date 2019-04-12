@@ -34,11 +34,11 @@ Python 3.6.7
 ## Requirments
 
 - keras：LSTM & CNN
-- tensorflow：keras的后端
+- tensorflow：keras 的后端
 - sklearn：SVM & MLP，划分训练集和测试集
 - speechpy：提取特征向量
 - librosa：读取音频
-- h5py：LSTM & CNN 的模型存储在h5文件中
+- h5py：LSTM & CNN 的模型存储在 h5 文件中
 - numpy
 
 
@@ -47,19 +47,19 @@ Python 3.6.7
 
 1. [RAVDESS](https://zenodo.org/record/1188976)
 
-   英文，24个人（12名男性，12名女性）的大约1500个音频，表达了8种不同的情绪（第三位数字表示情绪类别）：01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised。
+   英文，24 个人（12 名男性，12 名女性）的大约 1500 个音频，表达了 8 种不同的情绪（第三位数字表示情绪类别）：01 = neutral，02 = calm，03 = happy，04 = sad，05 = angry，06 = fearful，07 = disgust，08 = surprised。
 
 2. [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Download.html)
 
-   英文，4个人（男性）的大约500个音频，表达了7种不同的情绪（第一个字母表示情绪类别）：a = anger, d = disgust, f = fear, h = happiness, n = neutral, sa = sadness, su = surprise。
+   英文，4 个人（男性）的大约 500 个音频，表达了 7 种不同的情绪（第一个字母表示情绪类别）：a = anger，d = disgust，f = fear，h = happiness，n = neutral，sa = sadness，su = surprise。
 
 3. [EMO-DB](http://www.emodb.bilderbar.info/download/)
 
-   德语，10个人的大约500个音频，表达了5种不同的情绪：happy, angry, sad, fearful, calm。
+   德语，10 个人的大约 500 个音频，表达了 5 种不同的情绪：happy，angry，sad，fearful，calm。
 
 4. CASIA
 
-   汉语，4个人（2名男性，2名女性）的大约1200个音频，表达了6种不同的情绪：neutral, happy, sad, angry, fearful, surprised。
+   汉语，4 个人（2 名男性，2 名女性）的大约 1200 个音频，表达了 6 种不同的情绪：neutral，happy，sad，angry，fearful，surprised。
 
 
 
@@ -67,7 +67,7 @@ Python 3.6.7
 
 ### Ready-made Demo
 
-数据集放在 `/DataSet` 目录下，相同情感的音频放在同一个文件夹里（见Structure部分）。可以考虑使用 `File.py` 整理数据。
+数据集放在 `/DataSet` 目录下，相同情感的音频放在同一个文件夹里（见 Structure 部分）。可以考虑使用 `File.py` 整理数据。
 
 
 ```python
@@ -82,7 +82,7 @@ SVM(DATA_PATH, CLASS_LABELS)
 MLP(DATA_PATH, CLASS_LABELS)
 ```
 
-`DATA_PATH` 为数据集路径，`CLASS_LABELS`为标签名称，举例：
+`DATA_PATH` 为数据集路径，`CLASS_LABELS` 为标签名称，举例：
 
 ```python
 DATA_PATH = 'DataSet/CASIA'
