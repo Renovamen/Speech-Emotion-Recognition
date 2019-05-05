@@ -136,13 +136,14 @@ def SVM(file_path: str):
     model = SVM_Model()
     print('--------------------------------  Start --------------------------------')
     model.train(x_train, y_train)
+    model.evaluate(x_test, y_test)
     model.save_model("SVM1")
 
     result, result_prob = model.recognize_one(get_feature_svm(file_path, mfcc_len = 48))
     print('Recogntion: ', result)
     print('Probability: ', result_prob)
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
-
+ 
     print('---------------------------------- End ----------------------------------')
     '''
     '''
@@ -157,4 +158,4 @@ def SVM(file_path: str):
     print('Probability: ', result_prob)
     Radar(result_prob, CLASS_LABELS, NUM_LABELS)
 
-CNN("16a04Wb.wav")
+SVM("03a04Wc.wav")

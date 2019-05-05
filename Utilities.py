@@ -120,7 +120,7 @@ def get_data(data_path: str, mfcc_len: int = 39, class_labels: Tuple = ("angry",
     os.chdir(cur_dir)
 
     # 划分训练集和测试集
-    x_train, x_test, y_train, y_test = train_test_split(np.array(data), np.array(labels), test_size = 0.001, random_state = 42)
+    x_train, x_test, y_train, y_test = train_test_split(np.array(data), np.array(labels), test_size = 0.2, random_state = 42)
     return np.array(x_train), np.array(x_test), np.array(y_train), np.array(y_test)
 
 
