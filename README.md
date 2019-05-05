@@ -58,6 +58,12 @@ Papers with code (including open source code from author and reproduce code from
 
 
 
-8. **Multimodal Speech Emotion Recognition using Audio and Text.** *Seunghyun Yoon, Seokhyun Byun, and Kyomin Jung.* IEEE SLT 2018. [[Paper]](https://arxiv.org/pdf/1810.04635.pdf) [[Code]](https://github.com/david-yoon/multimodal-speech-emotion)
+8. **Speech emotion recognition using deep 1D & 2D CNN LSTM networks.** *Jianfeng Zhao, Xia Mao, and Lijiang Chen.* BSPC 2019. [[Paper]](https://www.sciencedirect.com/science/article/pii/S1746809418302337) [[Code]](https://github.com/vandana-rajan/1D-Speech-Emotion-Recognition)
+
+   > 复现代码实现了 1D CNN + LSTM 部分
+
+
+
+9. **Multimodal Speech Emotion Recognition using Audio and Text.** *Seunghyun Yoon, Seokhyun Byun, and Kyomin Jung.* IEEE SLT 2018. [[Paper]](https://arxiv.org/pdf/1810.04635.pdf) [[Code]](https://github.com/david-yoon/multimodal-speech-emotion)
 
    > 先语音识别，然后用文本和音频来识别情绪。(所以看看就好）
