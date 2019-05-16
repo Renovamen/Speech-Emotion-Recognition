@@ -33,7 +33,7 @@ Python 3.6.7
 
 ### Python
 
-- [sklearn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
+- [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
 - [librosa](https://github.com/librosa/librosa)：波形图
 - [SciPy](https://github.com/scipy/scipy)：频谱图
 
@@ -68,6 +68,18 @@ Python 3.6.7
 &nbsp;
 
 ## Usage
+
+### Prepare
+
+安装依赖：
+
+```python
+pip install -r requirements.txt
+```
+
+安装 [Opensmile](https://github.com/naxingyu/opensmile)。
+
+
 
 ### Train
 
