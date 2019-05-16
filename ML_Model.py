@@ -32,6 +32,21 @@ class MLModel(Common_Model):
         self.model.fit(x_train, y_train)
         self.trained = True
 
+    '''
+    predict(): 识别音频的情感
+
+    输入:
+        samples: 需要识别的音频特征
+
+    输出:
+        list: 识别结果（标签）的list
+    '''
+    def predict(self, samples):
+        if not self.trained:
+            sys.stderr.write("No Model.")
+            sys.exit(-1)
+        return self.model.predict(samples)
+
 class SVM_Model(MLModel):
     def __init__(self, **params):
         params['name'] = 'SVM'

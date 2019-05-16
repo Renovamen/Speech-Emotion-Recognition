@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-# from keras.models import model_from_json
+from keras.models import model_from_json
 from sklearn.externals import joblib
 import librosa
 import librosa.display
@@ -25,7 +25,7 @@ get_feature_opensmile():
     file_path: 音频路径
 
 输出：
-    该音频的特征向量（array）
+    该音频的特征向量
 '''
 
 def get_feature_opensmile(opensmile_path: str, config: str, filepath: str):
@@ -103,7 +103,7 @@ def get_data(opensmile_path: str, data_path: str, feature_path: str, config: str
 
     writer = csv.writer(open(feature_path, 'w'))
     first_row = ['label']
-    for i in range(1, 1584):
+    for i in range(1, 1583):
         first_row.append(str(i))
     writer.writerow(first_row)
 
@@ -119,8 +119,8 @@ def get_data(opensmile_path: str, data_path: str, feature_path: str, config: str
             sys.stderr.write("Started reading folder %s\n" % directory)
             os.chdir(directory)
 
-            label_name = directory
-            label = class_labels.index(label_name)
+            # label_name = directory
+            label = class_labels.index(directory)
 
             # 读取该文件夹下的音频
             for filename in os.listdir('.'):
@@ -130,8 +130,7 @@ def get_data(opensmile_path: str, data_path: str, feature_path: str, config: str
                 
                 # 提取该音频的特征
                 feature_vector = get_feature_opensmile(opensmile_path, config, filepath)
-                feature_vector.insert(0, label_name)
-                feature_vector.append(label)
+                feature_vector.insert(0, label)
                 # 把每个音频的特征整理到一个 csv 文件中
                 writer.writerow(feature_vector)
 
@@ -142,8 +141,7 @@ def get_data(opensmile_path: str, data_path: str, feature_path: str, config: str
     else:
         print(data_path)
         feature_vector = get_feature_opensmile(opensmile_path, config, data_path)
-        feature_vector.insert(0, 'null')
-        feature_vector.append('-1')
+        feature_vector.insert(0, '-1')
         writer.writerow(feature_vector)
 
     print('Opensmile extract done.')
@@ -155,18 +153,18 @@ load_model():
     加载模型
 
 输入:
-    model_name(str): 要加载的模型的文件名
-    load_model(str): 模型种类（DNN / ML）
+    load_model_name(str): 要加载的模型的文件名
+    model_name(str): 模型名称
 
 输出:
     model: 加载好的模型
 '''
-def load_model(model_name: str, load_model: str):
+def load_model(load_model_name: str, model_name: str):
     
-    if load_model == 'DNN':
+    if(model_name == 'LSTM' or model_name == 'CNN'):
         # 加载json
-        model_path = 'Models/' + model_name + '.h5'
-        model_json_path = 'Models/' + model_name + '.json'
+        model_path = 'Models/' + load_model_name + '.h5'
+        model_json_path = 'Models/' + load_model_name + '.json'
         
         json_file = open(model_json_path, 'r')
         loaded_model_json = json_file.read()
@@ -176,8 +174,8 @@ def load_model(model_name: str, load_model: str):
         # 加载权重
         model.load_weights(model_path)
     
-    elif load_model == 'ML':
-        model_path = 'Models/' + model_name + '.m'
+    elif(model_name == 'SVM' or model_name == 'MLP'):
+        model_path = 'Models/' + load_model_name + '.m'
         model = joblib.load(model_path)
 
     return model

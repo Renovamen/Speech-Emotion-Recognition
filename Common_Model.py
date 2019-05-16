@@ -34,10 +34,8 @@ class Common_Model(object):
         list: 识别结果（标签）的list
     '''
     def predict(self, samples):
-        if not self.trained:
-            sys.stderr.write("No Model.")
-            sys.exit(-1)
-        return self.model.predict(samples)
+        raise NotImplementedError()
+        
 
     '''
     predict_proba(): 音频的情感的置信概率
@@ -68,16 +66,17 @@ class Common_Model(object):
         y_test: 标签
     '''
     def evaluate(self, x_test, y_test):
-        '''
+
         predictions = self.predict(x_test)
         print(y_test)
-        print(predictions[0])
-        print('Accuracy:%.3f\n' % accuracy_score(y_pred = predictions[0], y_true = y_test))
+        print(predictions)
+        print('Accuracy:%.3f\n' % accuracy_score(y_pred = predictions, y_true = y_test))
+ 
         '''
-
         predictions = self.predict(x_test)
         score = self.model.score(x_test, y_test)
         print("True Lable: ", y_test)
         print("Predict Lable: ", predictions)
         print("Score: ", score)
+        '''
 

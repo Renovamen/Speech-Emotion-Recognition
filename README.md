@@ -1,6 +1,6 @@
 # Speech Emotion Recognition 
 
-用 SVM、MLP 进行语音情感识别。
+用 SVM、MLP、LSTM 进行语音情感识别。
 
 &nbsp;
 
@@ -15,6 +15,7 @@ Python 3.6.7
 ```
 ├── Common_Model.py        // 所有模型的通用部分（即所有模型都会继承这个类）
 ├── ML_Model.py            // SVM & MLP 模型
+├── DNN_Model.py           // LSTM 模型
 ├── Utilities.py           // 提取数据的特征向量和绘图等
 ├── SER.py                 // 调用不同模型进行语音情感识别
 ├── File.py                // 用于整理数据集（分类、批量重命名）
@@ -34,9 +35,9 @@ Python 3.6.7
 ### Python
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
+- [Keras](https://github.com/keras-team/keras)：LSTM 模型
 - [librosa](https://github.com/librosa/librosa)：波形图
 - [SciPy](https://github.com/scipy/scipy)：频谱图
-
 - [pandas](https://github.com/pandas-dev/pandas)：加载特征
 - [Matplotlib](https://github.com/matplotlib/matplotlib)：画图
 - [numpy](github.com/numpy/numpy)
@@ -91,12 +92,13 @@ from SER import Train
 
 '''
 输入:
-	model_name: 模型名称(SVM / MLP)
+	model_name: 模型名称（SVM / MLP / LSTM）
 	save_model_name: 保存模型的文件名
+	epochs: epoch 数量（SVM 和 MLP 模型不需要传该参数）
 输出：
 	model: 训练好的模型
 '''
-model = Train(model_name, save_model_name)
+model = Train(model_name, save_model_name, epochs)
 ```
 
 
@@ -108,12 +110,12 @@ from Utilities import load_model
 
 '''
 输入:
-	model_name: 要加载的模型的文件名
-	load_model: 模型种类（ML / DNN）
+	load_model_name: 要加载的模型的文件名
+	model_name: 模型名称
 输出：
 	model: 训练好的模型
 '''
-model = load_model(model_name, load_model)
+model = load_model(load_model_name, model_name)
 ```
 
 
@@ -124,12 +126,13 @@ model = load_model(model_name, load_model)
 from SER import Predict
 '''
 输入:
-	model: 已加载或训练的模型，
+	model: 已加载或训练的模型
+	model_name: 模型名称
 	save_model_name: 保存模型的文件名
 输出：
 	file_path: 要预测的文件路径
 '''
-Predict(model, file_path)
+Predict(model, model_name, file_path)
 ```
 
 
@@ -153,13 +156,13 @@ from Utilities import get_data
 '''
 输出: 训练数据、测试数据特征和对应的标签
 '''
-x_train, x_test, y_train, y_test = get_data(opensmile_path, data_path, feature_path, cofig, class_labels, train = False)
+x_train, x_test, y_train, y_test = get_data(opensmile_path, data_path, feature_path, config, class_labels, train = False)
 
 # 预测数据
 '''
 输出: 预测数据特征
 '''
-test_feature = get_data(opensmile_path, data_path, feature_path, cofig, class_labels, train = True)
+test_feature = get_data(opensmile_path, data_path, feature_path, config, class_labels, train = True)
 ```
 
 
@@ -230,7 +233,7 @@ from Utilities import Spectrogram
 Spectrogram(file_path)
 ```
 
-
+&nbsp;
 
 ## Acknowledgements
 
