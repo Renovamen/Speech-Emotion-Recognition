@@ -32,6 +32,8 @@ def rename(file_path):
 				except:
 					continue
 
+
+# 把音频按情感分类，放在不同文件夹下
 def move(file_path):
 	for root, dirs, files in os.walk(file_path):
 		for item in files:

@@ -1,7 +1,7 @@
 import sys
 from typing import Tuple
 
-import numpy
+import numpy as np
 from sklearn.metrics import accuracy_score
 
 
@@ -15,44 +15,44 @@ class Common_Model(object):
     train(): 在给定训练集上训练模型
 
     输入:
-        x_train (numpy.ndarray): 训练集样本
-        y_train (numpy.ndarray): 训练集标签
-        x_val (numpy.ndarray): 测试集样本
-        y_val (numpy.ndarray): 测试集标签
-        n_epochs (int): epoch
+        x_train: 训练集样本
+        y_train: 训练集标签
+        x_val: 测试集样本
+        y_val: 测试集标签
 
     '''
-    def train(self, x_train: numpy.ndarray, y_train: numpy.ndarray, x_val: numpy.ndarray = None, y_val: numpy.ndarray = None):
+    def train(self, x_train, y_train, x_val, y_val):
         raise NotImplementedError()
 
     '''
-    recognize(): 识别一些音频的情感
+    predict(): 识别音频的情感
 
     输入:
-        samples(numpy.ndarray): 需要识别的音频
+        samples: 需要识别的音频特征
 
     输出:
         list: 识别结果（标签）的list
     '''
-    def recognize(self, samples: numpy.ndarray):
-        results = []
-        for _, sample in enumerate(samples):
-            result, _ = self.recognize_one(sample)
-            results.append(result)
-        return tuple(results)
+    def predict(self, samples):
+        if not self.trained:
+            sys.stderr.write("No Model.")
+            sys.exit(-1)
+        return self.model.predict(samples)
 
     '''
-    recognize_one(): 识别某个音频的情感
+    predict_proba(): 音频的情感的置信概率
 
     输入:
-        sample: 要识别的样本
-    
-    返回:
-        int: 识别结果
-    '''
-    def recognize_one(self, sample):
-        raise NotImplementedError()
+        samples: 需要识别的音频特征
 
+    输出:
+        list: 每种情感的概率
+    '''
+    def predict_proba(self, samples):
+        if not self.trained:
+            sys.stderr.write("No Model.")
+            sys.exit(-1)
+        return self.model.predict_proba(samples)
 
     '''
     save_model(): 将模型以 model_name 命名存储在 /Models 目录下
@@ -64,11 +64,20 @@ class Common_Model(object):
     evaluate(): 在测试集上评估模型，输出准确率
 
     输入:
-        x_test (numpy.ndarray): 样本(n维)
-        y_test (numpy.ndarray): 标签(1维)
+        x_test: 样本
+        y_test: 标签
     '''
-    def evaluate(self, x_test: numpy.ndarray, y_test: numpy.ndarray):
-        predictions = self.recognize(x_test)
+    def evaluate(self, x_test, y_test):
+        '''
+        predictions = self.predict(x_test)
         print(y_test)
-        print(predictions)
-        print('Accuracy:%.3f\n' % accuracy_score(y_pred = predictions, y_true = y_test))
+        print(predictions[0])
+        print('Accuracy:%.3f\n' % accuracy_score(y_pred = predictions[0], y_true = y_test))
+        '''
+
+        predictions = self.predict(x_test)
+        score = self.model.score(x_test, y_test)
+        print("True Lable: ", y_test)
+        print("Predict Lable: ", predictions)
+        print("Score: ", score)
+
