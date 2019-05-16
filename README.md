@@ -85,12 +85,9 @@ pip install -r requirements.txt
 
 数据集放在 `/DataSet` 目录下，相同情感的音频放在同一个文件夹里（见 Structure 部分）。可以考虑使用 `File.py` 整理数据。
 
-在 `SER.py` 中填入数据集路径 `DATA_PATH` 和标签名称 `CLASS_LABELS`，如：
-
 
 ```python
-from ML_Model import SVM_Model
-from ML_Model import MLP_Model
+from SER import Train
 
 '''
 输入:
@@ -111,7 +108,7 @@ from Utilities import load_model
 
 '''
 输入:
-	model_name: 模型名称（SVM / MLP）
+	model_name: 要加载的模型的文件名
 	load_model: 模型种类（ML / DNN）
 输出：
 	model: 训练好的模型
@@ -124,6 +121,7 @@ model = load_model(model_name, load_model)
 ### Predict
 
 ```python
+from SER import Predict
 '''
 输入:
 	model: 已加载或训练的模型，

@@ -155,7 +155,7 @@ load_model():
     加载模型
 
 输入:
-    model_name(str): 模型名称
+    model_name(str): 要加载的模型的文件名
     load_model(str): 模型种类（DNN / ML）
 
 输出:
