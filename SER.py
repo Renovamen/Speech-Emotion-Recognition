@@ -54,7 +54,7 @@ def Train(model_name: str, save_model_name: str, epochs: int = 50):
     print('-------------------------------- Start --------------------------------')
     if(model_name == 'SVM' or model_name == 'MLP'):
         model.train(x_train, y_train)
-    elif(model_name == 'CNN' or model_name == 'LSTM'):
+    elif(model_name == 'LSTM'):
         model.train(x_train, y_train, x_test, y_val, n_epochs = epochs)
 
     model.evaluate(x_test, y_test)
@@ -84,7 +84,7 @@ def Predict(model, model_name: str, file_path: str):
         test_feature = np.reshape(test_feature, (test_feature.shape[0], 1, test_feature.shape[1]))
     
     result = model.predict(test_feature)
-    if(model_name == 'CNN' or model_name == 'LSTM'):
+    if(model_name == 'LSTM'):
         result = np.argmax(result)
 
     result_prob = model.predict_proba(test_feature)[0]
@@ -94,7 +94,7 @@ def Predict(model, model_name: str, file_path: str):
 
 
 
-# model = Train(model_name = "MLP", save_model_name = "MLP1")
+model = Train(model_name = "SVM", save_model_name = "SVM1", epochs = 50)
 # 加载模型
-model = load_model(load_model_name = "MLP1", model_name = "MLP")
-Predict(model, model_name = "MLP", file_path = "Test/201-happy-liuchanhg.wav")
+# model = load_model(load_model_name = "SVM1", model_name = "SVM")
+# Predict(model, model_name = "SVM", file_path = "Test/201-happy-liuchanhg.wav")

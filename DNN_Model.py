@@ -1,12 +1,12 @@
-# CNN & LSTM
+# LSTM
 import sys
 import numpy as np
 import keras
 from keras import Sequential
-from keras.layers import LSTM as KERAS_LSTM, Dense, Dropout, Conv2D, Flatten, BatchNormalization, Activation, MaxPooling2D
+from keras.layers import LSTM as KERAS_LSTM, Dense, Dropout
 from Common_Model import Common_Model
 
-# class CNN 和 class LSTM 继承了此类（实现了make_model方法）
+# class LSTM 继承了此类
 class DNN_Model(Common_Model):
     '''
     __init__(): 初始化神经网络
@@ -80,34 +80,6 @@ class DNN_Model(Common_Model):
 
     def make_model(self):
         raise NotImplementedError()
-
-
-class CNN_Model(DNN_Model):
-
-    def __init__(self, **params):
-        params['name'] = 'CNN'
-        super(CNN_Model, self).__init__(**params)
-
-    def make_model(self):
-        self.model.add(Conv2D(8, (13, 13), input_shape=(self.input_shape[0], self.input_shape[1], 1)))
-        self.model.add(BatchNormalization(axis=-1))
-        self.model.add(Activation('relu'))
-        self.model.add(Conv2D(8, (13, 13)))
-        self.model.add(BatchNormalization(axis=-1))
-        self.model.add(Activation('relu'))
-        self.model.add(MaxPooling2D(pool_size=(2, 1)))
-        self.model.add(Conv2D(8, (13, 13)))
-        self.model.add(BatchNormalization(axis=-1))
-        self.model.add(Activation('relu'))
-        self.model.add(Conv2D(8, (2, 2)))
-        self.model.add(BatchNormalization(axis=-1))
-        self.model.add(Activation('relu'))
-        self.model.add(MaxPooling2D(pool_size=(2, 1)))
-        self.model.add(Flatten())
-        self.model.add(Dense(64))
-        self.model.add(BatchNormalization())
-        self.model.add(Activation('relu'))
-        self.model.add(Dropout(0.2))
 
 
 class LSTM_Model(DNN_Model):
