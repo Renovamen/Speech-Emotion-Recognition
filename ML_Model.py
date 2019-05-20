@@ -39,7 +39,7 @@ class MLModel(Common_Model):
         samples: 需要识别的音频特征
 
     输出:
-        list: 识别结果（标签）的list
+        list: 识别结果
     '''
     def predict(self, samples):
         if not self.trained:
@@ -51,7 +51,7 @@ class SVM_Model(MLModel):
     def __init__(self, **params):
         params['name'] = 'SVM'
         super(SVM_Model, self).__init__(**params)
-        self.model = SVC(kernel='linear', probability = True)
+        self.model = SVC(kernel = 'rbf', probability = True, gamma = 'auto')
 
 class MLP_Model(MLModel):
     def __init__(self, **params):

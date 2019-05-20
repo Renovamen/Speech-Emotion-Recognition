@@ -2,15 +2,13 @@ import numpy as np
 from keras.utils import np_utils
 import os
 
-from ML_Model import SVM_Model
-from ML_Model import MLP_Model
+from ML_Model import SVM_Model, MLP_Model
 from DNN_Model import LSTM_Model
 
-from Utilities import load_feature
-from Utilities import get_data
-from Utilities import load_model
-from Utilities import Radar
+from Utils import load_model, Radar
 
+import Opensmile_Feature as of
+import Librosa_Feature as lf
 
 DATA_PATH = 'DataSet/CASIA'
 CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
@@ -18,6 +16,8 @@ CONFIG = 'IS10_paraling'
 OPENSMILE_PATH = '/Users/zou/opensmile-2.3.0'
 TRAIN_FEATURE_PATH = 'Feature/feature.csv'
 PREDICT_FEATURE_PATH = 'Feature/test.csv'
+NEW_TRAIN_FEATURE_PATH = 'Feature/feature.p'
+NEW_PREDICT_FEATURE_PATH = 'Feature/test.p'
 
 '''
 Train(): 训练模型
@@ -32,8 +32,11 @@ Train(): 训练模型
 def Train(model_name: str, save_model_name: str, epochs: int = 50):
     
     # 提取特征
-    # x_train, x_test, y_train, y_test = get_data(OPENSMILE_PATH, DATA_PATH, TRAIN_FEATURE_PATH, CONFIG, CLASS_LABELS, train = True)
-    x_train, x_test, y_train, y_test = load_feature(feature_path = TRAIN_FEATURE_PATH, train = True)
+    # x_train, x_test, y_train, y_test = of.get_data(OPENSMILE_PATH, DATA_PATH, TRAIN_FEATURE_PATH, CONFIG, CLASS_LABELS, train = True)
+    # x_train, x_test, y_train, y_test = of.load_feature(feature_path = TRAIN_FEATURE_PATH, train = True)
+    
+    # x_train, x_test, y_train, y_test = lf.get_data(DATA_PATH, NEW_TRAIN_FEATURE_PATH, CLASS_LABELS, train = True)
+    x_train, x_test, y_train, y_test = lf.load_feature(feature_path = NEW_TRAIN_FEATURE_PATH, train = True)
 
     # 创建模型
     if(model_name == 'SVM'):
@@ -76,8 +79,11 @@ Predict(): 预测音频情感
 def Predict(model, model_name: str, file_path: str):
     
     file_path = os.path.dirname(os.path.abspath(__file__)) + '/' + file_path
-    # test_feature = load_feature(feature_path = PREDICT_FEATURE_PATH, train = False)
-    test_feature = get_data(OPENSMILE_PATH, file_path, PREDICT_FEATURE_PATH, CONFIG, CLASS_LABELS, train = False)
+    # test_feature = of.load_feature(feature_path = PREDICT_FEATURE_PATH, train = False)
+    # test_feature = of.get_data(OPENSMILE_PATH, file_path, PREDICT_FEATURE_PATH, CONFIG, CLASS_LABELS, train = False)
+    
+    # test_feature = lf.load_feature(feature_path = NEW_PREDICT_FEATURE_PATH, train = False)
+    test_feature = lf.get_data(file_path, NEW_PREDICT_FEATURE_PATH, CLASS_LABELS, train = False)
     
     if(model_name == 'LSTM'):
         # 二维数组转三维（samples, time_steps, input_dim）
@@ -94,7 +100,7 @@ def Predict(model, model_name: str, file_path: str):
 
 
 
-model = Train(model_name = "SVM", save_model_name = "SVM1", epochs = 50)
+model = Train(model_name = "LSTM", save_model_name = "LSTM_LIBROSA", epochs = 10)
 # 加载模型
-# model = load_model(load_model_name = "SVM1", model_name = "SVM")
-# Predict(model, model_name = "SVM", file_path = "Test/201-happy-liuchanhg.wav")
+# model = load_model(load_model_name = "LSTM_LIBROSA", model_name = "LSTM")
+Predict(model, model_name = "LSTM", file_path = "Test/201-happy-liuchanhg.wav")

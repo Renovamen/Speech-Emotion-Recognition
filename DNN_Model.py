@@ -67,7 +67,7 @@ class DNN_Model(Common_Model):
         samples: 需要识别的音频特征
 
     输出:
-        list: 识别结果（标签）的list
+        list: 识别结果
     '''
     def predict(self, sample):
         # 没有训练和加载过模型

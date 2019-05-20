@@ -16,7 +16,9 @@ Python 3.6.7
 ├── Common_Model.py        // 所有模型的通用部分（即所有模型都会继承这个类）
 ├── ML_Model.py            // SVM & MLP 模型
 ├── DNN_Model.py           // LSTM 模型
-├── Utilities.py           // 提取数据的特征向量和绘图等
+├── Utils.py               // 加载模型、绘图（雷达图、频谱图、波形图）
+├── Opensmile_Feature.py   // Opensmile 提取特征
+├── Librosa_Feature.py     // librosa 提取特征
 ├── SER.py                 // 调用不同模型进行语音情感识别
 ├── File.py                // 用于整理数据集（分类、批量重命名）
 ├── DataSet                // 数据集                      
@@ -36,7 +38,7 @@ Python 3.6.7
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
 - [Keras](https://github.com/keras-team/keras)：LSTM 模型
-- [librosa](https://github.com/librosa/librosa)：波形图
+- [librosa](https://github.com/librosa/librosa)：提取特征、波形图
 - [SciPy](https://github.com/scipy/scipy)：频谱图
 - [pandas](https://github.com/pandas-dev/pandas)：加载特征
 - [Matplotlib](https://github.com/matplotlib/matplotlib)：画图
@@ -80,7 +82,7 @@ pip install -r requirements.txt
 
 安装 [Opensmile](https://github.com/naxingyu/opensmile)。
 
-
+&nbsp;
 
 ### Train
 
@@ -101,12 +103,12 @@ from SER import Train
 model = Train(model_name, save_model_name, epochs)
 ```
 
-
+&nbsp;
 
 ### Load Model
 
 ```python
-from Utilities import load_model
+from Utils import load_model
 
 '''
 输入:
@@ -118,7 +120,7 @@ from Utilities import load_model
 model = load_model(load_model_name, model_name)
 ```
 
-
+&nbsp;
 
 ### Predict
 
@@ -135,12 +137,46 @@ from SER import Predict
 Predict(model, model_name, file_path)
 ```
 
-
+&nbsp;
 
 ### Extract Feature
 
+#### Librosa
+
+特征数据保存在 `.p` 文件中。
+
 ```python
-from Utilities import get_data
+import Librosa_Feature as of
+
+'''
+输入:
+    data_path: 数据集文件夹路径
+    feature_path: 保存特征的路径
+    class_labels: 标签
+    train: 是否为训练数据
+'''
+
+'''
+训练数据:
+    输出: 训练数据、测试数据特征和对应的标签
+'''
+x_train, x_test, y_train, y_test = of.get_data(opensmile_path, data_path, feature_path, config, class_labels, train = False)
+
+'''
+预测数据:
+    输出: 预测数据特征
+'''
+test_feature = of.get_data(opensmile_path, data_path, feature_path, config, class_labels, train = True)
+```
+
+
+
+#### Opensmile
+
+特征数据保存在 `.csv` 文件中。
+
+```python
+import Opensmile_Feature as of
 
 '''
 输入:
@@ -152,48 +188,66 @@ from Utilities import get_data
     train: 是否为训练数据
 '''
 
-# 训练数据
 '''
-输出: 训练数据、测试数据特征和对应的标签
+训练数据:
+    输出: 训练数据、测试数据特征和对应的标签
 '''
-x_train, x_test, y_train, y_test = get_data(opensmile_path, data_path, feature_path, config, class_labels, train = False)
+x_train, x_test, y_train, y_test = of.get_data(opensmile_path, data_path, feature_path, config, class_labels, train = False)
 
-# 预测数据
 '''
-输出: 预测数据特征
+预测数据:
+    输出: 预测数据特征
 '''
-test_feature = get_data(opensmile_path, data_path, feature_path, config, class_labels, train = True)
+test_feature = of.get_data(opensmile_path, data_path, feature_path, config, class_labels, train = True)
 ```
 
-
+&nbsp;
 
 ### Load Feature
 
+#### Librosa
+
+从 `.csv` 文件加载特征数据。
+
 ```python
-from Utilities import load_feature
+import Librosa_Feature as lf
 
 '''
-从 csv 加载特征数据
-
 输入:
     feature_path: 特征文件路径
     train: 是否为训练数据
 '''
 
-# 训练数据
 '''
-输出: 训练数据、测试数据和对应的标签
+训练数据:
+    输出: 训练数据、测试数据和对应的标签
 '''
-x_train, x_test, y_train, y_test = load_feature(feature_path, train = True)
+x_train, x_test, y_train, y_test = lf.load_feature(feature_path, train = True)
 
-# 预测数据
 '''
-输出: 预测数据特征
+预测数据:
+    输出: 预测数据特征
 '''
-test_feature = load_feature(feature_path, train = False)
+test_feature = lf.load_feature(feature_path, train = False)
 ```
 
 
+
+#### Opensmile
+
+从 `.p` 文件加载特征数据。
+
+```python
+import Opensmile_Feature as of
+
+# 训练数据:
+x_train, x_test, y_train, y_test = of.load_feature(feature_path, train = True)
+
+# 预测数据:
+test_feature = of.load_feature(feature_path, train = False)
+```
+
+&nbsp;
 
 ### Radar Chart
 
@@ -202,7 +256,7 @@ test_feature = load_feature(feature_path, train = False)
 来源：[Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
 ```python
-from Utilities import Radar
+from Utils import Radar
 '''
 输入:
     data_prob: 概率数组
@@ -211,25 +265,25 @@ from Utilities import Radar
 Radar(result_prob, class_labels)
 ```
 
-
+&nbsp;
 
 ### Waveform
 
 画出音频的波形图。
 
 ```python
-from Utilities import Waveform
+from Utils import Waveform
 Waveform(file_path)
 ```
 
-
+&nbsp;
 
 ### Spectrogram
 
 画出音频的频谱图。
 
 ```python
-from Utilities import Spectrogram
+from Utils import Spectrogram
 Spectrogram(file_path)
 ```
 
