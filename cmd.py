@@ -15,13 +15,6 @@ def cmd():
         help = "Use 'p' to predict directly or use 't' to train a model.")
 
     paser.add_argument(
-        '-r',
-        '--radar',
-        type = bool,
-        dest = 'radar',
-        help = 'Whether to draw a radar chart or not.')
-
-    paser.add_argument(
         '-mt', 
         '--model_type', 
         type = str, 
@@ -60,7 +53,6 @@ def cmd():
     args = paser.parse_args()
 
     option = args.option.lower() # p / t
-    radar = args.radar if args.radar else True # True / False
     model_type = args.model_type if args.model_type else 'svm' # svm / mlp / lstm
     model_name = args.model_name if args.model_name else 'default' 
     load = args.load if args.load else True # True / False

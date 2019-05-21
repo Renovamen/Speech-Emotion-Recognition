@@ -21,6 +21,8 @@ Python 3.6.7
 ├── Librosa_Feature.py     // librosa 提取特征
 ├── SER.py                 // 调用不同模型进行语音情感识别
 ├── File.py                // 用于整理数据集（分类、批量重命名）
+├── Config.py              // 配置参数
+├── cmd.py                 // 使用 argparse 从命令行读入参数
 ├── DataSet                // 数据集                      
 │   ├── Angry
 │   ├── Happy
@@ -85,6 +87,51 @@ pip install -r requirements.txt
 
 &nbsp;
 
+### Configuration
+
+在 `Config.py` 中配置参数。
+
+其中 Opensmile 标准特征集目前只支持：
+
+- `IS09_emotion`：[The INTERSPEECH 2009 Emotion Challenge](http://mediatum.ub.tum.de/doc/980035/292947.pdf)，384 个特征；
+- `IS10_paraling`：[The INTERSPEECH 2010 Paralinguistic Challenge](https://sail.usc.edu/publications/files/schuller2010_interspeech.pdf)，1582 个特征；
+- `IS11_speaker_state`：[The INTERSPEECH 2011 Speaker State Challenge](https://www.phonetik.uni-muenchen.de/forschung/publikationen/Schuller-IS2011.pdf)，4368 个特征；
+- `IS12_speaker_trait`：[The INTERSPEECH 2012 Speaker Trait Challenge](http://www5.informatik.uni-erlangen.de/Forschung/Publikationen/2012/Schuller12-TI2.pdf)，6125 个特征；
+- `IS13_ComParE`：[The INTERSPEECH 2013 ComParE Challenge](http://www.dcs.gla.ac.uk/~vincia/papers/compare.pdf)，6373 个特征；
+- `ComParE_2016`：[The INTERSPEECH 2016 Computational Paralinguistics Challenge](http://www.tangsoo.de/documents/Publications/Schuller16-TI2.pdf)，6373 个特征。
+
+如果需要用其他特征集，可以自行修改 `FEATURE_NUM` 参数。
+
+&nbsp;
+
+### Command Line Arguments
+
+| Long option  | Option | Description                                  |
+| ------------ | ------ | ---------------------------------------------|
+| --option     | -o     | 操作（'p': 预测音频情感 / 't': 训练模型）         |
+| --model_type | -mt    | 模型种类（'svm' / 'mlp' / 'lstm'）             |
+| --model_name | -mn    | 要保存或加载的模型文件名                         |
+| --load       | -l     | 是否加载已有特征（0: 不加载 / 1: 加载）|
+| --feature    | -f     | 提取特征的方式（'o': Opensmile / 'l': librosa） |
+| --audio      | -a     | 要预测的音频的路径                              |
+
+例子：
+
+- 训练：
+
+  ```python
+  python3 cmd.py -o t -mt 'svm' -mn 'SVM' -l 1 -f 'o'
+  ```
+
+- 预测：
+
+  ```python
+  python3 cmd.py -p t -mt 'svm' -mn 'SVM' -f 'o' -a [audio path]
+  ```
+
+
+&nbsp;
+
 ### Train
 
 数据集放在 `/DataSet` 目录下，相同情感的音频放在同一个文件夹里（见 Structure 部分）。可以考虑使用 `File.py` 整理数据。
@@ -97,11 +144,12 @@ from SER import Train
 输入:
 	model_name: 模型名称（SVM / MLP / LSTM）
 	save_model_name: 保存模型的文件名
-	epochs: epoch 数量（SVM 和 MLP 模型不需要传该参数）
+	if_load: 是否加载已有特征（True / False）
+	feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
 输出：
 	model: 训练好的模型
 '''
-model = Train(model_name, save_model_name, epochs)
+model = Train(model_name, save_model_name, if_load, feature_method)
 ```
 
 &nbsp;
@@ -132,60 +180,27 @@ from SER import Predict
 	model: 已加载或训练的模型
 	model_name: 模型名称
 	save_model_name: 保存模型的文件名
+	feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
 输出：
 	file_path: 要预测的文件路径
 '''
-Predict(model, model_name, file_path)
+Predict(model, model_name, file_path, feature_method)
 ```
 
 &nbsp;
 
 ### Extract Feature
 
-#### Librosa
-
-特征数据保存在 `.p` 文件中。
+Opensmile 提取的特征保存在 `.csv` 文件中，librosa 提取的特征保存在 `.p` 文件中。
 
 ```python
 import Librosa_Feature as of
-
-'''
-输入:
-    data_path: 数据集文件夹路径
-    feature_path: 保存特征的路径
-    class_labels: 标签
-    train: 是否为训练数据
-'''
-
-'''
-训练数据:
-    输出: 训练数据、测试数据特征和对应的标签
-'''
-x_train, x_test, y_train, y_test = of.get_data(opensmile_path, data_path, feature_path, config, class_labels, train = False)
-
-'''
-预测数据:
-    输出: 预测数据特征
-'''
-test_feature = of.get_data(opensmile_path, data_path, feature_path, config, class_labels, train = True)
-```
-
-
-
-#### Opensmile
-
-特征数据保存在 `.csv` 文件中。
-
-```python
 import Opensmile_Feature as of
 
 '''
 输入:
-    opensmile_path: Opensmile 安装路径
-    data_path: 数据集文件夹路径
+    data_path: 数据集文件夹路径或要预测的音频路径
     feature_path: 保存特征的路径
-    config: Opensmile 配置文件（要提取哪些特征）
-    class_labels: 标签
     train: 是否为训练数据
 '''
 
@@ -193,25 +208,28 @@ import Opensmile_Feature as of
 训练数据:
     输出: 训练数据、测试数据特征和对应的标签
 '''
-x_train, x_test, y_train, y_test = of.get_data(opensmile_path, data_path, feature_path, config, class_labels, train = False)
+# Opensmile
+x_train, x_test, y_train, y_test = of.get_data(data_path, feature_path, train = False)
+# librosa
+x_train, x_test, y_train, y_test = lf.get_data(data_path, feature_path, train = False)
 
 '''
 预测数据:
     输出: 预测数据特征
 '''
-test_feature = of.get_data(opensmile_path, data_path, feature_path, config, class_labels, train = True)
+# Opensmile
+test_feature = of.get_data(data_path, feature_path, train = True)
+# librosa
+test_feature = lf.get_data(data_path, feature_path, train = True)
 ```
 
 &nbsp;
 
 ### Load Feature
 
-#### Librosa
-
-从 `.csv` 文件加载特征数据。
-
 ```python
 import Librosa_Feature as lf
+import Opensmile_Feature as of
 
 '''
 输入:
@@ -223,29 +241,19 @@ import Librosa_Feature as lf
 训练数据:
     输出: 训练数据、测试数据和对应的标签
 '''
+# Opensmile
+x_train, x_test, y_train, y_test = of.load_feature(feature_path, train = True)
+# librosa
 x_train, x_test, y_train, y_test = lf.load_feature(feature_path, train = True)
 
 '''
 预测数据:
     输出: 预测数据特征
 '''
-test_feature = lf.load_feature(feature_path, train = False)
-```
-
-
-
-#### Opensmile
-
-从 `.p` 文件加载特征数据。
-
-```python
-import Opensmile_Feature as of
-
-# 训练数据:
-x_train, x_test, y_train, y_test = of.load_feature(feature_path, train = True)
-
-# 预测数据:
+# Opensmile
 test_feature = of.load_feature(feature_path, train = False)
+# librosa
+test_feature = lf.load_feature(feature_path, train = False)
 ```
 
 &nbsp;
