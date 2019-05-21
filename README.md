@@ -38,6 +38,7 @@ Python 3.6.7
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
 - [Keras](https://github.com/keras-team/keras)：LSTM 模型
+- [tensorflow](https://github.com/tensorflow/tensorflow)：作为 Keras 的后端
 - [librosa](https://github.com/librosa/librosa)：提取特征、波形图
 - [SciPy](https://github.com/scipy/scipy)：频谱图
 - [pandas](https://github.com/pandas-dev/pandas)：加载特征

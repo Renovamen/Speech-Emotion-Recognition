@@ -21,7 +21,7 @@ load_model():
 '''
 def load_model(load_model_name: str, model_name: str):
     
-    if(model_name == 'LSTM' or model_name == 'CNN'):
+    if(model_name == 'lstm'):
         # 加载json
         model_path = 'Models/' + load_model_name + '.h5'
         model_json_path = 'Models/' + load_model_name + '.json'
@@ -34,7 +34,7 @@ def load_model(load_model_name: str, model_name: str):
         # 加载权重
         model.load_weights(model_path)
     
-    elif(model_name == 'SVM' or model_name == 'MLP'):
+    elif(model_name == 'svm' or model_name == 'mlp'):
         model_path = 'Models/' + load_model_name + '.m'
         model = joblib.load(model_path)
 
