@@ -2,6 +2,8 @@
 
 用 SVM、MLP、LSTM 进行语音情感识别。
 
+改进了特征提取方式，原来的版本的存档在 [First-Version 分支](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/First-Version)。
+
 &nbsp;
 
 ## Environment
