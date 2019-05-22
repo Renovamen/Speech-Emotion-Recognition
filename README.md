@@ -2,7 +2,9 @@
 
 用 SVM、MLP、LSTM 进行语音情感识别。
 
-改进了特征提取方式，原来的版本的存档在 [First-Version 分支](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/First-Version)。
+改进了特征提取方式，识别准确率提高到了 80% 左右。原来的版本的存档在 [First-Version 分支](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/First-Version)。
+
+[English Document](https://github.com/Renovamen/Speech-Emotion-Recognition/blob/master/README_EN.md)
 
 &nbsp;
 
@@ -37,11 +39,11 @@ Python 3.6.7
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
 - [Keras](https://github.com/keras-team/keras)：LSTM 模型
-- [tensorflow](https://github.com/tensorflow/tensorflow)：作为 Keras 的后端
+- [TensorFlow](https://github.com/tensorflow/tensorflow)：作为 Keras 的后端
 - [librosa](https://github.com/librosa/librosa)：提取特征、波形图
 - [SciPy](https://github.com/scipy/scipy)：频谱图
 - [pandas](https://github.com/pandas-dev/pandas)：加载特征
-- [Matplotlib](https://github.com/matplotlib/matplotlib)：画图
+- [Matplotlib](https://github.com/matplotlib/matplotlib)：绘图
 - [numpy](github.com/numpy/numpy)
 
 ### Tools
@@ -103,14 +105,16 @@ pip install -r requirements.txt
 
 ### Command Line Arguments
 
-| Long option  | Option | Description                                  |
-| ------------ | ------ | ---------------------------------------------|
-| --option     | -o     | 操作（'p': 预测音频情感 / 't': 训练模型）         |
-| --model_type | -mt    | 模型种类（'svm' / 'mlp' / 'lstm'）             |
-| --model_name | -mn    | 要保存或加载的模型文件名                         |
-| --load       | -l     | 是否加载已有特征（0: 不加载 / 1: 加载）|
-| --feature    | -f     | 提取特征的方式（'o': Opensmile / 'l': librosa） |
-| --audio      | -a     | 要预测的音频的路径                              |
+| Long option  | Option | Description                                                  |
+| ------------ | ------ | ------------------------------------------------------------ |
+| --option     | -o     | 操作 [ `p`：预测音频情感 / `t`：训练模型 ] [ 必需 ]          |
+| --model_type | -mt    | 模型种类 [ `svm` / `mlp` / `lstm` ] [ 默认：`svm` ]          |
+| --model_name | -mn    | 要保存或加载的模型文件名 [ 默认：`default` ]                 |
+| --load       | -l     | 是否加载已有特征 [ `0`：不加载 / `1`：加载 ] [ 默认：`1` ]   |
+| --feature    | -f     | 提取特征的方式 [ `o`：Opensmile / `l`：librosa ] [ 默认：`o` ] |
+| --audio      | -a     | 要预测的音频的路径 [ 默认：`default.wav` ]                   |
+
+
 
 例子：
 
@@ -151,7 +155,7 @@ from SER import Train
 	save_model_name: 保存模型的文件名
 	if_load: 是否加载已有特征（True / False）
 	feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
-输出：
+输出:
 	model: 训练好的模型
 '''
 model = Train(model_name, save_model_name, if_load, feature_method)
@@ -167,8 +171,8 @@ from Utils import load_model
 '''
 输入:
 	load_model_name: 要加载的模型的文件名
-	model_name: 模型名称
-输出：
+	model_name: 模型名称（SVM / MLP / LSTM）
+输出:
 	model: 训练好的模型
 '''
 model = load_model(load_model_name, model_name)
@@ -183,11 +187,11 @@ from SER import Predict
 '''
 输入:
 	model: 已加载或训练的模型
-	model_name: 模型名称
+	model_name: 模型名称（SVM / MLP / LSTM）
 	file_path: 要预测的文件路径
 	feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
-输出：
-	预测结果和置信概率
+输出:
+	预测结果和概率
 '''
 Predict(model, model_name, file_path, feature_method)
 ```
@@ -265,7 +269,7 @@ test_feature = lf.load_feature(feature_path, train = False)
 
 ### Radar Chart
 
-画出置信概率的雷达图。
+画出预测概率的雷达图。
 
 来源：[Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
