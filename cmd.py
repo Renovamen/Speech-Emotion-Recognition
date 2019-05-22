@@ -69,7 +69,7 @@ def cmd():
         Train(model_name = model_type, save_model_name = model_name, if_load = load, feature_method = feature)
 
     else:
-        print("Please choose the right option: p for predict, t for train")
+        print("Wrong option. 'p' for predicting, 't' for training")
         return
 
 

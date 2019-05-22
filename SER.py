@@ -17,7 +17,8 @@ Train(): 训练模型
 输入:
 	model_name: 模型名称（SVM / MLP / LSTM）
 	save_model_name: 保存模型的文件名
-	epochs: epoch 数量（SVM 和 MLP 模型不需要传该参数）
+    if_load: 是否加载已有特征（True / False）
+    feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
 输出：
 	model: 训练好的模型
 '''
@@ -70,9 +71,10 @@ Predict(): 预测音频情感
 输入:
 	model: 已加载或训练的模型
 	model_name: 模型名称
-	save_model_name: 保存模型的文件名
-输出：
 	file_path: 要预测的文件路径
+    feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
+输出：
+    预测结果和置信概率
 '''
 def Predict(model, model_name: str, file_path: str, feature_method: str = 'Opensmile'):
     
@@ -96,11 +98,11 @@ def Predict(model, model_name: str, file_path: str, feature_method: str = 'Opens
     result_prob = model.predict_proba(test_feature)[0]
     print('Recogntion: ', Config.CLASS_LABELS[int(result)])
     print('Probability: ', result_prob)
-    Radar(result_prob, Config.CLASS_LABELS)
+    Radar(result_prob)
 
 
 
-# model = Train(model_name = "LSTM", save_model_name = "LSTM_LIBROSA", if_load = True, feature_method = 'l')
+# model = Train(model_name = "lstm", save_model_name = "LSTM_LIBROSA", if_load = True, feature_method = 'l')
 # 加载模型
-# model = load_model(load_model_name = "LSTM_LIBROSA", model_name = "LSTM")
-# Predict(model, model_name = "LSTM", file_path = "Test/247-fear-wangzhe.wav", feature_method = 'l')
+model = load_model(load_model_name = "LSTM_LIBROSA", model_name = "lstm")
+Predict(model, model_name = "lstm", file_path = "Test/247-fear-wangzhe.wav", feature_method = 'l')

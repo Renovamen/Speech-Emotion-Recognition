@@ -23,11 +23,6 @@ Python 3.6.7
 ├── File.py                // 用于整理数据集（分类、批量重命名）
 ├── Config.py              // 配置参数
 ├── cmd.py                 // 使用 argparse 从命令行读入参数
-├── DataSet                // 数据集                      
-│   ├── Angry
-│   ├── Happy
-│   ...
-│   ...
 ├── Models                 // 存储训练好的模型
 └── Feature                // 存储提取好的特征
 ```
@@ -134,7 +129,15 @@ pip install -r requirements.txt
 
 ### Train
 
-数据集放在 `/DataSet` 目录下，相同情感的音频放在同一个文件夹里（见 Structure 部分）。可以考虑使用 `File.py` 整理数据。
+数据集路径可以在 `Config.py` 中配置，相同情感的音频放在同一个文件夹里（可以考虑使用 `File.py` 整理数据），如：
+
+```
+└── Datasets
+    ├── Angry
+    ├── Happy
+    ├── Sad
+    ...
+```
 
 
 ```python
@@ -179,10 +182,10 @@ from SER import Predict
 输入:
 	model: 已加载或训练的模型
 	model_name: 模型名称
-	save_model_name: 保存模型的文件名
+	file_path: 要预测的文件路径
 	feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
 输出：
-	file_path: 要预测的文件路径
+	预测结果和置信概率
 '''
 Predict(model, model_name, file_path, feature_method)
 ```
@@ -269,9 +272,8 @@ from Utils import Radar
 '''
 输入:
     data_prob: 概率数组
-    class_labels: 标签
 '''
-Radar(result_prob, class_labels)
+Radar(result_prob)
 ```
 
 &nbsp;

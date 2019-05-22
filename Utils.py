@@ -7,6 +7,7 @@ import librosa
 import librosa.display
 import scipy.io.wavfile as wav
 
+from Config import Config
 
 '''
 load_model(): 
@@ -46,11 +47,10 @@ Radar(): 置信概率雷达图
 
 输入:
     data_prob(numpy.ndarray): 概率数组
-    class_labels(tuple): 标签
 '''
-def Radar(data_prob, class_labels: Tuple):
+def Radar(data_prob):
 
-    angles = np.linspace(0, 2 * np.pi, len(class_labels), endpoint = False)
+    angles = np.linspace(0, 2 * np.pi, len(Config.CLASS_LABELS), endpoint = False)
     data = np.concatenate((data_prob, [data_prob[0]]))  # 闭合
     angles = np.concatenate((angles, [angles[0]]))  # 闭合
 
@@ -60,7 +60,7 @@ def Radar(data_prob, class_labels: Tuple):
     ax = fig.add_subplot(111, polar = True)
     ax.plot(angles, data, 'bo-', linewidth=2)
     ax.fill(angles, data, facecolor='r', alpha=0.25)
-    ax.set_thetagrids(angles * 180 / np.pi, class_labels)
+    ax.set_thetagrids(angles * 180 / np.pi, Config.CLASS_LABELS)
     ax.set_title("Emotion Recognition", va = 'bottom')
 
     # 设置雷达图的数据最大值

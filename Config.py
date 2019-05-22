@@ -3,7 +3,7 @@
 class Config:
 
     # 数据集路径
-    DATA_PATH = 'DataSet/CASIA'
+    DATA_PATH = 'Datasets/CASIA'
     # 情感标签
     CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
 
