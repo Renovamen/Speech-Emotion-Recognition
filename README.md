@@ -4,7 +4,7 @@
 
 最初版本的存档。因为特征提取方式不够好所以准确率比较低（LSTM 准确率最高，55% 左右，其他模型准确率更低）。
 
-[English Readme](https://github.com/Renovamen/Speech-Emotion-Recognition/blob/master/README-EN.md)
+[English README](https://github.com/Renovamen/Speech-Emotion-Recognition/blob/First-Version/README-EN.md)
 
 &nbsp;
 
