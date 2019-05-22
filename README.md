@@ -2,15 +2,17 @@
 
 用 CNN、LSTM、SVM、MLP 进行语音情感识别。
 
+最初版本的存档。因为特征提取方式不够好所以准确率比较低（LSTM 准确率最高，55% 左右，其他模型准确率更低）。
+
 [English Readme](https://github.com/Renovamen/Speech-Emotion-Recognition/blob/master/README-EN.md)
 
-
+&nbsp;
 
 ## Environment
 
 Python 3.6.7
 
-
+&nbsp;
 
 ## Structure
 
@@ -26,22 +28,23 @@ Python 3.6.7
 │   ├── Happy
 │   ...
 │   ...
-├── Models                 // 存储训练好的模型
+└── Models                 // 存储训练好的模型
 ```
 
-
+&nbsp;
 
 ## Requirments
 
-- keras：LSTM & CNN
-- tensorflow：keras 的后端
-- sklearn：SVM & MLP，划分训练集和测试集
-- speechpy：提取特征向量
-- librosa：读取音频
-- h5py：LSTM & CNN 的模型存储在 h5 文件中
-- numpy
+- [Keras](https://github.com/keras-team/keras)：LSTM & CNN
+- [TensorFlow](https://github.com/tensorflow/tensorflow)：keras 的后端
+- [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP，划分训练集和测试集
+- [speechpy](https://github.com/astorfi/speechpy)：提取特征
+- [librosa](https://github.com/librosa/librosa)：提取特征，读取音频，波形图
+- [SciPy](https://github.com/scipy/scipy)：频谱图
+- [Matplotlib](https://github.com/matplotlib/matplotlib)：画图
+- [numpy](https://github.com/numpy/numpy)
 
-
+&nbsp;
 
 ## Datasets
 
@@ -55,17 +58,25 @@ Python 3.6.7
 
 3. [EMO-DB](http://www.emodb.bilderbar.info/download/)
 
-   德语，10 个人的大约 500 个音频，表达了 5 种不同的情绪：happy，angry，sad，fearful，calm。
+   德语，10 个人（5 名男性，5 名女性）的大约 500 个音频，表达了 7 种不同的情绪：nertral，anger，fear，joy，sadness，disgust，boredom。
 
 4. CASIA
 
    汉语，4 个人（2 名男性，2 名女性）的大约 1200 个音频，表达了 6 种不同的情绪：neutral，happy，sad，angry，fearful，surprised。
 
-
+&nbsp;
 
 ## Usage
 
-### Ready-made Demo
+### Prepare
+
+```python
+pip install -r requirements.txt
+```
+
+&nbsp;
+
+### Demo
 
 数据集放在 `/DataSet` 目录下，相同情感的音频放在同一个文件夹里（见 Structure 部分）。可以考虑使用 `File.py` 整理数据。
 
@@ -90,24 +101,20 @@ SVM(file_path)
 MLP(file_path)
 ```
 
+&nbsp;
 
+### Extract Features
 
-### Extract Data
+提取数据集的特征：
 
 ```python
 from Utilities import get_data
 # 使用 SVM 模型时，_svm = True；否则 _svm = False
+# x_train: 训练集样本, x_test: 测试集样本, y_train: 训练集标签, y_test: 测试集标签
 x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels, _svm)
 ```
 
-- x_train：训练集样本
-- y_train：训练集标签
-- x_test：测试集样本
-- y_test：测试集标签
-
-
-
-### Extract Feature Vector
+提取单个音频的特征：
 
 ```python
 from Utilities import get_feature
@@ -119,7 +126,7 @@ get_feature(path_of_the_audio, number_of_mfcc, flatten)
 get_feature_svm(path_of_the_audio, number_of_mfcc)
 ```
 
-
+&nbsp;
 
 ### Train
 
@@ -151,19 +158,19 @@ model_mlp = MLP_Model()
 model_mlp.train(x_train, y_train)
 ```
 
+&nbsp;
 
-
-### Evaluate Accuracy
+### Evaluate
 
 ```python
 model.evaluate(x_test, y_test)
 ```
 
-
+&nbsp;
 
 ### Recognize
 
-#### 训练的模型
+#### Trained Model
 
 ```python
 # 返回两个参数：预测结果(int)， 置信概率(numpy.ndarray)
@@ -172,7 +179,7 @@ model.recognize_one(feature_vector)
 
 
 
-#### 加载的模型
+#### Loaded Model
 
 ```python
 from Utilities import get_feature
@@ -180,7 +187,7 @@ import numpy as np
 np.argmax(model.predict(np.array([get_feature(filename, flatten)])))
 ```
 
-
+&nbsp;
 
 ### Load Model
 
@@ -190,7 +197,7 @@ from Utilities import load_model
 model.load_model(model_name, load_model)
 ```
 
-
+&nbsp;
 
 ### Save Model
 
@@ -200,7 +207,7 @@ model.load_model(model_name, load_model)
 model.save_model(model_name)
 ```
 
-
+&nbsp;
 
 ### Radar Chart
 
@@ -213,7 +220,7 @@ from Utilities import Radar
 Radar(result_prob, class_labels, num_of_classes)
 ```
 
-
+&nbsp;
 
 ### Waveform
 
@@ -224,7 +231,7 @@ from Utilities import Waveform
 Waveform(path_of_audio)
 ```
 
-
+&nbsp;
 
 ### Spectrogram
 
@@ -235,8 +242,8 @@ from Utilities import Spectrogram
 Spectrogram(path_of_audio)
 ```
 
-
+&nbsp;
 
 ## Acknowledgements
 
-SVM模型和雷达图的代码来源于 [@Zhaofan-Su](https://github.com/Zhaofan-Su) 和 [@Guo Hui](https://github.com/guohui15661353950) 的 [SpeechEmotionRecognition](https://github.com/Zhaofan-Su/SpeechEmotionRecognition)。
+[@Zhaofan-Su](https://github.com/Zhaofan-Su) 和 [@Guo Hui](https://github.com/guohui15661353950) 的 [SpeechEmotionRecognition](https://github.com/Zhaofan-Su/SpeechEmotionRecognition)。

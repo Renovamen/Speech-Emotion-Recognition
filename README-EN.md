@@ -2,13 +2,15 @@
 
 Speech emotion recognition using CNN, LSTM, SVM and MLP.
 
+This is the first version. The recognition accuracy is not so high (the accuracy of LSTM is about 55%, the accuracy of other models are even lower) because of the poor feature extraction method.
 
+&nbsp;
 
 ## Environment
 
 Python 3.6.7
 
-
+&nbsp;
 
 ## Structure
 
@@ -24,22 +26,23 @@ Python 3.6.7
 │   ├── Happy
 │   ...
 │   ...
-├── Models                 // A folder which restore trained models
+└── Models                 // A folder which restore trained models
 ```
 
-
+&nbsp;
 
 ## Requirments
 
-- keras：LSTM & CNN
-- tensorflow：backend of keras
-- sklearn：SVM & MLP, divide data into training set and testing set
-- speechpy：extract feature vectors
-- librosa：extract audio
-- h5py：save trained models of LSTM & CNN in h5 files
-- numpy
+- [Keras](https://github.com/keras-team/keras): LSTM & CNN
+- [TensorFlow](https://github.com/tensorflow/tensorflow): backend of keras
+- [scikit-learn](https://github.com/scikit-learn/scikit-learn): SVM & MLP, divide data into training set and testing set
+- [speechpy](https://github.com/astorfi/speechpy): extract features
+- [librosa](https://github.com/librosa/librosa): extract features, load audios, waveform
+- [SciPy](https://github.com/scipy/scipy): spectrogram
+- [Matplotlib](https://github.com/matplotlib/matplotlib): plot charts
+- [numpy](https://github.com/numpy/numpy)
 
-
+&nbsp;
 
 ## Datasets
 
@@ -53,17 +56,25 @@ Python 3.6.7
 
 3. [EMO-DB](http://www.emodb.bilderbar.info/download/)
 
-   German, around 500 audios from 10 people including 5 different emotions: happy, angry, sad, fearful and calm.
+   German, around 500 audios from 10 people (5 male and 5 female) including 7 different emotions: nertral, anger, fear, joy, sadness, disgust and boredom.
 
 4. CASIA
 
    Chinese, around 1200 audios from 4 people (2 male and 2 female) including 6 different emotions: neutral, happy, sad, angry, fearful and surprised.
 
-
+&nbsp;
 
 ## Usage
 
-### Ready-made Demo
+### Prepare
+
+```python
+pip install -r requirements.txt
+```
+
+&nbsp;
+
+### Demo
 
 Dataset should be put in  `/DataSet` directory and audios which express the same emotion should be put in the same folder (the Structure section has given an example).  `File.py` can be used to organize the data.
 
@@ -87,24 +98,21 @@ SVM(file_path)
 MLP(file_path)
 ```
 
+&nbsp;
 
+### Get Features
 
-### Extract Data
+Extract features of a dataset:
 
 ```python
 from Utilities import get_data
 # When using SVM, _svm = True, or _svm = False
+# x_train: samples of training data, y_train: labels of training data
+# x_test: samples of testing data, y_test: labels of testing data
 x_train, x_test, y_train, y_test = get_data(DATA_PATH, class_labels)
 ```
 
-- x_train：samples of training data
-- y_train：labels of training data
-- x_test：samples of testing data
-- y_test：labels of testing data
-
-
-
-### Extract Feature Vector
+Extract features of a single audio:
 
 ```python
 from Utilities import get_feature
@@ -116,7 +124,7 @@ get_feature(path_of_the_audio, number_of_mfcc, flatten)
 get_feature_svm(path_of_the_audio, number_of_mfcc)
 ```
 
-
+&nbsp;
 
 ### Train
 
@@ -148,15 +156,15 @@ model_mlp = MLP_Model()
 model_mlp.train(x_train, y_train)
 ```
 
+&nbsp;
 
-
-### Evaluate Accuracy
+### Evaluate
 
 ```python
 model.evaluate(x_test, y_test)
 ```
 
-
+&nbsp;
 
 ### Recognize
 
@@ -177,7 +185,7 @@ import numpy as np
 np.argmax(model.predict(np.array([get_feature(filename, flatten)])))
 ```
 
-
+&nbsp;
 
 ### Load Model
 
@@ -187,7 +195,7 @@ from Utilities import load_model
 model.load_model(model_name, load_model)
 ```
 
-
+&nbsp;
 
 ### Save Model
 
@@ -197,7 +205,7 @@ Model will be saves in `/Models` directory.
 model.save_model(model_name)
 ```
 
-
+&nbsp;
 
 ### Radar Chart
 
@@ -210,7 +218,7 @@ from Utilities import Radar
 Radar(result_prob, class_labels, num_of_classes)
 ```
 
-
+&nbsp;
 
 ### Waveform
 
@@ -221,7 +229,7 @@ from Utilities import Waveform
 Waveform(path_of_audio)
 ```
 
-
+&nbsp;
 
 ### Spectrogram
 
@@ -232,9 +240,8 @@ from Utilities import Spectrogram
 Spectrogram(path_of_audio)
 ```
 
-
+&nbsp;
 
 ## Acknowledgements
 
-The codes of SVM model and radar chart are from [SpeechEmotionRecognition](https://github.com/Zhaofan-Su/SpeechEmotionRecognition) of [@Zhaofan-Su](https://github.com/Zhaofan-Su) and [@Guo Hui](https://github.com/guohui15661353950).
-
+[SpeechEmotionRecognition](https://github.com/Zhaofan-Su/SpeechEmotionRecognition) of [@Zhaofan-Su](https://github.com/Zhaofan-Su) and [@Guo Hui](https://github.com/guohui15661353950).
