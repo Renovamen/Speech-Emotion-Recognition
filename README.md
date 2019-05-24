@@ -27,7 +27,7 @@ Python 3.6.7
 ├── File.py                // 用于整理数据集（分类、批量重命名）
 ├── Config.py              // 配置参数
 ├── cmd.py                 // 使用 argparse 从命令行读入参数
-├── cmd_example            // 命令行输入样例
+├── cmd_example.sh         // 命令行输入样例
 ├── Models                 // 存储训练好的模型
 └── Feature                // 存储提取好的特征
 ```
