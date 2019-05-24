@@ -25,6 +25,7 @@ Python 3.6.7
 ├── File.py                // Organize dataset (classify and rename)
 ├── Config.py              // Configuration parameters
 ├── cmd.py                 // Use argparse for getting args from command line
+├── cmd_example.sh         // Examples of command line input
 ├── Models                 // Restore trained models
 └── Feature                // Restore extracted features
 ```
@@ -103,14 +104,14 @@ You should modify `FEATURE_NUM` parameter if you need to use other feature sets.
 
 ### Command Line Arguments
 
-| Long option  | Option | Description                                                  |
-| ------------ | ------ | ------------------------------------------------------------ |
-| --option     | -o     | Option [ `p`: predict / `t`: train ] [ required ]            |
-| --model_type | -mt    | Model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
-| --model_name | -mn    | Name of the model file which will be saved or loaded [ default is `default` ] |
-| --load       | -l     | Load exist features or not [ `0`: no / `1`: yes ] [ default is `1` ] |
-| --feature    | -f     | How to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
-| --audio      | -a     | Path of audio which will be predicted [ default is `default.wav` ] |
+| Long option    | Option | Description                                                  |
+| -------------- | ------ | ------------------------------------------------------------ |
+| `--option`     | `-o`   | Option [ `p`: predict / `t`: train ] [ required ]            |
+| `--model_type` | `-mt`  | Model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
+| `--model_name` | `-mn`  | Name of the model file which will be saved or loaded [ default is `default` ] |
+| `--load`       | `-l`   | Load exist features or not [ `0`: no / `1`: yes ] [ default is `1` ] |
+| `--feature`    | `-f`   | How to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
+| `--audio`      | `-a`   | Path of audio which will be predicted [ default is `default.wav` ] |
 
 
 
@@ -128,6 +129,7 @@ Examples:
   python3 cmd.py -p t -mt 'svm' -mn 'SVM' -f 'o' -a [audio path]
   ```
 
+More examples can be found in `cmd_example.sh`.
 
 &nbsp;
 

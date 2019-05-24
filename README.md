@@ -27,6 +27,7 @@ Python 3.6.7
 ├── File.py                // 用于整理数据集（分类、批量重命名）
 ├── Config.py              // 配置参数
 ├── cmd.py                 // 使用 argparse 从命令行读入参数
+├── cmd_example            // 命令行输入样例
 ├── Models                 // 存储训练好的模型
 └── Feature                // 存储提取好的特征
 ```
@@ -105,14 +106,14 @@ pip install -r requirements.txt
 
 ### Command Line Arguments
 
-| Long option  | Option | Description                                                  |
-| ------------ | ------ | ------------------------------------------------------------ |
-| --option     | -o     | 操作 [ `p`：预测音频情感 / `t`：训练模型 ] [ 必需 ]          |
-| --model_type | -mt    | 模型种类 [ `svm` / `mlp` / `lstm` ] [ 默认：`svm` ]          |
-| --model_name | -mn    | 要保存或加载的模型文件名 [ 默认：`default` ]                 |
-| --load       | -l     | 是否加载已有特征 [ `0`：不加载 / `1`：加载 ] [ 默认：`1` ]   |
-| --feature    | -f     | 提取特征的方式 [ `o`：Opensmile / `l`：librosa ] [ 默认：`o` ] |
-| --audio      | -a     | 要预测的音频的路径 [ 默认：`default.wav` ]                   |
+| Long option    | Option | Description                                                  |
+| -------------- | ------ | ------------------------------------------------------------ |
+| `--option`     | `-o`   | 操作 [ `p`：预测音频情感 / `t`：训练模型 ] [ 必需 ]          |
+| `--model_type` | `-mt`  | 模型种类 [ `svm` / `mlp` / `lstm` ] [ 默认：`svm` ]          |
+| `--model_name` | `-mn`  | 要保存或加载的模型文件名 [ 默认：`default` ]                 |
+| `--load`       | `-l`   | 是否加载已有特征 [ `0`：不加载 / `1`：加载 ] [ 默认：`1` ]   |
+| `--feature`    | `-f`   | 提取特征的方式 [ `o`：Opensmile / `l`：librosa ] [ 默认：`o` ] |
+| `--audio`      | `-a`   | 要预测的音频的路径 [ 默认：`default.wav` ]                   |
 
 
 
@@ -127,8 +128,11 @@ pip install -r requirements.txt
 - 预测：
 
   ```python
-  python3 cmd.py -p t -mt 'svm' -mn 'SVM' -f 'o' -a [audio path]
+  python3 cmd.py -o p -mt 'svm' -mn 'SVM' -f 'o' -a [audio path]
   ```
+
+`cmd_example.sh` 中有更多的例子。
+
 
 
 &nbsp;

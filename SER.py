@@ -102,7 +102,7 @@ def Predict(model, model_name: str, file_path: str, feature_method: str = 'Opens
 
 
 
-# model = Train(model_name = "lstm", save_model_name = "LSTM_LIBROSA", if_load = True, feature_method = 'l')
+# model = Train(model_name = "svm", save_model_name = "SVM_LIBROSA", if_load = False, feature_method = 'l')
 # 加载模型
-# model = load_model(load_model_name = "LSTM_LIBROSA", model_name = "lstm")
-# Predict(model, model_name = "lstm", file_path = "Test/247-fear-wangzhe.wav", feature_method = 'l')
+# model = load_model(load_model_name = "SVM_LIBROSA", model_name = "svm")
+# Predict(model, model_name = "svm", file_path = "Test/surprise.wav", feature_method = 'l')

@@ -8,7 +8,7 @@ class Config:
     CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
 
     # LSTM 的训练 epoch 数
-    epochs = 20
+    epochs = 40
 
     # Opensmile 标准特征集
     CONFIG = 'IS10_paraling'
