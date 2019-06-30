@@ -41,7 +41,25 @@ def load_model(load_model_name: str, model_name: str):
 
     return model
 
+'''
+plotCurve(): 
+    绘制损失率和准确率的折线图
 
+输入:
+    train(list): 训练集损失率或准确率数组
+    val(list): 测试集损失率或准确率数组
+    title(str): 图像标题
+    y_label(str): y 轴标题
+'''
+def plotCurve(train, val, title: str, y_label: str):
+    plt.plot(train)
+    plt.plot(val)
+    plt.title(title)
+    plt.ylabel(y_label)
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+    
 '''
 Radar(): 置信概率雷达图
 

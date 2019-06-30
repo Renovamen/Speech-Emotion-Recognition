@@ -202,6 +202,15 @@ def get_data(data_path: str, feature_path: str, train: bool):
         mfcc_data = []
         for file in files:
             label = re.findall(".*-(.*)-.*", file)[0]
+
+            # 三分类
+            # if(label == "sad" or label == "neutral"):
+            #     label = "neutral"
+            # elif(label == "angry" or label == "fear"):
+            #     label = "negative"
+            # elif(label == "happy" or label == "surprise"):
+            #     label = "positive"
+
             features = extract_features(file, max_)
             mfcc_data.append([file, features, Config.CLASS_LABELS.index(label)])
 

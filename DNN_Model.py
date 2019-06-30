@@ -5,6 +5,7 @@ import keras
 from keras import Sequential
 from keras.layers import LSTM as KERAS_LSTM, Dense, Dropout
 from Common_Model import Common_Model
+from Utils import plotCurve
 
 # class LSTM 继承了此类
 class DNN_Model(Common_Model):
@@ -47,6 +48,11 @@ class DNN_Model(Common_Model):
 
     '''
     def train(self, x_train, y_train, x_val = None, y_val = None, n_epochs = 50):
+        acc = []
+        loss = []
+        val_acc = []
+        val_loss = []
+
         if x_val is None or y_val is None:
             x_val, y_val = x_train, y_train
         for i in range(n_epochs):
@@ -54,9 +60,18 @@ class DNN_Model(Common_Model):
             p = np.random.permutation(len(x_train))
             x_train = x_train[p]
             y_train = y_train[p]
-            self.model.fit(x_train, y_train, batch_size = 32, epochs = 1)
-            # 计算损失率和准确率
-            loss, acc = self.model.evaluate(x_val, y_val)
+            
+            history = self.model.fit(x_train, y_train, batch_size = 32, epochs = 1)
+            # 训练集上的损失率和准确率
+            acc.append(history.history['acc'])
+            loss.append(history.history['loss'])
+            # 验证集上的损失率和准确率
+            val_loss_single, val_acc_single = self.model.evaluate(x_val, y_val)
+            val_acc.append(val_acc_single)
+            val_loss.append(val_loss_single)
+
+        plotCurve(acc, val_acc, 'LSTM Accuracy', 'acc')
+        plotCurve(loss, val_loss, 'LSTM Loss', 'loss')
         self.trained = True
 
 
@@ -92,5 +107,5 @@ class LSTM_Model(DNN_Model):
         self.model.add(KERAS_LSTM(128, input_shape=(1, self.input_shape)))
         self.model.add(Dropout(0.5))
         self.model.add(Dense(32, activation='relu'))
-        self.model.add(Dense(16, activation='tanh'))
+        # self.model.add(Dense(16, activation='tanh'))
         
