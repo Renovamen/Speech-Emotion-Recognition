@@ -63,7 +63,7 @@ Python 3.6.7
 
 3. [EMO-DB](http://www.emodb.bilderbar.info/download/)
 
-   German, around 500 audios from 10 people (5 male and 5 female) including 7 different emotions: nertral, anger, fear, joy, sadness, disgust and boredom.
+   German, around 500 audios from 10 people (5 male and 5 female) including 7 different emotions (the second to last letter of each file name represents the emotional type): N = neutral, W = angry, A = fear, F = happy, T = sad, E = disgust, L = boredom.
 
 4. CASIA
 
