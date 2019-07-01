@@ -65,7 +65,7 @@ Python 3.6.7
 
 3. [EMO-DB](http://www.emodb.bilderbar.info/download/)
 
-   德语，10 个人（5 名男性，5 名女性）的大约 500 个音频，表达了 7 种不同的情绪：nertral，anger，fear，joy，sadness，disgust，boredom。
+   德语，10 个人（5 名男性，5 名女性）的大约 500 个音频，表达了 7 种不同的情绪（倒数第二个字母表示情绪类别）：N = neutral，W = angry，A = fear，F = happy，T = sad，E = disgust，L = boredom。
 
 4. CASIA
 
