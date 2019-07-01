@@ -3,10 +3,11 @@
 class Config:
 
     # 数据集路径
-    DATA_PATH = 'Datasets/CASIA'
+    DATA_PATH = 'Datasets/CASIA/6'
     # 情感标签
     CLASS_LABELS = ("angry", "fear", "happy", "neutral", "sad", "surprise")
     # CLASS_LABELS = ("positive", "negative", "neutral")
+    # CLASS_LABELS = ("angry", "boredom", "disgust", "fear", "happy", "neutral", "sad")
 
     # LSTM 的训练 epoch 数
     epochs = 20
@@ -28,13 +29,13 @@ class Config:
     # 特征存储路径
     FEATURE_PATH = 'Features/6-category/'
     # 训练特征存储路径（Opensmile）
-    TRAIN_FEATURE_PATH_OPENSMILE = FEATURE_PATH + 'train_opensmile.csv'
+    TRAIN_FEATURE_PATH_OPENSMILE = FEATURE_PATH + 'train_opensmile_casia.csv'
     # 预测特征存储路径（Opensmile）
-    PREDICT_FEATURE_PATH_OPENSMILE = FEATURE_PATH + 'test_opensmile.csv'
+    PREDICT_FEATURE_PATH_OPENSMILE = FEATURE_PATH + 'test_opensmile_casia.csv'
     # 训练特征存储路径（librosa）
-    TRAIN_FEATURE_PATH_LIBROSA = FEATURE_PATH + 'train_librosa.p'
+    TRAIN_FEATURE_PATH_LIBROSA = FEATURE_PATH + 'train_librosa_casia.p'
     # 预测特征存储路径（librosa）
-    PREDICT_FEATURE_PATH_LIBROSA = FEATURE_PATH + 'test_librosa.p'
+    PREDICT_FEATURE_PATH_LIBROSA = FEATURE_PATH + 'test_librosa_casia.p'
 
     # 模型存储路径
     MODEL_PATH = 'Models/'
