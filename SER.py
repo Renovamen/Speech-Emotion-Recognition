@@ -5,7 +5,7 @@ import os
 from ML_Model import SVM_Model, MLP_Model
 from DNN_Model import LSTM_Model
 
-from Utils import load_model, Radar
+from Utils import load_model, Radar, playAudio
 
 import Opensmile_Feature as of
 import Librosa_Feature as lf
@@ -79,6 +79,7 @@ Predict(): 预测音频情感
 def Predict(model, model_name: str, file_path: str, feature_method: str = 'Opensmile'):
     
     file_path = os.path.dirname(os.path.abspath(__file__)) + '/' + file_path
+    playAudio(file_path)
 
     if(feature_method == 'o'):
         # 一个玄学 bug 的暂时性解决方案
@@ -102,7 +103,7 @@ def Predict(model, model_name: str, file_path: str, feature_method: str = 'Opens
 
 
 
-# model = Train(model_name = "svm", save_model_name = "SVM_LIBROSA", if_load = False, feature_method = 'l')
+# model = Train(model_name = "lstm", save_model_name = "LSTM_OPENSMILE_1", if_load = True, feature_method = 'o')
 # 加载模型
-# model = load_model(load_model_name = "SVM_LIBROSA", model_name = "svm")
-# Predict(model, model_name = "svm", file_path = "Test/surprise.wav", feature_method = 'l')
+# model = load_model(load_model_name = "LSTM_OPENSMILE", model_name = "lstm")
+# Predict(model, model_name = "lstm", file_path = "Test/neutral.wav", feature_method = 'o')

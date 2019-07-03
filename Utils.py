@@ -6,6 +6,8 @@ from sklearn.externals import joblib
 import librosa
 import librosa.display
 import scipy.io.wavfile as wav
+import pyaudio
+import wave
 
 from Config import Config
 
@@ -59,6 +61,28 @@ def plotCurve(train, val, title: str, y_label: str):
     plt.xlabel('epoch')
     plt.legend(['train', 'test'], loc='upper left')
     plt.show()
+
+
+'''
+playAudio(): 播放语音
+
+输入:
+    file_path(str): 要播放的音频路径
+'''
+def playAudio(file_path: str):
+    # 语音播放
+    p = pyaudio.PyAudio()
+    f = wave.open(file_path, 'rb')
+    stream = p.open(format = p.get_format_from_width(f.getsampwidth()),
+                    channels = f.getnchannels(),
+                    rate = f.getframerate(),
+                    output = True)
+    data = f.readframes(f.getparams()[3])
+    stream.write(data)
+    stream.stop_stream()
+    stream.close()
+    f.close()
+    
     
 '''
 Radar(): 置信概率雷达图
