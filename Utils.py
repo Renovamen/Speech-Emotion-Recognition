@@ -45,11 +45,11 @@ def load_model(load_model_name: str, model_name: str):
 
 '''
 plotCurve(): 
-    绘制损失率和准确率的折线图
+    绘制损失值和准确率曲线
 
 输入:
-    train(list): 训练集损失率或准确率数组
-    val(list): 测试集损失率或准确率数组
+    train(list): 训练集损失值或准确率数组
+    val(list): 测试集损失值或准确率数组
     title(str): 图像标题
     y_label(str): y 轴标题
 '''

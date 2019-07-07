@@ -284,6 +284,35 @@ Radar(result_prob)
 
 &nbsp;
 
+### Play Audio
+
+Play an audio file.
+
+```python
+from Utils import playAudio
+playAudio(file_path)
+```
+
+&nbsp;
+
+### Plot Curve
+
+Plot loss curve or accuracy curve.
+
+```python
+from Utils import plotCurve
+'''
+输入:
+    train(list): loss or accuracy on train set
+    val(list): loss or accuracy on validation set
+    title(str): title of figure
+    y_label(str): label of y axis
+'''
+plotCurve(train, val, title, y_label)
+```
+
+&nbsp;
+
 ### Waveform
 
 Plot a waveform of an audio.

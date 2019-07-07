@@ -56,16 +56,16 @@ class DNN_Model(Common_Model):
         if x_val is None or y_val is None:
             x_val, y_val = x_train, y_train
         for i in range(n_epochs):
-            # 每个epoch都随机排列训练数据
+            # 每个 epoch 都随机排列训练数据
             p = np.random.permutation(len(x_train))
             x_train = x_train[p]
             y_train = y_train[p]
             
             history = self.model.fit(x_train, y_train, batch_size = 32, epochs = 1)
-            # 训练集上的损失率和准确率
+            # 训练集上的损失值和准确率
             acc.append(history.history['acc'])
             loss.append(history.history['loss'])
-            # 验证集上的损失率和准确率
+            # 验证集上的损失值和准确率
             val_loss_single, val_acc_single = self.model.evaluate(x_val, y_val)
             val_acc.append(val_acc_single)
             val_loss.append(val_loss_single)

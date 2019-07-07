@@ -288,6 +288,35 @@ Radar(result_prob)
 
 &nbsp;
 
+### Play Audio
+
+播放一段音频
+
+```python
+from Utils import playAudio
+playAudio(file_path)
+```
+
+&nbsp;
+
+### Plot Curve
+
+画训练过程的准确率曲线和损失曲线。
+
+```python
+from Utils import plotCurve
+'''
+输入:
+    train(list): 训练集损失值或准确率数组
+    val(list): 测试集损失值或准确率数组
+    title(str): 图像标题
+    y_label(str): y 轴标签
+'''
+plotCurve(train, val, title, y_label)
+```
+
+&nbsp;
+
 ### Waveform
 
 画出音频的波形图。
