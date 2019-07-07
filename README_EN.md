@@ -302,7 +302,7 @@ Plot loss curve or accuracy curve.
 ```python
 from Utils import plotCurve
 '''
-输入:
+Input:
     train(list): loss or accuracy on train set
     val(list): loss or accuracy on validation set
     title(str): title of figure
