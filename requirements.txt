@@ -5,4 +5,4 @@ pandas==0.24.2
 matplotlib==2.2.2
 numpy==1.16.3
 keras==2.2.4
-tensorflow==1.13.1
+tensorflow==1.15.0
