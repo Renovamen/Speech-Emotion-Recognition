@@ -1,4 +1,4 @@
-tensorflow==1.13.1
+tensorflow==1.15.2
 keras==2.2.4
 scikit-learn==0.21.1
 numpy==1.16.3
