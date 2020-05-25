@@ -1,8 +1,10 @@
 # Speech Emotion Recognition 
 
-Speech emotion recognition using LSTM, SVM and MLP.
+Speech emotion recognition using LSTM, SVM and MLP, implemented in Keras.
 
 Improve the feature extraction method and get higher accuracy (about 80%). The original version is saved in [Branch: First-Version](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/First-Version).
+
+English Document | [中文文档](README.md)
 
 &nbsp;
 
@@ -15,19 +17,25 @@ Python 3.6.7
 ## Structure
 
 ```
-├── Common_Model.py        // Common part of all models
-├── ML_Model.py            // SVM & MLP
-├── DNN_Model.py           // LSTM
-├── Utils.py               // Load models, plot graphs
-├── Opensmile_Feature.py   // Use Opensmile for features extracting
-├── Librosa_Feature.py     // Use librosa for features extracting
-├── SER.py                 // Using different models for speech emotion recognition 
-├── File.py                // Organize dataset (classify and rename)
-├── Config.py              // Configuration parameters
-├── cmd.py                 // Use argparse for getting args from command line
-├── cmd_example.sh         // Examples of command line input
-├── Models                 // Restore trained models
-└── Feature                // Restore extracted features
+├── models                 // model implementations
+│   ├── common.py          // common part of all models
+│   ├── dnn.py             // LSTM
+│   └── ml.py              // SVM & MLP
+├── extract_feats
+│   ├── librosa.py         // extract features using librosa
+│   └── opensmile.py       // extract features using Opensmile
+├── misc
+│   ├── files.py           // setup dataset (classify and rename)
+│   ├── opts.py            // use argparse to get args from command line
+│   └── utils.py           // load models, plot graphs
+├── files
+│   ├── features           // store trained models
+│   └── models             // store extracted features
+├── config.py              // configure parameters
+├── train.py               // train
+├── predict.py             // recognize the emotion of a given audio
+├── preprocess.py          // data preprocessing (extract features and store them locally)
+└── example.sh             // examples of command line inputs
 ```
 
 &nbsp;
@@ -38,7 +46,7 @@ Python 3.6.7
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn): SVM & MLP, split data into training set and testing set
 - [Keras](https://github.com/keras-team/keras): LSTM
-- [TensorFlow](https://github.com/tensorflow/tensorflow): Backend of keras
+- [TensorFlow](https://github.com/tensorflow/tensorflow): Backend of Keras
 - [librosa](https://github.com/librosa/librosa): Extract features, waveform
 - [SciPy](https://github.com/scipy/scipy): Spectrogram
 - [pandas](https://github.com/pandas-dev/pandas): Load features
@@ -102,34 +110,21 @@ You should modify `FEATURE_NUM` parameter if you need to use other feature sets.
 
 &nbsp;
 
-### Command Line Arguments
+### Preprocess
 
-| Long option    | Option | Description                                                  |
-| -------------- | ------ | ------------------------------------------------------------ |
-| `--option`     | `-o`   | Option [ `p`: predict / `t`: train ] [ required ]            |
-| `--model_type` | `-mt`  | Model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
-| `--model_name` | `-mn`  | Name of the model file which will be saved or loaded [ default is `default` ] |
-| `--load`       | `-l`   | Load exist features or not [ `0`: no / `1`: yes ] [ default is `1` ] |
-| `--feature`    | `-f`   | How to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
-| `--audio`      | `-a`   | Path of audio which will be predicted [ default is `default.wav` ] |
+First of all, you should extract features of each audio in dataset and store them locally. Features extracted by Opensmile will be save in `.csv` files and by librosa will be save in `.p` files.
 
+| Long option | Option | Description                                                  |
+| ----------- | ------ | ------------------------------------------------------------ |
+| `--feature` | `-f`   | ow to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
 
+Example:
 
-Examples:
+```python
+python preprocess.py -f 'o'
+```
 
-- Train:
-
-  ```python
-  python3 cmd.py -o t -mt 'svm' -mn 'SVM' -l 1 -f 'o'
-  ```
-
-- Predict:
-
-  ```python
-  python3 cmd.py -p t -mt 'svm' -mn 'SVM' -f 'o' -a [audio path]
-  ```
-
-More examples can be found in `cmd_example.sh`.
+More examples can be found in `example.sh`.
 
 &nbsp;
 
@@ -138,138 +133,104 @@ More examples can be found in `cmd_example.sh`.
 The path of datasets can be configured in `Config.py`. Audios which express the same emotion should be put in the same folder (`File.py` can be used to organize the data), for example:
 
 ```
-└── Datasets
-    ├── Angry
-    ├── Happy
-    ├── Sad
+└── datasets
+    ├── angry
+    ├── happy
+    ├── sad
     ...
 ```
 
+&nbsp;
+Argparse：
+
+| Long option    | Option | Description                                                  |
+| -------------- | ------ | ------------------------------------------------------------ |
+| `--model_type` | `-mt`  | model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
+| `--model_name` | `-mn`  | name of the model file that will be saved or loaded [ default is `default` ] |
+| `--feature`    | `-f`   | how to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
+
+
+Example：
 
 ```python
-from SER import Train
-
-'''
-Input:
-	model_name: model type (SVM / MLP / LSTM)
-	save_model_name: name of the model file
-	if_load: load exist features or not (True / False)
-	feature_method: how to extract features ('o': Opensmile / 'l': librosa)
-Output:
-	model: a trained model
-'''
-model = Train(model_name, save_model_name, if_load, feature_method)
+python train.py -mt 'svm' -mn 'SVM' -f 'o'
 ```
 
-&nbsp;
+More examples can be found in `example.sh`.
 
-### Load Model
+&nbsp;
+If you don't want to set parameters via command line:
 
 ```python
-from Utils import load_model
+from train import train
 
 '''
-Input:
-	load_model_name: name of the model file which will be loaded
-	model_name: model type (SVM / MLP / LSTM)
-Output:
-	model: a model
+input params:
+	model_name: model type (svm / mlp / lstm)
+	save_model_name: name of the model file
+	feature_method: how to extract features ('o': Opensmile / 'l': librosa)
 '''
-model = load_model(load_model_name, model_name)
+train(model_name = "lstm", save_model_name = "LSTM", feature_method = 'l')
 ```
 
 &nbsp;
 
 ### Predict
 
+This is for when you have trained a model and want to predict the emotion for an audio:
+
+| Long option    | Option | Description                                                  |
+| -------------- | ------ | ------------------------------------------------------------ |
+| `--model_type` | `-mt`  | model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
+| `--model_name` | `-mn`  | name of the model file which will be saved or loaded [ default is `default` ] |
+| `--feature`    | `-f`   | how to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
+| `--audio`      | `-a`   | path of the audio for predicting [ default is `default.wav` ] |
+
+Example:
+
 ```python
-from SER import Predict
+python predict.py -mt 'svm' -mn 'SVM' -f 'o' -a 'test/happy.wav'
+```
+
+More examples can be found in `example.sh`.
+
+&nbsp;
+If you don't want to set parameters via command line:
+
+```python
+from misc.utils import load_model
+from predict import predict
+
 '''
-Input:
-	model: a trained or loaded model
-	model_name: model type (SVM / MLP / LSTM)
+input params:
+	load_model_name: name of the model file which will be loaded
+	model_name: model type (svm / mlp / lstm)
+return:
+	model: a loaded model
+'''
+model = load_model(load_model_name = "LSTM", model_name = "lstm")
+
+'''
+input params:
+	model: a loaded model
+	model_name: model type (svm / mlp / lstm)
 	file_path: path of audio which will be predicted
 	feature_method: how to extract features ('o': Opensmile / 'l': librosa)
-Output:
-	predict result and probability
+return: 
+	predict results along with probabilities
 '''
-Predict(model, model_name, file_path, feature_method)
+predict(model, model_name = "lstm", file_path = 'test/angry.wav', feature_method = 'l')
 ```
+
+
 
 &nbsp;
 
-### Extract Feature
+### Functions
 
-Features extracted by Opensmile will be save in `.csv` files and by librosa will be save in `.p` files.
+#### Radar Chart
 
-```python
-import Librosa_Feature as of
-import Opensmile_Feature as of
-
-'''
-Input:
-    data_path: path of dataset / audio which will be predicted
-    feature_path: path for saving features
-    train: training data or not
-'''
-
-'''
-Training data:
-    Ouput: samples of training data, samples of testing data and their labels
-'''
-# Opensmile
-x_train, x_test, y_train, y_test = of.get_data(data_path, feature_path, train = False)
-# librosa
-x_train, x_test, y_train, y_test = lf.get_data(data_path, feature_path, train = False)
-
-'''
-Predicting data:
-    Output: features of audio
-'''
-# Opensmile
-test_feature = of.get_data(data_path, feature_path, train = True)
-# librosa
-test_feature = lf.get_data(data_path, feature_path, train = True)
-```
-
-&nbsp;
-
-### Load Feature
-
-```python
-import Librosa_Feature as lf
-import Opensmile_Feature as of
-
-'''
-Input:
-    feature_path: path for loading features
-    train: training data or not
-'''
-
-'''
-Training data:
-    Output: samples of training data, samples of testing data and their labels
-'''
-# Opensmile
-x_train, x_test, y_train, y_test = of.load_feature(feature_path, train = True)
-# librosa
-x_train, x_test, y_train, y_test = lf.load_feature(feature_path, train = True)
-
-'''
-Predicting data:
-    Output: features of audio
-'''
-# Opensmile
-test_feature = of.load_feature(feature_path, train = False)
-# librosa
-test_feature = lf.load_feature(feature_path, train = False)
-```
-
-&nbsp;
-
-### Radar Chart
-
-Plot a radar chart of probability.
+Plot a radar chart for demonstrating predicted probabilities.
 
 Source: [Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
@@ -284,7 +245,7 @@ Radar(result_prob)
 
 &nbsp;
 
-### Play Audio
+#### Play Audio
 
 Play an audio file.
 
@@ -295,7 +256,7 @@ playAudio(file_path)
 
 &nbsp;
 
-### Plot Curve
+#### Plot Curve
 
 Plot loss curve or accuracy curve.
 
@@ -313,7 +274,7 @@ plotCurve(train, val, title, y_label)
 
 &nbsp;
 
-### Waveform
+#### Waveform
 
 Plot a waveform of an audio.
 
@@ -324,7 +285,7 @@ Waveform(file_path)
 
 &nbsp;
 
-### Spectrogram
+#### Spectrogram
 
 Plot a spectrogram of an audio.
 
@@ -335,6 +296,7 @@ Spectrogram(file_path)
 
 &nbsp;
 
-## Acknowledgements
+## Other Contributors
 
-[@Zhaofan-Su](https://github.com/Zhaofan-Su) and [@Guo Hui](https://github.com/guohui15661353950)。
+- [@Zhaofan-Su](https://github.com/Zhaofan-Su)
+- [@Guo Hui](https://github.com/guohui15661353950)

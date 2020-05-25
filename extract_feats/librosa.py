@@ -12,7 +12,7 @@ from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from Config import Config
+from config import config
 
 
 def features(X, sample_rate):
@@ -106,8 +106,7 @@ def get_max_min(files):
 
 
 '''
-get_data_path():
-    获取所有音频的路径
+get_data_path(): 获取所有音频的路径
 
 输入:
     data_path: 数据集文件夹路径
@@ -122,9 +121,9 @@ def get_data_path(data_path: str):
     cur_dir = os.getcwd()
     sys.stderr.write('Curdir: %s\n' % cur_dir)
     os.chdir(data_path)
-    # 遍历文件夹
-    for _, directory in enumerate(Config.CLASS_LABELS):
 
+    # 遍历文件夹
+    for _, directory in enumerate(config.CLASS_LABELS):
         os.chdir(directory)
 
         # 读取该文件夹下的音频
@@ -142,8 +141,7 @@ def get_data_path(data_path: str):
 
 
 '''
-load_feature():
-    从 csv 加载特征数据
+load_feature(): 从 csv 加载特征数据
 
 输入:
     feature_path: 特征文件路径
@@ -164,7 +162,7 @@ def load_feature(feature_path: str, train: bool):
         # 标准化数据 
         scaler = StandardScaler().fit(X)
         # 保存标准化模型
-        joblib.dump(scaler, Config.MODEL_PATH + 'SCALER_LIBROSA.m')
+        joblib.dump(scaler, config.MODEL_PATH + 'SCALER_LIBROSA.m')
         X = scaler.transform(X)
 
         x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size = 0.2, random_state = 42)
@@ -173,7 +171,7 @@ def load_feature(feature_path: str, train: bool):
     else:
         # 标准化数据
         # 加载标准化模型
-        scaler = joblib.load(Config.MODEL_PATH + 'SCALER_LIBROSA.m')
+        scaler = joblib.load(config.MODEL_PATH + 'SCALER_LIBROSA.m')
         X = scaler.transform(X)
         return X
 
@@ -188,10 +186,8 @@ get_data():
     train: 是否为训练数据
 
 输出:
-    train = True:
-        训练数据、测试数据特征和对应的标签
-    train = False:
-        预测数据特征
+    train = True: 训练数据、测试数据特征和对应的标签
+    train = False: 预测数据特征
 '''
 def get_data(data_path: str, feature_path: str, train: bool):
     
@@ -212,7 +208,7 @@ def get_data(data_path: str, feature_path: str, train: bool):
             #     label = "positive"
 
             features = extract_features(file, max_)
-            mfcc_data.append([file, features, Config.CLASS_LABELS.index(label)])
+            mfcc_data.append([file, features, config.CLASS_LABELS.index(label)])
 
     else:
         features = extract_features(data_path)

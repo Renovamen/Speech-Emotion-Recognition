@@ -53,7 +53,7 @@ class Common_Model(object):
         return self.model.predict_proba(samples)
 
     '''
-    save_model(): 将模型以 model_name 命名存储在 /Models 目录下
+    save_model(): 将模型以 model_name 命名存储在 config.MODEL_PATH 路径下
     '''
     def save_model(self, model_name: str):
         raise NotImplementedError()
@@ -79,4 +79,3 @@ class Common_Model(object):
         print("Predict Lable: ", predictions)
         print("Score: ", score)
         '''
-

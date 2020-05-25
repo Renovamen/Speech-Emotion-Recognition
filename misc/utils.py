@@ -9,7 +9,7 @@ import scipy.io.wavfile as wav
 import pyaudio
 import wave
 
-from Config import Config
+from config import config
 
 '''
 load_model(): 
@@ -26,8 +26,8 @@ def load_model(load_model_name: str, model_name: str):
     
     if(model_name == 'lstm'):
         # 加载json
-        model_path = 'Models/' + load_model_name + '.h5'
-        model_json_path = 'Models/' + load_model_name + '.json'
+        model_path = config.MODEL_PATH + load_model_name + '.h5'
+        model_json_path = config.MODEL_PATH + load_model_name + '.json'
         
         json_file = open(model_json_path, 'r')
         loaded_model_json = json_file.read()
@@ -38,7 +38,7 @@ def load_model(load_model_name: str, model_name: str):
         model.load_weights(model_path)
     
     elif(model_name == 'svm' or model_name == 'mlp'):
-        model_path = 'Models/' + load_model_name + '.m'
+        model_path = config.MODEL_PATH + load_model_name + '.m'
         model = joblib.load(model_path)
 
     return model
@@ -64,12 +64,12 @@ def plotCurve(train, val, title: str, y_label: str):
 
 
 '''
-playAudio(): 播放语音
+play_audio(): 播放语音
 
 输入:
     file_path(str): 要播放的音频路径
 '''
-def playAudio(file_path: str):
+def play_audio(file_path: str):
     # 语音播放
     p = pyaudio.PyAudio()
     f = wave.open(file_path, 'rb')
@@ -92,7 +92,7 @@ Radar(): 置信概率雷达图
 '''
 def Radar(data_prob):
 
-    angles = np.linspace(0, 2 * np.pi, len(Config.CLASS_LABELS), endpoint = False)
+    angles = np.linspace(0, 2 * np.pi, len(config.CLASS_LABELS), endpoint = False)
     data = np.concatenate((data_prob, [data_prob[0]]))  # 闭合
     angles = np.concatenate((angles, [angles[0]]))  # 闭合
 
@@ -102,7 +102,7 @@ def Radar(data_prob):
     ax = fig.add_subplot(111, polar = True)
     ax.plot(angles, data, 'bo-', linewidth=2)
     ax.fill(angles, data, facecolor='r', alpha=0.25)
-    ax.set_thetagrids(angles * 180 / np.pi, Config.CLASS_LABELS)
+    ax.set_thetagrids(angles * 180 / np.pi, config.CLASS_LABELS)
     ax.set_title("Emotion Recognition", va = 'bottom')
 
     # 设置雷达图的数据最大值
