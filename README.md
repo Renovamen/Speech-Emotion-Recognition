@@ -125,7 +125,7 @@ pip install -r requirements.txt
 ```python
 python preprocess.py -f 'o'
 ```
-`example.sh` 中有更多的例子。
+[`example.sh`](example.sh) 中有更多的例子。
 
 &nbsp;
 
@@ -156,9 +156,10 @@ python preprocess.py -f 'o'
 ```python
 python train.py -mt 'svm' -mn 'SVM' -f 'o'
 ```
-`example.sh` 中有更多的例子。
+[`example.sh`](example.sh) 中有更多的例子。
 
 &nbsp;
+
 如果不想命令行输入，可以：
 
 ```python
@@ -191,9 +192,10 @@ train(model_name = "lstm", save_model_name = "LSTM", feature_method = 'l')
 ```python
 python predict.py -mt 'svm' -mn 'SVM' -f 'o' -a 'test/happy.wav'
 ```
-`example.sh` 中有更多的例子。
+[`example.sh`](example.sh) 中有更多的例子。
 
 &nbsp;
+
 如果不想命令行输入，可以：
 
 ```python

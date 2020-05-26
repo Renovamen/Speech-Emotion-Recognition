@@ -124,7 +124,7 @@ Example:
 python preprocess.py -f 'o'
 ```
 
-More examples can be found in `example.sh`.
+More examples can be found in [`example.sh`](example.sh).
 
 &nbsp;
 
@@ -156,9 +156,10 @@ Example：
 python train.py -mt 'svm' -mn 'SVM' -f 'o'
 ```
 
-More examples can be found in `example.sh`.
+More examples can be found in [`example.sh`](example.sh).
 
 &nbsp;
+
 If you don't want to set parameters via command line:
 
 ```python
@@ -192,9 +193,10 @@ Example:
 python predict.py -mt 'svm' -mn 'SVM' -f 'o' -a 'test/happy.wav'
 ```
 
-More examples can be found in `example.sh`.
+More examples can be found in [`example.sh`](example.sh).
 
 &nbsp;
+
 If you don't want to set parameters via command line:
 
 ```python
