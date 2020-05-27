@@ -141,6 +141,7 @@ The path of the datasets can be configured in [`config.py`](config.py). Audios w
 ```
 
 &nbsp;
+
 Argparse：
 
 | Long option    | Option | Description                                                  |
@@ -178,7 +179,7 @@ train(model_name = "lstm", save_model_name = "LSTM", feature_method = 'l')
 
 ### Predict
 
-This is for when you have trained a model and want to predict the emotion for an audio. Check out [model-backup](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/model-backup) branch for some pretrained models.
+This is for when you have trained a model and want to predict the emotion for an audio. Check out [model-backup branch](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/model-backup) or [release page](https://github.com/Renovamen/Speech-Emotion-Recognition/releases) for some pretrained models.
 
 
 Argparse：

@@ -178,7 +178,7 @@ train(model_name = "lstm", save_model_name = "LSTM", feature_method = 'l')
 
 ### Predict
 
-用训练好的模型来预测指定音频的情感。[model-backup](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/model-backup) 分支备份了一些已经训练好的模型。
+用训练好的模型来预测指定音频的情感。[model-backup 分支](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/model-backup)和 [release 页面](https://github.com/Renovamen/Speech-Emotion-Recognition/releases)有一些已经训练好的模型。
 
 命令行参数：
 
