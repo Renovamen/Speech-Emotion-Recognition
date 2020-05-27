@@ -2,7 +2,7 @@
 
 Speech emotion recognition using LSTM, SVM and MLP, implemented in Keras.
 
-Improve the feature extraction method and get higher accuracy (about 80%). The original version is saved in [Branch: First-Version](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/First-Version).
+We have improved the feature extracting method and achieved higher accuracy (about 80%). The original version is backed up under [First-Version](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/First-Version) branch.
 
 English Document | [中文文档](README.md)
 
@@ -12,25 +12,25 @@ English Document | [中文文档](README.md)
 
 Python 3.6.7
 
+Keras 2.2.4
+
 &nbsp;
 
 ## Structure
 
 ```
-├── models                 // model implementations
+├── models/                // model implementations
 │   ├── common.py          // common part of all models
 │   ├── dnn.py             // LSTM
 │   └── ml.py              // SVM & MLP
-├── extract_feats
+├── extract_feats/
 │   ├── librosa.py         // extract features using librosa
 │   └── opensmile.py       // extract features using Opensmile
-├── misc
+├── misc/
 │   ├── files.py           // setup dataset (classify and rename)
 │   ├── opts.py            // use argparse to get args from command line
 │   └── utils.py           // load models, plot graphs
-├── files
-│   ├── features           // store trained models
-│   └── models             // store extracted features
+├── features/              // store extracted features
 ├── config.py              // configure parameters
 ├── train.py               // train
 ├── predict.py             // recognize the emotion of a given audio
@@ -63,15 +63,15 @@ Python 3.6.7
 
 1. [RAVDESS](https://zenodo.org/record/1188976)
 
-   English, around 1500 audios from 24 people (12 male and 12 female) including 8 different emotions (the third number of each file name represents the emotional type): 01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised.
+   English, around 1500 audios from 24 people (12 male and 12 female) including 8 different emotions (the third number of the file name represents the emotional type): 01 = neutral, 02 = calm, 03 = happy, 04 = sad, 05 = angry, 06 = fearful, 07 = disgust, 08 = surprised.
 
 2. [SAVEE](http://kahlan.eps.surrey.ac.uk/savee/Download.html)
 
-   English, around 500 audios from 4 people (male) including 7 different emotions (the first letter of each file name represents the emotional type): a = anger, d = disgust, f = fear, h = happiness, n = neutral, sa = sadness, su = surprise.
+   English, around 500 audios from 4 people (male) including 7 different emotions (the first letter of the file name represents the emotional type): a = anger, d = disgust, f = fear, h = happiness, n = neutral, sa = sadness, su = surprise.
 
 3. [EMO-DB](http://www.emodb.bilderbar.info/download/)
 
-   German, around 500 audios from 10 people (5 male and 5 female) including 7 different emotions (the second to last letter of each file name represents the emotional type): N = neutral, W = angry, A = fear, F = happy, T = sad, E = disgust, L = boredom.
+   German, around 500 audios from 10 people (5 male and 5 female) including 7 different emotions (the second to last letter of the file name represents the emotional type): N = neutral, W = angry, A = fear, F = happy, T = sad, E = disgust, L = boredom.
 
 4. CASIA
 
@@ -95,9 +95,9 @@ Install [Opensmile](https://github.com/naxingyu/opensmile).
 
 ### Configuration
 
-Parameters can be configured in `Config.py`.
+Parameters can be configured in [`config.py`](config.py).
 
-About Opensmile standard feature sets, currently only following 6 feature sets are supported:
+It should be noted that, currently only the following 6 Opensmile standard feature sets are supported:
 
 - `IS09_emotion`: [The INTERSPEECH 2009 Emotion Challenge](http://mediatum.ub.tum.de/doc/980035/292947.pdf), 384 features;
 - `IS10_paraling`: [The INTERSPEECH 2010 Paralinguistic Challenge](https://sail.usc.edu/publications/files/schuller2010_interspeech.pdf), 1582 features;
@@ -106,13 +106,13 @@ About Opensmile standard feature sets, currently only following 6 feature sets a
 - `IS13_ComParE`: [The INTERSPEECH 2013 ComParE Challenge](http://www.dcs.gla.ac.uk/~vincia/papers/compare.pdf), 6373 features;
 - `ComParE_2016`: [The INTERSPEECH 2016 Computational Paralinguistics Challenge](http://www.tangsoo.de/documents/Publications/Schuller16-TI2.pdf), 6373 features.
 
-You should modify `FEATURE_NUM` parameter if you need to use other feature sets.
+You may should modify item  `FEATURE_NUM` if you want to use other feature sets.
 
 &nbsp;
 
 ### Preprocess
 
-First of all, you should extract features of each audio in dataset and store them locally. Features extracted by Opensmile will be save in `.csv` files and by librosa will be save in `.p` files.
+First of all, you should extract features of each audio in dataset and store them locally. Features extracted by Opensmile will be saved in `.csv` files and by librosa will be saved in `.p` files.
 
 | Long option | Option | Description                                                  |
 | ----------- | ------ | ------------------------------------------------------------ |
@@ -130,7 +130,7 @@ More examples can be found in [`example.sh`](example.sh).
 
 ### Train
 
-The path of datasets can be configured in `Config.py`. Audios which express the same emotion should be put in the same folder (`File.py` can be used to organize the data), for example:
+The path of the datasets can be configured in [`config.py`](config.py). Audios which express the same emotion should be put in the same folder (you may want to refer to [`misc/files.py`](misc/files.py) when setting up datasets), for example:
 
 ```
 └── datasets
@@ -146,7 +146,7 @@ Argparse：
 | Long option    | Option | Description                                                  |
 | -------------- | ------ | ------------------------------------------------------------ |
 | `--model_type` | `-mt`  | model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
-| `--model_name` | `-mn`  | name of the model file that will be saved or loaded [ default is `default` ] |
+| `--model_name` | `-mn`  | name of the model file that will be saved [ default is `default` ] |
 | `--feature`    | `-f`   | how to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
 
 
@@ -178,12 +178,15 @@ train(model_name = "lstm", save_model_name = "LSTM", feature_method = 'l')
 
 ### Predict
 
-This is for when you have trained a model and want to predict the emotion for an audio:
+This is for when you have trained a model and want to predict the emotion for an audio. Check out [model-backup](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/model-backup) branch for some pretrained models.
+
+
+Argparse：
 
 | Long option    | Option | Description                                                  |
 | -------------- | ------ | ------------------------------------------------------------ |
 | `--model_type` | `-mt`  | model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
-| `--model_name` | `-mn`  | name of the model file which will be saved or loaded [ default is `default` ] |
+| `--model_name` | `-mn`  | name of the model file that will be loaded [ default is `default` ] |
 | `--feature`    | `-f`   | how to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
 | `--audio`      | `-a`   | path of the audio for predicting [ default is `default.wav` ] |
 
@@ -205,7 +208,7 @@ from predict import predict
 
 '''
 input params:
-	load_model_name: name of the model file which will be loaded
+	load_model_name: name of the model file you want to load
 	model_name: model type (svm / mlp / lstm)
 return:
 	model: a loaded model
@@ -216,10 +219,10 @@ model = load_model(load_model_name = "LSTM", model_name = "lstm")
 input params:
 	model: a loaded model
 	model_name: model type (svm / mlp / lstm)
-	file_path: path of audio which will be predicted
+	file_path: path of the audio you want to predict
 	feature_method: how to extract features ('o': Opensmile / 'l': librosa)
 return: 
-	predict results along with probabilities
+	predicted results along with probabilities
 '''
 predict(model, model_name = "lstm", file_path = 'test/angry.wav', feature_method = 'l')
 ```
@@ -237,10 +240,10 @@ Plot a radar chart for demonstrating predicted probabilities.
 Source: [Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
 ```python
-from Utils import Radar
+from misc.utils import Radar
 '''
 Input:
-    data_prob: probability
+    data_prob: probabilities
 '''
 Radar(result_prob)
 ```
@@ -249,10 +252,8 @@ Radar(result_prob)
 
 #### Play Audio
 
-Play an audio file.
-
 ```python
-from Utils import playAudio
+from misc.utils import playAudio
 playAudio(file_path)
 ```
 
@@ -263,7 +264,7 @@ playAudio(file_path)
 Plot loss curve or accuracy curve.
 
 ```python
-from Utils import plotCurve
+from misc.utils import plotCurve
 '''
 Input:
     train(list): loss or accuracy on train set
@@ -278,10 +279,10 @@ plotCurve(train, val, title, y_label)
 
 #### Waveform
 
-Plot a waveform of an audio.
+Plot a waveform for an audio file.
 
 ```python
-from Utils import Waveform
+from misc.utils import Waveform
 Waveform(file_path)
 ```
 
@@ -289,7 +290,7 @@ Waveform(file_path)
 
 #### Spectrogram
 
-Plot a spectrogram of an audio.
+Plot a spectrogram for an audio file.
 
 ```python
 from Utils import Spectrogram

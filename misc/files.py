@@ -2,7 +2,7 @@
 
 import os, shutil
 
-DATA_PATH = "/Users/zou/Desktop/CASIA"
+DATA_PATH = "/Users/zou/datasets/CASIA/6"
 
 # 批量删除指定路径下所有非.wav文件
 def remove(file_path):
@@ -25,7 +25,7 @@ def rename(file_path):
 				emotion_name = root.split('/')[-1]
 				item_name = item[:-4] # 音频原名（去掉.wav）
 				old_path = os.path.join(root, item)
-				new_path = os.path.join(root, item_name + '-' + emotion_name + '-'+ people_name + '.wav') # 新音频地址
+				new_path = os.path.join(root, item_name + '-' + emotion_name + '-'+ people_name + '.wav') # 新音频路径
 				try:
 					os.rename(old_path, new_path)
 					print('converting ', old_path, ' to ', new_path)

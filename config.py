@@ -27,7 +27,7 @@ class config:
     }
 
     # 特征存储路径
-    FEATURE_PATH = 'files/features/6-category/'
+    FEATURE_PATH = 'features/6-category/'
     # 训练特征存储路径（Opensmile）
     TRAIN_FEATURE_PATH_OPENSMILE = FEATURE_PATH + 'train_opensmile_casia.csv'
     # 预测特征存储路径（Opensmile）
@@ -38,4 +38,4 @@ class config:
     PREDICT_FEATURE_PATH_LIBROSA = FEATURE_PATH + 'test_librosa_casia.p'
 
     # 模型存储路径
-    MODEL_PATH = 'files/models/'
+    MODEL_PATH = 'checkpoints/'

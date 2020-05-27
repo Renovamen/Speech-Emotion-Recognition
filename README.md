@@ -19,20 +19,18 @@ Keras 2.2.4
 ## Structure
 
 ```
-├── models                 // 模型实现
+├── models/                // 模型实现
 │   ├── common.py          // 所有模型的通用部分（即所有模型都会继承这个类）
 │   ├── dnn.py             // LSTM
 │   └── ml.py              // SVM & MLP
-├── extract_feats          // 特征提取
+├── extract_feats/         // 特征提取
 │   ├── librosa.py         // librosa 提取特征
 │   └── opensmile.py       // Opensmile 提取特征
-├── misc
+├── misc/
 │   ├── files.py           // 用于整理数据集（分类、批量重命名）
 │   ├── opts.py            // 使用 argparse 从命令行读入参数
 │   └── utils.py           // 加载模型、绘图（雷达图、频谱图、波形图）
-├── files
-│   ├── features           // 存储提取好的特征
-│   └── models             // 存储训练好的模型
+├── features/              // 存储提取好的特征
 ├── config.py              // 配置参数
 ├── train.py               // 训练模型
 ├── predict.py             // 用训练好的模型预测指定音频的情感
@@ -131,7 +129,7 @@ python preprocess.py -f 'o'
 
 ### Train
 
-数据集路径可以在 `config.py` 中配置，相同情感的音频放在同一个文件夹里（可以考虑使用 `misc/files.py` 整理数据），如：
+数据集路径可以在 `config.py` 中配置，相同情感的音频放在同一个文件夹里（可以参考 [`misc/files.py`](misc/files.py) 整理数据），如：
 
 ```
 └── datasets
@@ -142,12 +140,13 @@ python preprocess.py -f 'o'
 ```
 
 &nbsp;
+
 命令行参数：
 
 | Long option    | Option | Description                                                  |
 | -------------- | ------ | ------------------------------------------------------------ |
 | `--model_type` | `-mt`  | 模型种类 [ `svm` / `mlp` / `lstm` ] [ 默认：`svm` ]          |
-| `--model_name` | `-mn`  | 要保存或加载的模型文件名 [ 默认：`default` ]                 |
+| `--model_name` | `-mn`  | 要保存的模型文件名 [ 默认：`default` ]                 |
 | `--feature`    | `-f`   | 提取特征的方式 [ `o`：Opensmile / `l`：librosa ] [ 默认：`o` ] |
 
 
@@ -174,16 +173,19 @@ input params:
 train(model_name = "lstm", save_model_name = "LSTM", feature_method = 'l')
 ```
 
+
 &nbsp;
 
 ### Predict
 
-用训练好的模型来预测给定音频的情感：
+用训练好的模型来预测指定音频的情感。[model-backup](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/model-backup) 分支备份了一些已经训练好的模型。
+
+命令行参数：
 
 | Long option    | Option | Description                                                  |
 | -------------- | ------ | ------------------------------------------------------------ |
 | `--model_type` | `-mt`  | 模型种类 [ `svm` / `mlp` / `lstm` ] [ 默认：`svm` ]          |
-| `--model_name` | `-mn`  | 要保存或加载的模型文件名 [ 默认：`default` ]                 |
+| `--model_name` | `-mn`  | 要加载的模型文件名 [ 默认：`default` ]                 |
 | `--feature`    | `-f`   | 提取特征的方式 [ `o`：Opensmile / `l`：librosa ] [ 默认：`o` ] |
 | `--audio`      | `-a`   | 要预测的音频的路径 [ 默认：`default.wav` ]                   |
 
