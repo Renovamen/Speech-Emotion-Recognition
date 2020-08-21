@@ -23,9 +23,9 @@ Keras 2.2.4
 │   ├── common.py          // common part for all models
 │   ├── dnn                // neural networks
 │   │   ├── dnn.py         // common part for all neural networks models
-│   │   ├── cnn.py				 // CNN
+│   │   ├── cnn.py         // CNN
 │   │   └── lstm.py        // LSTM
-├── extract_feats/				 // features extraction
+├── extract_feats/         // features extraction
 │   ├── librosa.py         // extract features using librosa
 │   └── opensmile.py       // extract features using Opensmile
 ├── utils/

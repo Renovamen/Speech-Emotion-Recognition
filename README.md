@@ -23,7 +23,7 @@ Keras 2.2.4
 │   ├── common.py          // 所有模型的通用部分（即所有模型都会继承这个类）
 │   ├── dnn                // 神经网络模型
 │   │   ├── dnn.py         // 神经网络的通用部分
-│   │   ├── cnn.py				 // CNN
+│   │   ├── cnn.py         // CNN
 │   │   └── lstm.py        // LSTM
 │   └── ml.py              // SVM & MLP
 ├── extract_feats/         // 特征提取
