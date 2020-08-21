@@ -2,7 +2,7 @@
 
 import os, shutil
 
-DATA_PATH = "/Users/zou/datasets/CASIA/6"
+data_path = "/Users/zou/datasets/CASIA/6"
 
 # 批量删除指定路径下所有非.wav文件
 def remove(file_path):

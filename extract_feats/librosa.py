@@ -12,8 +12,6 @@ from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from config import config
-
 
 def features(X, sample_rate):
 
@@ -110,11 +108,12 @@ get_data_path(): 获取所有音频的路径
 
 输入:
     data_path: 数据集文件夹路径
+    class_labels(list): 情感标签
 输出:
     所有音频的路径
 '''
 
-def get_data_path(data_path: str):
+def get_data_path(data_path: str, class_labels):
 
     wav_file_path = []
 
@@ -123,7 +122,7 @@ def get_data_path(data_path: str):
     os.chdir(data_path)
 
     # 遍历文件夹
-    for _, directory in enumerate(config.CLASS_LABELS):
+    for _, directory in enumerate(class_labels):
         os.chdir(directory)
 
         # 读取该文件夹下的音频
@@ -144,6 +143,7 @@ def get_data_path(data_path: str):
 load_feature(): 从 csv 加载特征数据
 
 输入:
+    config(Class)
     feature_path: 特征文件路径
     train: 是否为训练数据
 
@@ -151,7 +151,7 @@ load_feature(): 从 csv 加载特征数据
     训练数据、测试数据和对应的标签
 '''
 
-def load_feature(feature_path: str, train: bool):
+def load_feature(config, feature_path: str, train: bool):
 
     features = pd.DataFrame(data = joblib.load(feature_path), columns = ['file_name', 'features', 'emotion'])
 
@@ -162,7 +162,7 @@ def load_feature(feature_path: str, train: bool):
         # 标准化数据 
         scaler = StandardScaler().fit(X)
         # 保存标准化模型
-        joblib.dump(scaler, config.MODEL_PATH + 'SCALER_LIBROSA.m')
+        joblib.dump(scaler, config.checkpoint_path + 'SCALER_LIBROSA.m')
         X = scaler.transform(X)
 
         x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size = 0.2, random_state = 42)
@@ -171,7 +171,7 @@ def load_feature(feature_path: str, train: bool):
     else:
         # 标准化数据
         # 加载标准化模型
-        scaler = joblib.load(config.MODEL_PATH + 'SCALER_LIBROSA.m')
+        scaler = joblib.load(config.checkpoint_path + 'SCALER_LIBROSA.m')
         X = scaler.transform(X)
         return X
 
@@ -181,7 +181,8 @@ get_data():
     提取所有音频的特征: 遍历所有文件夹, 读取每个文件夹中的音频, 提取每个音频的特征，把所有特征保存在 feature_path 中
 
 输入:
-    data_path: 数据集文件夹路径
+    config(Class)
+    data_path: 数据集文件夹/测试文件路径
     feature_path: 保存特征的路径
     train: 是否为训练数据
 
@@ -189,10 +190,10 @@ get_data():
     train = True: 训练数据、测试数据特征和对应的标签
     train = False: 预测数据特征
 '''
-def get_data(data_path: str, feature_path: str, train: bool):
+def get_data(config, data_path: str, feature_path: str, train: bool):
     
     if(train == True):
-        files = get_data_path(data_path)
+        files = get_data_path(data_path, config.class_labels)
         max_, min_ = get_max_min(files)
 
         mfcc_data = []
@@ -208,7 +209,7 @@ def get_data(data_path: str, feature_path: str, train: bool):
             #     label = "positive"
 
             features = extract_features(file, max_)
-            mfcc_data.append([file, features, config.CLASS_LABELS.index(label)])
+            mfcc_data.append([file, features, config.class_labels.index(label)])
 
     else:
         features = extract_features(data_path)
@@ -219,4 +220,4 @@ def get_data(data_path: str, feature_path: str, train: bool):
     mfcc_pd = pd.DataFrame(data = mfcc_data, columns = cols)
     pickle.dump(mfcc_data, open(feature_path, 'wb'))
     
-    return load_feature(feature_path, train = train)
+    return load_feature(config, feature_path, train = train)

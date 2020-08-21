@@ -1,0 +1,25 @@
+model: svm
+
+# 数据集
+data_path: datasets/CASIA  # 数据集路径
+class_labels: ["angry", "fear", "happy", "neutral", "sad", "surprise"]  # 情感标签
+# class_labels: ["positive", "negative", "neutral"]
+# class_labels: ["angry", "boredom", "disgust", "fear", "happy", "neutral", "sad"]
+
+# 特征存储
+feature_path: features/6-category/  # 特征存储路径
+train_feature_path_opensmile: features/6-category/train_opensmile_casia.csv  # 训练特征存储路径（Opensmile）
+predict_feature_path_opensmile: features/6-category/test_opensmile_casia.csv  # 预测特征存储路径（Opensmile）
+train_feature_path_librosa: features/6-category/train_librosa_casia.p  # 训练特征存储路径（librosa）
+predict_feature_path_librosa: features/6-category/test_librosa_casia.p  # 预测特征存储路径（librosa）
+
+# 特征提取方式
+feature_method: o  # 'o': opensmile, 'l': librosa
+
+# Opensmile 配置，只在 'feature_method: o' 时 需要设置
+opensmile_config: IS10_paraling  # Opensmile 标准特征集
+opensmile_path: /Users/zou/opensmile-2.3.0  # Opensmile 安装路径
+
+# checkpoints
+checkpoint_path: checkpoints/  # checkpoint 存储路径
+checkpoint_name: SVM_OPENSMILE_IS10  # checkpoint 文件名

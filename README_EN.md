@@ -26,10 +26,10 @@ Keras 2.2.4
 ├── extract_feats/
 │   ├── librosa.py         // extract features using librosa
 │   └── opensmile.py       // extract features using Opensmile
-├── misc/
+├── utils/
 │   ├── files.py           // setup dataset (classify and rename)
 │   ├── opts.py            // use argparse to get args from command line
-│   └── utils.py           // load models, plot graphs
+│   └── common.py          // load models, plot graphs
 ├── features/              // store extracted features
 ├── config.py              // configure parameters
 ├── train.py               // train
@@ -106,7 +106,7 @@ It should be noted that, currently only the following 6 Opensmile standard featu
 - `IS13_ComParE`: [The INTERSPEECH 2013 ComParE Challenge](http://www.dcs.gla.ac.uk/~vincia/papers/compare.pdf), 6373 features;
 - `ComParE_2016`: [The INTERSPEECH 2016 Computational Paralinguistics Challenge](http://www.tangsoo.de/documents/Publications/Schuller16-TI2.pdf), 6373 features.
 
-You may should modify item  `FEATURE_NUM` if you want to use other feature sets.
+You may should modify item `FEATURE_NUM` in [`extract_feats/opensmile.py`](extract_feats/opensmile.py) if you want to use other feature sets.
 
 &nbsp;
 
@@ -130,7 +130,7 @@ More examples can be found in [`example.sh`](example.sh).
 
 ### Train
 
-The path of the datasets can be configured in [`config.py`](config.py). Audios which express the same emotion should be put in the same folder (you may want to refer to [`misc/files.py`](misc/files.py) when setting up datasets), for example:
+The path of the datasets can be configured in [`config.py`](config.py). Audios which express the same emotion should be put in the same folder (you may want to refer to [`utils/files.py`](utils/files.py) when setting up datasets), for example:
 
 ```
 └── datasets
@@ -204,7 +204,7 @@ More examples can be found in [`example.sh`](example.sh).
 If you don't want to set parameters via command line:
 
 ```python
-from misc.utils import load_model
+from utils.common import load_model
 from predict import predict
 
 '''
@@ -241,7 +241,7 @@ Plot a radar chart for demonstrating predicted probabilities.
 Source: [Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
 ```python
-from misc.utils import Radar
+from utils.common import Radar
 '''
 Input:
     data_prob: probabilities
@@ -254,7 +254,7 @@ Radar(result_prob)
 #### Play Audio
 
 ```python
-from misc.utils import playAudio
+from utils.common import playAudio
 playAudio(file_path)
 ```
 
@@ -265,7 +265,7 @@ playAudio(file_path)
 Plot loss curve or accuracy curve.
 
 ```python
-from misc.utils import plotCurve
+from utils.common import plotCurve
 '''
 Input:
     train(list): loss or accuracy on train set
@@ -283,7 +283,7 @@ plotCurve(train, val, title, y_label)
 Plot a waveform for an audio file.
 
 ```python
-from misc.utils import Waveform
+from utils.common import Waveform
 Waveform(file_path)
 ```
 

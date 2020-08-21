@@ -36,7 +36,6 @@ class Common_Model(object):
     def predict(self, samples):
         raise NotImplementedError()
         
-
     '''
     predict_proba(): 音频的情感的置信概率
 
@@ -53,7 +52,7 @@ class Common_Model(object):
         return self.model.predict_proba(samples)
 
     '''
-    save_model(): 将模型以 model_name 命名存储在 config.MODEL_PATH 路径下
+    save_model(): 将模型以 model_name 命名存储在 config.checkpoint_path 路径下
     '''
     def save_model(self, model_name: str):
         raise NotImplementedError()
@@ -70,7 +69,7 @@ class Common_Model(object):
         predictions = self.predict(x_test)
         print(y_test)
         print(predictions)
-        print('Accuracy:%.3f\n' % accuracy_score(y_pred = predictions, y_true = y_test))
+        print('Accuracy: %.3f\n' % accuracy_score(y_pred = predictions, y_true = y_test))
  
         '''
         predictions = self.predict(x_test)

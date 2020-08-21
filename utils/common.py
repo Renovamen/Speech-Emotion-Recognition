@@ -6,28 +6,25 @@ from sklearn.externals import joblib
 import librosa
 import librosa.display
 import scipy.io.wavfile as wav
-import pyaudio
 import wave
-
-from config import config
 
 '''
 load_model(): 
     加载模型
 
 输入:
-    load_model_name(str): 要加载的模型的文件名
+    checkpoint_path(str): checkpoint 路径
+    checkpoint_name(str): checkpoint 文件名
     model_name(str): 模型名称
 
 输出:
     model: 加载好的模型
 '''
-def load_model(load_model_name: str, model_name: str):
+def load_model(checkpoint_path: str, checkpoint_name: str, model_name: str):
     
-    if(model_name == 'lstm'):
-        # 加载json
-        model_path = config.MODEL_PATH + load_model_name + '.h5'
-        model_json_path = config.MODEL_PATH + load_model_name + '.json'
+    if model_name in ['lstm', 'cnn1d', 'cnn2d']:
+        # 加载 json
+        model_json_path = checkpoint_path + checkpoint_name + '.json'
         
         json_file = open(model_json_path, 'r')
         loaded_model_json = json_file.read()
@@ -35,10 +32,11 @@ def load_model(load_model_name: str, model_name: str):
         model = model_from_json(loaded_model_json)
 
         # 加载权重
+        model_path = checkpoint_path + checkpoint_name + '.h5'
         model.load_weights(model_path)
     
-    elif(model_name == 'svm' or model_name == 'mlp'):
-        model_path = config.MODEL_PATH + load_model_name + '.m'
+    else:
+        model_path = checkpoint_path + checkpoint_name + '.m'
         model = joblib.load(model_path)
 
     return model
@@ -70,7 +68,7 @@ play_audio(): 播放语音
     file_path(str): 要播放的音频路径
 '''
 def play_audio(file_path: str):
-    # 语音播放
+    import pyaudio
     p = pyaudio.PyAudio()
     f = wave.open(file_path, 'rb')
     stream = p.open(format = p.get_format_from_width(f.getsampwidth()),
@@ -89,10 +87,11 @@ Radar(): 置信概率雷达图
 
 输入:
     data_prob(numpy.ndarray): 概率数组
+    class_labels(list): 情感标签
 '''
-def Radar(data_prob):
+def Radar(data_prob, class_labels):
 
-    angles = np.linspace(0, 2 * np.pi, len(config.CLASS_LABELS), endpoint = False)
+    angles = np.linspace(0, 2 * np.pi, len(class_labels), endpoint = False)
     data = np.concatenate((data_prob, [data_prob[0]]))  # 闭合
     angles = np.concatenate((angles, [angles[0]]))  # 闭合
 
@@ -102,7 +101,7 @@ def Radar(data_prob):
     ax = fig.add_subplot(111, polar = True)
     ax.plot(angles, data, 'bo-', linewidth=2)
     ax.fill(angles, data, facecolor='r', alpha=0.25)
-    ax.set_thetagrids(angles * 180 / np.pi, config.CLASS_LABELS)
+    ax.set_thetagrids(angles * 180 / np.pi, class_labels)
     ax.set_title("Emotion Recognition", va = 'bottom')
 
     # 设置雷达图的数据最大值

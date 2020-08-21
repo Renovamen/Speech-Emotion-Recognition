@@ -1,4 +1,6 @@
 datasets/
+checkpoints/
+test/
 
 # Editors
 .vscode/

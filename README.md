@@ -21,21 +21,23 @@ Keras 2.2.4
 ```
 ├── models/                // 模型实现
 │   ├── common.py          // 所有模型的通用部分（即所有模型都会继承这个类）
-│   ├── dnn.py             // LSTM
+│   ├── dnn                // LSTM
+│   │   ├── dnn.py         // 神经网络的通用部分
+│   │   ├── cnn.py
+│   │   └── lstm.py
 │   └── ml.py              // SVM & MLP
 ├── extract_feats/         // 特征提取
 │   ├── librosa.py         // librosa 提取特征
 │   └── opensmile.py       // Opensmile 提取特征
-├── misc/
+├── utils/
 │   ├── files.py           // 用于整理数据集（分类、批量重命名）
 │   ├── opts.py            // 使用 argparse 从命令行读入参数
-│   └── utils.py           // 加载模型、绘图（雷达图、频谱图、波形图）
+│   └── common.py          // 加载模型、绘图（雷达图、频谱图、波形图）
 ├── features/              // 存储提取好的特征
-├── config.py              // 配置参数
+├── config/                // 配置参数
 ├── train.py               // 训练模型
 ├── predict.py             // 用训练好的模型预测指定音频的情感
-├── preprocess.py          // 数据预处理（提取数据集中音频的特征并保存）
-└── example.sh             // 命令行输入样例
+└── preprocess.py          // 数据预处理（提取数据集中音频的特征并保存）
 ```
 
 &nbsp;
@@ -106,7 +108,7 @@ pip install -r requirements.txt
 - `IS13_ComParE`：[The INTERSPEECH 2013 ComParE Challenge](http://www.dcs.gla.ac.uk/~vincia/papers/compare.pdf)，6373 个特征；
 - `ComParE_2016`：[The INTERSPEECH 2016 Computational Paralinguistics Challenge](http://www.tangsoo.de/documents/Publications/Schuller16-TI2.pdf)，6373 个特征。
 
-如果需要用其他特征集，可以自行修改 `FEATURE_NUM` 参数。
+如果需要用其他特征集，可以自行修改 [`extract_feats/opensmile.py`](extract_feats/opensmile.py) 中的 `FEATURE_NUM` 参数。
 
 &nbsp;
 
@@ -129,7 +131,7 @@ python preprocess.py -f 'o'
 
 ### Train
 
-数据集路径可以在 `config.py` 中配置，相同情感的音频放在同一个文件夹里（可以参考 [`misc/files.py`](misc/files.py) 整理数据），如：
+数据集路径可以在 `config.py` 中配置，相同情感的音频放在同一个文件夹里（可以参考 [`utils/files.py`](utils/files.py) 整理数据），如：
 
 ```
 └── datasets
@@ -201,7 +203,7 @@ python predict.py -mt 'svm' -mn 'SVM' -f 'o' -a 'test/happy.wav'
 如果不想命令行输入，可以：
 
 ```python
-from misc.utils import load_model
+from utils.common import load_model
 from predict import predict
 
 '''
@@ -235,7 +237,7 @@ predict(model, model_name = "lstm", file_path = 'test/angry.wav', feature_method
 来源：[Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
 ```python
-from misc.utils import Radar
+from utils.common import Radar
 '''
 输入:
     data_prob: 概率数组
@@ -250,7 +252,7 @@ Radar(result_prob)
 播放一段音频
 
 ```python
-from misc.utils import playAudio
+from utils.common import playAudio
 playAudio(file_path)
 ```
 
@@ -261,7 +263,7 @@ playAudio(file_path)
 画训练过程的准确率曲线和损失曲线。
 
 ```python
-from misc.utils import plotCurve
+from utils.common import plotCurve
 '''
 输入:
     train(list): 训练集损失值或准确率数组
@@ -279,7 +281,7 @@ plotCurve(train, val, title, y_label)
 画出音频的波形图。
 
 ```python
-from misc.utils import Waveform
+from utils.common import Waveform
 Waveform(file_path)
 ```
 
@@ -290,7 +292,7 @@ Waveform(file_path)
 画出音频的频谱图。
 
 ```python
-from misc.utils import Spectrogram
+from utils.common import Spectrogram
 Spectrogram(file_path)
 ```
 
