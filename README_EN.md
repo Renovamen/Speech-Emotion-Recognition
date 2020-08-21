@@ -1,6 +1,6 @@
 # Speech Emotion Recognition 
 
-Speech emotion recognition using LSTM, SVM and MLP, implemented in Keras.
+Speech emotion recognition using LSTM, CNN, SVM and MLP, implemented in Keras.
 
 We have improved the feature extracting method and achieved higher accuracy (about 80%). The original version is backed up under [First-Version](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/First-Version) branch.
 
@@ -19,23 +19,24 @@ Keras 2.2.4
 ## Structure
 
 ```
-├── models/                // model implementations
-│   ├── common.py          // common part of all models
-│   ├── dnn.py             // LSTM
-│   └── ml.py              // SVM & MLP
-├── extract_feats/
+├── models/                // models
+│   ├── common.py          // common part for all models
+│   ├── dnn                // neural networks
+│   │   ├── dnn.py         // common part for all neural networks models
+│   │   ├── cnn.py				 // CNN
+│   │   └── lstm.py        // LSTM
+├── extract_feats/				 // features extraction
 │   ├── librosa.py         // extract features using librosa
 │   └── opensmile.py       // extract features using Opensmile
 ├── utils/
 │   ├── files.py           // setup dataset (classify and rename)
-│   ├── opts.py            // use argparse to get args from command line
+│   ├── opts.py            // argparse
 │   └── common.py          // load models, plot graphs
 ├── features/              // store extracted features
 ├── config.py              // configure parameters
 ├── train.py               // train
 ├── predict.py             // recognize the emotion of a given audio
-├── preprocess.py          // data preprocessing (extract features and store them locally)
-└── example.sh             // examples of command line inputs
+└── preprocess.py          // data preprocessing (extract features and store them locally)
 ```
 
 &nbsp;
@@ -46,16 +47,16 @@ Keras 2.2.4
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn): SVM & MLP, split data into training set and testing set
 - [Keras](https://github.com/keras-team/keras): LSTM
-- [TensorFlow](https://github.com/tensorflow/tensorflow): Backend of Keras
-- [librosa](https://github.com/librosa/librosa): Extract features, waveform
-- [SciPy](https://github.com/scipy/scipy): Spectrogram
+- [TensorFlow](https://github.com/tensorflow/tensorflow): backend of Keras
+- [librosa](https://github.com/librosa/librosa): extract features, waveform
+- [SciPy](https://github.com/scipy/scipy): spectrogram
 - [pandas](https://github.com/pandas-dev/pandas): Load features
-- [Matplotlib](https://github.com/matplotlib/matplotlib): Plot graphs
+- [Matplotlib](https://github.com/matplotlib/matplotlib): plot graphs
 - [numpy](github.com/numpy/numpy)
 
 ### Tools
 
-- [Opensmile](https://github.com/naxingyu/opensmile): Extract features
+- [Opensmile](https://github.com/naxingyu/opensmile): extract features
 
 &nbsp;
 
@@ -95,7 +96,7 @@ Install [Opensmile](https://github.com/naxingyu/opensmile).
 
 ### Configuration
 
-Parameters can be configured in [`config.py`](config.py).
+Parameters can be configured in the config files (YAML) under [`configs/`](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/master/configs).
 
 It should be noted that, currently only the following 6 Opensmile standard feature sets are supported:
 
@@ -114,17 +115,11 @@ You may should modify item `FEATURE_NUM` in [`extract_feats/opensmile.py`](extra
 
 First of all, you should extract features of each audio in dataset and store them locally. Features extracted by Opensmile will be saved in `.csv` files and by librosa will be saved in `.p` files.
 
-| Long option | Option | Description                                                  |
-| ----------- | ------ | ------------------------------------------------------------ |
-| `--feature` | `-f`   | ow to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
-
-Example:
-
 ```python
-python preprocess.py -f 'o'
+python preprocess.py --config configs/example.yaml
 ```
 
-More examples can be found in [`example.sh`](example.sh).
+where `configs/test.yaml` is the path to your config file
 
 &nbsp;
 
@@ -140,95 +135,30 @@ The path of the datasets can be configured in [`config.py`](config.py). Audios w
     ...
 ```
 
-&nbsp;
 
-Argparse：
-
-| Long option    | Option | Description                                                  |
-| -------------- | ------ | ------------------------------------------------------------ |
-| `--model_type` | `-mt`  | model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
-| `--model_name` | `-mn`  | name of the model file that will be saved [ default is `default` ] |
-| `--feature`    | `-f`   | how to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
-
-
-Example：
+Then:
 
 ```python
-python train.py -mt 'svm' -mn 'SVM' -f 'o'
-```
-
-More examples can be found in [`example.sh`](example.sh).
-
-&nbsp;
-
-If you don't want to set parameters via command line:
-
-```python
-from train import train
-
-'''
-input params:
-	model_name: model type (svm / mlp / lstm)
-	save_model_name: name of the model file
-	feature_method: how to extract features ('o': Opensmile / 'l': librosa)
-'''
-train(model_name = "lstm", save_model_name = "LSTM", feature_method = 'l')
+python train.py --config configs/example.yaml
 ```
 
 &nbsp;
 
 ### Predict
 
-This is for when you have trained a model and want to predict the emotion for an audio. Check out [model-backup branch](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/model-backup) or [release page](https://github.com/Renovamen/Speech-Emotion-Recognition/releases) for some pretrained models.
+This is for when you have trained a model and want to predict the emotion for an audio. Check out [checkpoints branch](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/checkpoints) or [release page](https://github.com/Renovamen/Speech-Emotion-Recognition/releases) for some checkpoints.
 
-
-Argparse：
-
-| Long option    | Option | Description                                                  |
-| -------------- | ------ | ------------------------------------------------------------ |
-| `--model_type` | `-mt`  | model type [ `svm` / `mlp` / `lstm` ] [ default is `svm` ]   |
-| `--model_name` | `-mn`  | name of the model file that will be loaded [ default is `default` ] |
-| `--feature`    | `-f`   | how to extract features [ `o`: Opensmile / `l`: librosa ] [ default is `o` ] |
-| `--audio`      | `-a`   | path of the audio for predicting [ default is `default.wav` ] |
-
-Example:
+First modify following things in [`predict.py`](predict.py):
 
 ```python
-python predict.py -mt 'svm' -mn 'SVM' -f 'o' -a 'test/happy.wav'
+audio_path = 'str: path_to_your_audio'
 ```
 
-More examples can be found in [`example.sh`](example.sh).
-
-&nbsp;
-
-If you don't want to set parameters via command line:
+Then:
 
 ```python
-from utils.common import load_model
-from predict import predict
-
-'''
-input params:
-	load_model_name: name of the model file you want to load
-	model_name: model type (svm / mlp / lstm)
-return:
-	model: a loaded model
-'''
-model = load_model(load_model_name = "LSTM", model_name = "lstm")
-
-'''
-input params:
-	model: a loaded model
-	model_name: model type (svm / mlp / lstm)
-	file_path: path of the audio you want to predict
-	feature_method: how to extract features ('o': Opensmile / 'l': librosa)
-return: 
-	predicted results along with probabilities
-'''
-predict(model, model_name = "lstm", file_path = 'test/angry.wav', feature_method = 'l')
+python predict.py --config configs/example.yaml
 ```
-
-
 
 &nbsp;
 
@@ -245,8 +175,9 @@ from utils.common import Radar
 '''
 Input:
     data_prob: probabilities
+    class_labels: labels
 '''
-Radar(result_prob)
+Radar(data_prob, class_labels)
 ```
 
 &nbsp;

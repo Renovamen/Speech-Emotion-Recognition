@@ -1,6 +1,6 @@
 # Speech Emotion Recognition 
 
-用 SVM、MLP、LSTM 进行语音情感识别，Keras 实现。
+用 LSTM、CNN、SVM、MLP 进行语音情感识别，Keras 实现。
 
 改进了特征提取方式，识别准确率提高到了 80% 左右。原来的版本的存档在 [First-Version 分支](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/First-Version)。
 
@@ -21,10 +21,10 @@ Keras 2.2.4
 ```
 ├── models/                // 模型实现
 │   ├── common.py          // 所有模型的通用部分（即所有模型都会继承这个类）
-│   ├── dnn                // LSTM
+│   ├── dnn                // 神经网络模型
 │   │   ├── dnn.py         // 神经网络的通用部分
-│   │   ├── cnn.py
-│   │   └── lstm.py
+│   │   ├── cnn.py				 // CNN
+│   │   └── lstm.py        // LSTM
 │   └── ml.py              // SVM & MLP
 ├── extract_feats/         // 特征提取
 │   ├── librosa.py         // librosa 提取特征
@@ -34,7 +34,7 @@ Keras 2.2.4
 │   ├── opts.py            // 使用 argparse 从命令行读入参数
 │   └── common.py          // 加载模型、绘图（雷达图、频谱图、波形图）
 ├── features/              // 存储提取好的特征
-├── config/                // 配置参数
+├── config/                // 配置参数（.yaml）
 ├── train.py               // 训练模型
 ├── predict.py             // 用训练好的模型预测指定音频的情感
 └── preprocess.py          // 数据预处理（提取数据集中音频的特征并保存）
@@ -47,7 +47,7 @@ Keras 2.2.4
 ### Python
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
-- [Keras](https://github.com/keras-team/keras)：LSTM
+- [Keras](https://github.com/keras-team/keras)：LSTM、CNN
 - [TensorFlow](https://github.com/tensorflow/tensorflow)：Keras 的后端
 - [librosa](https://github.com/librosa/librosa)：提取特征、波形图
 - [SciPy](https://github.com/scipy/scipy)：频谱图
@@ -97,7 +97,7 @@ pip install -r requirements.txt
 
 ### Configuration
 
-在 [`config.py`](config.py) 中配置参数。
+在 [`configs/`](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/master/configs) 文件夹中的配置文件（YAML）里配置参数。
 
 其中 Opensmile 标准特征集目前只支持：
 
@@ -108,7 +108,7 @@ pip install -r requirements.txt
 - `IS13_ComParE`：[The INTERSPEECH 2013 ComParE Challenge](http://www.dcs.gla.ac.uk/~vincia/papers/compare.pdf)，6373 个特征；
 - `ComParE_2016`：[The INTERSPEECH 2016 Computational Paralinguistics Challenge](http://www.tangsoo.de/documents/Publications/Schuller16-TI2.pdf)，6373 个特征。
 
-如果需要用其他特征集，可以自行修改 [`extract_feats/opensmile.py`](extract_feats/opensmile.py) 中的 `FEATURE_NUM` 参数。
+如果需要用其他特征集，可以自行修改 [`extract_feats/opensmile.py`](extract_feats/opensmile.py) 中的 `FEATURE_NUM` 项。
 
 &nbsp;
 
@@ -116,22 +116,16 @@ pip install -r requirements.txt
 
 首先需要提取数据集中音频的特征并保存到本地。Opensmile 提取的特征会被保存在 `.csv` 文件中，librosa 提取的特征会被保存在 `.p` 文件中。
 
-| Long option    | Option | Description                                                  |
-| -------------- | ------ | ------------------------------------------------------------ |
-| `--feature`    | `-f`   | 提取特征的方式 [ `o`：Opensmile / `l`：librosa ] [ 默认：`o` ] |
-
-例子：
-
 ```python
-python preprocess.py -f 'o'
+python preprocess.py --config configs/example.yaml
 ```
-[`example.sh`](example.sh) 中有更多的例子。
+其中，`configs/example.yaml` 是你的配置文件路径。
 
 &nbsp;
 
 ### Train
 
-数据集路径可以在 `config.py` 中配置，相同情感的音频放在同一个文件夹里（可以参考 [`utils/files.py`](utils/files.py) 整理数据），如：
+数据集路径可以在 [`configs/`](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/master/configs) 中配置，相同情感的音频放在同一个文件夹里（可以参考 [`utils/files.py`](utils/files.py) 整理数据），如：
 
 ```
 └── datasets
@@ -141,92 +135,21 @@ python preprocess.py -f 'o'
     ...
 ```
 
-&nbsp;
-
-命令行参数：
-
-| Long option    | Option | Description                                                  |
-| -------------- | ------ | ------------------------------------------------------------ |
-| `--model_type` | `-mt`  | 模型种类 [ `svm` / `mlp` / `lstm` ] [ 默认：`svm` ]          |
-| `--model_name` | `-mn`  | 要保存的模型文件名 [ 默认：`default` ]                 |
-| `--feature`    | `-f`   | 提取特征的方式 [ `o`：Opensmile / `l`：librosa ] [ 默认：`o` ] |
-
-
-例子：
+然后：
 
 ```python
-python train.py -mt 'svm' -mn 'SVM' -f 'o'
+python train.py --config configs/example.yaml
 ```
-[`example.sh`](example.sh) 中有更多的例子。
-
-&nbsp;
-
-如果不想命令行输入，可以：
-
-```python
-from train import train
-
-'''
-input params:
-	model_name: 模型名称（svm / mlp / lstm）
-	save_model_name: 保存模型的文件名
-	feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
-'''
-train(model_name = "lstm", save_model_name = "LSTM", feature_method = 'l')
-```
-
 
 &nbsp;
 
 ### Predict
 
-用训练好的模型来预测指定音频的情感。[model-backup 分支](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/model-backup)和 [release 页面](https://github.com/Renovamen/Speech-Emotion-Recognition/releases)有一些已经训练好的模型。
-
-命令行参数：
-
-| Long option    | Option | Description                                                  |
-| -------------- | ------ | ------------------------------------------------------------ |
-| `--model_type` | `-mt`  | 模型种类 [ `svm` / `mlp` / `lstm` ] [ 默认：`svm` ]          |
-| `--model_name` | `-mn`  | 要加载的模型文件名 [ 默认：`default` ]                 |
-| `--feature`    | `-f`   | 提取特征的方式 [ `o`：Opensmile / `l`：librosa ] [ 默认：`o` ] |
-| `--audio`      | `-a`   | 要预测的音频的路径 [ 默认：`default.wav` ]                   |
-
-例子：
+用训练好的模型来预测指定音频的情感。[checkpoints 分支](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/checkpoints )和 [release 页面](https://github.com/Renovamen/Speech-Emotion-Recognition/releases)有一些已经训练好的模型。
 
 ```python
-python predict.py -mt 'svm' -mn 'SVM' -f 'o' -a 'test/happy.wav'
+python predict.py --config configs/example.yaml
 ```
-[`example.sh`](example.sh) 中有更多的例子。
-
-&nbsp;
-
-如果不想命令行输入，可以：
-
-```python
-from utils.common import load_model
-from predict import predict
-
-'''
-input params:
-	load_model_name: 要加载的模型的文件名
-	model_name: 模型名称（svm / mlp / lstm）
-return:
-	model: 一个模型
-'''
-model = load_model(load_model_name = "LSTM", model_name = "lstm")
-
-'''
-input params:
-	model: 加载的模型
-	model_name: 模型名称（svm / mlp / lstm）
-	file_path: 要预测的文件路径
-	feature_method: 提取特征的方法（'o': Opensmile / 'l': librosa）
-return: 
-	预测结果和概率
-'''
-predict(model, model_name = "lstm", file_path = 'test/angry.wav', feature_method = 'l')
-```
-
 &nbsp;
 
 ### Functions
@@ -241,8 +164,9 @@ from utils.common import Radar
 '''
 输入:
     data_prob: 概率数组
+    class_labels: 情感标签
 '''
-Radar(result_prob)
+Radar(data_prob, class_labels)
 ```
 
 &nbsp;
