@@ -34,7 +34,12 @@ def train(config):
     print('----- start training', config.model, '-----')
     if config.model in ['lstm', 'cnn1d', 'cnn2d']:
         y_train, y_val = np_utils.to_categorical(y_train), np_utils.to_categorical(y_test) # 独热编码
-        model.train(x_train, y_train, x_test, y_val, n_epochs = config.epochs)
+        model.train(
+            x_train, y_train, 
+            x_test, y_val,
+            batch_size = config.batch_size,
+            n_epochs = config.epochs
+        )
     else:
         model.train(x_train, y_train)
     print('----- end training ', config.model, ' -----')

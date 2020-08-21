@@ -54,13 +54,15 @@ class DNN_Model(Common_Model):
     train(): 在给定训练集上训练模型
 
     输入:
-        x_train (numpy.ndarray): 训练集样本
-        y_train (numpy.ndarray): 训练集标签
-        x_val (numpy.ndarray): 测试集样本
-        y_val (numpy.ndarray): 测试集标签
-        n_epochs (int): epoch数
+        x_train(numpy.ndarray): 训练集样本
+        y_train(numpy.ndarray): 训练集标签
+        x_val(numpy.ndarray): 测试集样本
+        y_val(numpy.ndarray): 测试集标签
+        batch_size(int): 批大小
+        n_epochs(int): epoch 数
     '''
-    def train(self, x_train, y_train, x_val = None, y_val = None, n_epochs = 50):
+    def train(self, x_train, y_train, x_val = None, y_val = None, 
+                batch_size = 32, n_epochs = 50):
  
         if x_val is None or y_val is None:
             x_val, y_val = x_train, y_train
@@ -69,7 +71,7 @@ class DNN_Model(Common_Model):
 
         history = self.model.fit(
             x_train, y_train, 
-            batch_size = 32, 
+            batch_size = batch_size, 
             epochs = n_epochs,
             shuffle = True, # 每个 epoch 开始前随机排列训练数据
             validation_data = (x_val, y_val)
