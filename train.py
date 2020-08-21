@@ -31,13 +31,13 @@ def train(config):
     model = models.setup(config = config, n_feats = x_train.shape[1])
 
     # 训练模型
-    print('----- start training -----')
+    print('----- start training', config.model, '-----')
     if config.model in ['lstm', 'cnn1d', 'cnn2d']:
         y_train, y_val = np_utils.to_categorical(y_train), np_utils.to_categorical(y_test) # 独热编码
         model.train(x_train, y_train, x_test, y_val, n_epochs = config.epochs)
     else:
         model.train(x_train, y_train)
-    print('----- end training -----')
+    print('----- end training ', config.model, ' -----')
 
     # 验证模型
     model.evaluate(x_test, y_test)

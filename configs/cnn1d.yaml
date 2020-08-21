@@ -22,11 +22,12 @@ opensmile_path: /Users/zou/opensmile-2.3.0  # Opensmile 安装路径
 
 # checkpoints
 checkpoint_path: checkpoints/  # checkpoint 存储路径
-checkpoint_name: CNN_OPENSMILE_IS10  # checkpoint 文件名
+checkpoint_name: CNN1D_OPENSMILE_IS10  # checkpoint 文件名
 
 # 训练参数
 epochs: 20  # 训练 epoch 数
 batch_size: 32  # 批大小
+lr: 0.001  # 学习率
 
 # 模型参数
 n_kernels: 32  # 卷积核数量（每个卷积层都一样）

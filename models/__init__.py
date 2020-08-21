@@ -13,13 +13,14 @@ setup(): 创建模型
 def setup(config, n_feats):
 
     if config.model == 'svm':
-        model = SVM()
+        model = SVM(model_params = config.params)
     elif config.model == 'mlp':
-        model = MLP()
+        model = MLP(model_params = config.params)
     elif config.model == 'lstm':
         model = LSTM(
             input_shape = n_feats, 
             num_classes = len(config.class_labels),
+            lr = config.lr,
             rnn_size = config.rnn_size,
             hidden_size = config.hidden_size,
             dropout = config.dropout
@@ -28,6 +29,7 @@ def setup(config, n_feats):
         model = CNN1D(
             input_shape = n_feats, 
             num_classes = len(config.class_labels),
+            lr = config.lr,
             n_kernels = config.n_kernels,
             kernel_sizes = config.kernel_sizes,
             hidden_size = config.hidden_size,

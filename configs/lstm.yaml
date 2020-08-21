@@ -27,6 +27,7 @@ checkpoint_name: LSTM_OPENSMILE_IS10  # checkpoint 文件名
 # 训练参数
 epochs: 20  # 训练 epoch 数
 batch_size: 32  # 批大小
+lr: 0.001  # 学习率
 
 # 模型参数
 rnn_size: 128  # LSTM 隐藏层大小

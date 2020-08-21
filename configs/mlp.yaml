@@ -23,3 +23,9 @@ opensmile_path: /Users/zou/opensmile-2.3.0  # Opensmile 安装路径
 # checkpoints
 checkpoint_path: checkpoints/  # checkpoint 存储路径
 checkpoint_name: MLP_OPENSMILE_IS10  # checkpoint 文件名
+
+# 模型参数
+params: {
+  alpha: 1.9, 
+  max_iter: 700
+}

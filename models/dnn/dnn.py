@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import keras
 from keras import Sequential
 from keras.layers import Dense
 from ..common import Common_Model
@@ -13,8 +14,9 @@ class DNN_Model(Common_Model):
     输入:
         input_shape: 特征维度
         num_classes(int): 标签种类数量
+        lr(float): 学习率
     '''
-    def __init__(self, input_shape, num_classes, **params):
+    def __init__(self, input_shape, num_classes, lr, **params):
         super(DNN_Model, self).__init__()
 
         self.input_shape = input_shape
@@ -22,7 +24,9 @@ class DNN_Model(Common_Model):
         self.model = Sequential()
         self.make_model(**params)
         self.model.add(Dense(num_classes, activation = 'softmax'))
-        self.model.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+        optimzer = keras.optimizers.Adam(lr = lr)
+        self.model.compile(loss = 'categorical_crossentropy', optimizer = optimzer, metrics = ['accuracy'])
        
         print(self.model.summary(), file = sys.stderr)
 

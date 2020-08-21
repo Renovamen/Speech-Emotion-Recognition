@@ -23,3 +23,10 @@ opensmile_path: /Users/zou/opensmile-2.3.0  # Opensmile 安装路径
 # checkpoints
 checkpoint_path: checkpoints/  # checkpoint 存储路径
 checkpoint_name: SVM_OPENSMILE_IS10  # checkpoint 文件名
+
+# 模型参数
+params: {
+  kernel: 'rbf', 
+  probability: True, 
+  gamma: 'auto'
+}

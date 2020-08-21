@@ -5,12 +5,12 @@ import yaml
 dict -> Class
 '''
 class Config:
-	def __init__(self, entries: dict={}):
-		for k, v in entries.items():
-			if isinstance(v, dict):
-				self.__dict__[k] = Config(v)
-			else:
-				self.__dict__[k] = v
+    def __init__(self, entries: dict={}):
+        for k, v in entries.items():
+            if k != 'params' and isinstance(v, dict):
+                self.__dict__[k] = Config(v)
+            else:
+                self.__dict__[k] = v
 
 
 '''
@@ -35,7 +35,7 @@ def parse_opt():
     parser.add_argument(
         '--config', 
         type = str, 
-        default = 'configs/svm.yaml',
+        default = 'configs/lstm.yaml',
         help = 'path to the configuration file (yaml)'
     )
     args = parser.parse_args()

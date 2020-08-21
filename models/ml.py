@@ -53,14 +53,14 @@ class MLModel(Common_Model):
 
 
 class SVM(MLModel):
-    def __init__(self, **params):
+    def __init__(self, model_params, **params):
         params['name'] = 'SVM'
         super(SVM, self).__init__(**params)
-        self.model = SVC(kernel = 'rbf', probability = True, gamma = 'auto')
+        self.model = SVC(**model_params)
 
 
 class MLP(MLModel):
-    def __init__(self, **params):
+    def __init__(self, model_params, **params):
         params['name'] = 'Neural Network'
         super(MLP, self).__init__(**params)
-        self.model = MLPClassifier(alpha = 1.9, max_iter = 700)
+        self.model = MLPClassifier(**model_params)
