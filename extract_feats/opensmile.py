@@ -31,13 +31,19 @@ get_feature_opensmile(): Opensmile 提取一个音频的特征
 '''
 
 def get_feature_opensmile(config, filepath: str):
-    # Opensmile 命令
+    # 项目路径
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-    cmd = 'cd ' + config.opensmile_path + ' && ./SMILExtract -C config/' + config.opensmile_config + '.conf -I ' + filepath + ' -O ' + BASE_DIR + '/' + config.feature_path + 'single_feature.csv'
+    # single_feature.csv 路径
+    single_feat_path = os.path.join(BASE_DIR, config.feature_path, 'single_feature.csv')
+    # Opensmile 配置文件路径
+    opensmile_config_path = os.path.join(config.opensmile_path, 'config', config.opensmile_config + '.conf')
+
+    # Opensmile 命令
+    cmd = 'cd ' + config.opensmile_path + ' && ./SMILExtract -C ' + opensmile_config_path + ' -I ' + filepath + ' -O ' + single_feat_path
     print("Opensmile cmd: ", cmd)
     os.system(cmd)
     
-    reader = csv.reader(open(BASE_DIR + '/' + config.feature_path + 'single_feature.csv','r'))
+    reader = csv.reader(open(single_feat_path,'r'))
     rows = [row for row in reader]
     last_line = rows[-1]
     return last_line[1: FEATURE_NUM[config.opensmile_config] + 1]
@@ -63,11 +69,14 @@ def load_feature(config, feature_path: str, train: bool):
     X = df.loc[:,features].values
     Y = df.loc[:,'label'].values
 
+    # 标准化模型路径
+    scaler_path = os.path.join(config.checkpoint_path, 'SCALER_OPENSMILE.m')
+
     if train == True:
         # 标准化数据 
         scaler = StandardScaler().fit(X)
         # 保存标准化模型
-        joblib.dump(scaler, config.checkpoint_path + 'SCALER_OPENSMILE.m')
+        joblib.dump(scaler, scaler_path)
         X = scaler.transform(X)
 
         # 划分训练集和测试集
@@ -76,7 +85,7 @@ def load_feature(config, feature_path: str, train: bool):
     else:
         # 标准化数据
         # 加载标准化模型
-        scaler = joblib.load(config.checkpoint_path + 'SCALER_OPENSMILE.m')
+        scaler = joblib.load(scaler_path)
         X = scaler.transform(X)
         return X
 
@@ -124,7 +133,7 @@ def get_data(config, data_path, feature_path: str, train: bool):
             for filename in os.listdir('.'):
                 if not filename.endswith('wav'):
                     continue
-                filepath = os.getcwd() + '/' + filename
+                filepath = os.path.join(os.getcwd(), filename)
                 
                 # 提取该音频的特征
                 feature_vector = get_feature_opensmile(config, filepath)

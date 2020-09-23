@@ -40,7 +40,7 @@ def move(file_path):
 			if item.endswith('.wav'):
 				emotion_name = root.split('/')[-1]
 				old_path = os.path.join(root, item)
-				new_path = file_path + '/' + emotion_name + '/' + item
+				new_path = os.path.join(file_path, emotion_name, item)
 				try:
 					shutil.move(old_path, new_path)
 					print("Move ", old_path, " to ", new_path)

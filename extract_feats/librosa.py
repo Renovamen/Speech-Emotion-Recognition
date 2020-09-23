@@ -18,7 +18,7 @@ def features(X, sample_rate):
     stft = np.abs(librosa.stft(X))
 
     # fmin 和 fmax 对应于人类语音的最小最大基本频率
-    pitches, magnitudes = librosa.piptrack(X, sr=sample_rate, S=stft, fmin=70, fmax=400)
+    pitches, magnitudes = librosa.piptrack(X, sr = sample_rate, S = stft, fmin = 70, fmax = 400)
     pitch = []
     for i in range(magnitudes.shape[1]):
         index = magnitudes[:, 1].argmax()
@@ -31,28 +31,28 @@ def features(X, sample_rate):
     pitchmin = np.min(pitch)
 
     # 频谱质心
-    cent = librosa.feature.spectral_centroid(y=X, sr=sample_rate)
+    cent = librosa.feature.spectral_centroid(y = X, sr = sample_rate)
     cent = cent / np.sum(cent)
     meancent = np.mean(cent)
     stdcent = np.std(cent)
     maxcent = np.max(cent)
 
     # 谱平面
-    flatness = np.mean(librosa.feature.spectral_flatness(y=X))
+    flatness = np.mean(librosa.feature.spectral_flatness(y = X))
 
     # 使用系数为50的MFCC特征
-    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=50).T, axis=0)
-    mfccsstd = np.std(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=50).T, axis=0)
-    mfccmax = np.max(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=50).T, axis=0)
+    mfccs = np.mean(librosa.feature.mfcc(y = X, sr = sample_rate, n_mfcc = 50).T, axis = 0)
+    mfccsstd = np.std(librosa.feature.mfcc(y = X, sr = sample_rate, n_mfcc = 50).T, axis = 0)
+    mfccmax = np.max(librosa.feature.mfcc(y = X, sr = sample_rate, n_mfcc = 50).T, axis = 0)
 
     # 色谱图
-    chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
+    chroma = np.mean(librosa.feature.chroma_stft(S = stft, sr = sample_rate).T, axis = 0)
 
     # 梅尔频率
-    mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T, axis=0)
+    mel = np.mean(librosa.feature.melspectrogram(X, sr = sample_rate).T, axis = 0)
 
     # ottava对比
-    contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
+    contrast = np.mean(librosa.feature.spectral_contrast(S = stft, sr = sample_rate).T, axis = 0)
 
     # 过零率
     zerocr = np.mean(librosa.feature.zero_crossing_rate(X))
@@ -129,7 +129,7 @@ def get_data_path(data_path: str, class_labels):
         for filename in os.listdir('.'):
             if not filename.endswith('wav'):
                 continue
-            filepath = os.getcwd() + '/' + filename
+            filepath = os.path.join(os.getcwd(), filename)
             wav_file_path.append(filepath)
 
         os.chdir('..')
@@ -158,11 +158,14 @@ def load_feature(config, feature_path: str, train: bool):
     X = list(features['features'])
     Y = list(features['emotion'])
 
+    # 标准化模型路径
+    scaler_path = os.path.join(config.checkpoint_path, 'SCALER_OPENSMILE.m')
+
     if train == True:
         # 标准化数据 
         scaler = StandardScaler().fit(X)
         # 保存标准化模型
-        joblib.dump(scaler, config.checkpoint_path + 'SCALER_LIBROSA.m')
+        joblib.dump(scaler, scaler_path)
         X = scaler.transform(X)
 
         x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size = 0.2, random_state = 42)
@@ -171,7 +174,7 @@ def load_feature(config, feature_path: str, train: bool):
     else:
         # 标准化数据
         # 加载标准化模型
-        scaler = joblib.load(config.checkpoint_path + 'SCALER_LIBROSA.m')
+        scaler = joblib.load(scaler_path)
         X = scaler.transform(X)
         return X
 

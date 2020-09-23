@@ -1,5 +1,6 @@
-import pickle
+import os
 import sys
+import pickle
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from .common import Common_Model
@@ -18,7 +19,7 @@ class MLModel(Common_Model):
         config(Class)
     '''
     def save_model(self, config):
-        save_path = config.checkpoint_path + config.checkpoint_name + '.m'
+        save_path = os.path.join(config.checkpoint_path, config.checkpoint_name + '.m')
         pickle.dump(self.model, open(save_path, "wb"))
 
 

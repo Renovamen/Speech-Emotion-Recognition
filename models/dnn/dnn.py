@@ -1,3 +1,4 @@
+import os
 import sys
 import numpy as np
 import keras
@@ -38,10 +39,10 @@ class DNN_Model(Common_Model):
         config(Class)
     '''
     def save_model(self, config):
-        h5_save_path = config.checkpoint_path + config.checkpoint_name + '.h5'
+        h5_save_path = os.path.join(config.checkpoint_path, config.checkpoint_name + '.h5')
         self.model.save_weights(h5_save_path)
 
-        save_json_path = config.checkpoint_path + config.checkpoint_name + '.json'
+        save_json_path = os.path.join(config.checkpoint_path, config.checkpoint_name + '.json')
         with open(save_json_path, "w") as json_file:
             json_file.write(self.model.to_json())
 
