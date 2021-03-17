@@ -26,7 +26,7 @@ checkpoint_name: SVM_OPENSMILE_IS10  # checkpoint 文件名
 
 # 模型参数
 params: {
-  kernel: 'rbf', 
-  probability: True, 
+  kernel: 'rbf',
+  probability: True,
   gamma: 'auto'
 }

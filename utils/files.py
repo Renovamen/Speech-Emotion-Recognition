@@ -1,11 +1,11 @@
-# 数据集整理
+"""数据集整理"""
 
 import os, shutil
 
 data_path = "/Users/zou/datasets/CASIA/6"
 
-# 批量删除指定路径下所有非.wav文件
 def remove(file_path):
+    """批量删除指定路径下所有非 `.wav` 文件"""
 	for root, dirs, files in os.walk(file_path):
 		for item in files:
 			if not item.endswith('.wav'):
@@ -15,9 +15,8 @@ def remove(file_path):
 				except:
 					continue
 
-# 批量按指定格式改名（不然把相同情感的音频整理到同一个文件夹时会重名）
 def rename(file_path):
-
+    """批量按指定格式改名（不然把相同情感的音频整理到同一个文件夹时会重名）"""
 	for root, dirs, files in os.walk(file_path):
 		for item in files:
 			if item.endswith('.wav'):
@@ -32,9 +31,8 @@ def rename(file_path):
 				except:
 					continue
 
-
-# 把音频按情感分类，放在不同文件夹下
 def move(file_path):
+    """把音频按情感分类，放在不同文件夹下"""
 	for root, dirs, files in os.walk(file_path):
 		for item in files:
 			if item.endswith('.wav'):

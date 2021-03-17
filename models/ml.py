@@ -1,67 +1,67 @@
 import os
-import sys
 import pickle
+import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
-from .common import Common_Model
+from .base import BaseModel
 
-
-class MLModel(Common_Model):
-
-    def __init__(self, **params):
+class MLModel(BaseModel):
+    def __init__(self, **params) -> None:
         super(MLModel, self).__init__(**params)
 
+    def save_model(self, config) -> None:
+        """
+        将模型存储在 `config.checkpoint_path` 路径下
 
-    '''
-    save_model(): 将模型存储在 config.checkpoint_path 路径下
-
-    输入:
-        config(Class)
-    '''
-    def save_model(self, config):
+        Args:
+            config: 配置项
+        """
         save_path = os.path.join(config.checkpoint_path, config.checkpoint_name + '.m')
         pickle.dump(self.model, open(save_path, "wb"))
 
+    def train(
+        self,
+        x_train: np.ndarray,
+        y_train: np.ndarray,
+        x_val: np.ndarray = None,
+        y_val: np.ndarray = None
+    ) -> None:
+        """
+        在给定训练集上训练模型
 
-    '''
-    train(): 在给定训练集上训练模型
-
-    输入:
-        x_train: 训练集样本
-        y_train: 训练集标签
-        x_val: 测试集样本
-        y_val: 测试集标签
-    '''
-    def train(self, x_train, y_train, x_val = None, y_val = None):
+        Args:
+            x_train (np.ndarray): 训练集样本
+            y_train (np.ndarray): 训练集标签
+            x_val (np.ndarray, optional): 测试集样本
+            y_val (np.ndarray, optional): 测试集标签
+        """
         self.model.fit(x_train, y_train)
         self.trained = True
 
+    def predict(self, samples: np.ndarray) -> np.ndarray:
+        """
+        识别音频的情感
 
-    '''
-    predict(): 识别音频的情感
+        Args:
+            samples (np.ndarray): 需要识别的音频特征
 
-    输入:
-        samples: 需要识别的音频特征
-
-    输出:
-        list: 识别结果
-    '''
-    def predict(self, samples):
+        Returns:
+            results (np.ndarray): 识别结果
+        """
         if not self.trained:
-            sys.stderr.write("No Model.")
-            sys.exit(-1)
+            raise RuntimeError('There is no trained model.')
         return self.model.predict(samples)
 
 
 class SVM(MLModel):
-    def __init__(self, model_params, **params):
+    def __init__(self, model_params, **params) -> None:
         params['name'] = 'SVM'
         super(SVM, self).__init__(**params)
         self.model = SVC(**model_params)
 
 
 class MLP(MLModel):
-    def __init__(self, model_params, **params):
+    def __init__(self, model_params, **params) -> None:
         params['name'] = 'Neural Network'
         super(MLP, self).__init__(**params)
         self.model = MLPClassifier(**model_params)

@@ -5,20 +5,18 @@ import librosa
 import librosa.display
 from random import shuffle
 import numpy as np
-from typing import Tuple
+from typing import Tuple, Union
 import pickle
 import pandas as pd
 from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-
-def features(X, sample_rate):
-
+def features(X, sample_rate: float) -> np.ndarray:
     stft = np.abs(librosa.stft(X))
 
     # fmin 和 fmax 对应于人类语音的最小最大基本频率
-    pitches, magnitudes = librosa.piptrack(X, sr = sample_rate, S = stft, fmin = 70, fmax = 400)
+    pitches, magnitudes = librosa.piptrack(X, sr=sample_rate, S=stft, fmin=70, fmax=400)
     pitch = []
     for i in range(magnitudes.shape[1]):
         index = magnitudes[:, 1].argmax()
@@ -31,28 +29,28 @@ def features(X, sample_rate):
     pitchmin = np.min(pitch)
 
     # 频谱质心
-    cent = librosa.feature.spectral_centroid(y = X, sr = sample_rate)
+    cent = librosa.feature.spectral_centroid(y=X, sr=sample_rate)
     cent = cent / np.sum(cent)
     meancent = np.mean(cent)
     stdcent = np.std(cent)
     maxcent = np.max(cent)
 
     # 谱平面
-    flatness = np.mean(librosa.feature.spectral_flatness(y = X))
+    flatness = np.mean(librosa.feature.spectral_flatness(y=X))
 
     # 使用系数为50的MFCC特征
-    mfccs = np.mean(librosa.feature.mfcc(y = X, sr = sample_rate, n_mfcc = 50).T, axis = 0)
-    mfccsstd = np.std(librosa.feature.mfcc(y = X, sr = sample_rate, n_mfcc = 50).T, axis = 0)
-    mfccmax = np.max(librosa.feature.mfcc(y = X, sr = sample_rate, n_mfcc = 50).T, axis = 0)
+    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=50).T, axis=0)
+    mfccsstd = np.std(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=50).T, axis=0)
+    mfccmax = np.max(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=50).T, axis=0)
 
     # 色谱图
-    chroma = np.mean(librosa.feature.chroma_stft(S = stft, sr = sample_rate).T, axis = 0)
+    chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
 
     # 梅尔频率
-    mel = np.mean(librosa.feature.melspectrogram(X, sr = sample_rate).T, axis = 0)
+    mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T, axis=0)
 
     # ottava对比
-    contrast = np.mean(librosa.feature.spectral_contrast(S = stft, sr = sample_rate).T, axis = 0)
+    contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
 
     # 过零率
     zerocr = np.mean(librosa.feature.zero_crossing_rate(X))
@@ -78,22 +76,19 @@ def features(X, sample_rate):
 
     return ext_features
 
-
-def extract_features(file, pad = False):
-    X, sample_rate = librosa.load(file, sr = None)
+def extract_features(file: str, pad: bool = False) -> np.ndarray:
+    X, sample_rate = librosa.load(file, sr=None)
     max_ = X.shape[0] / sample_rate
     if pad:
         length = (max_ * sample_rate) - X.shape[0]
         X = np.pad(X, (0, int(length)), 'constant')
     return features(X, sample_rate)
-    
 
-def get_max_min(files):
-
+def get_max_min(files: list) -> Tuple[float]:
     min_, max_ = 100, 0
 
     for file in files:
-        sound_file, samplerate = librosa.load(file, sr = None)
+        sound_file, samplerate = librosa.load(file, sr=None)
         t = sound_file.shape[0] / samplerate
         if t < min_:
             min_ = t
@@ -102,19 +97,16 @@ def get_max_min(files):
 
     return max_, min_
 
+def get_data_path(data_path: str, class_labels: list) -> list:
+    """
+    获取所有音频的路径
 
-'''
-get_data_path(): 获取所有音频的路径
-
-输入:
-    data_path: 数据集文件夹路径
-    class_labels(list): 情感标签
-输出:
-    所有音频的路径
-'''
-
-def get_data_path(data_path: str, class_labels):
-
+    Args:
+        data_path (str): 数据集文件夹路径
+        class_labels (list): 情感标签
+    Returns:
+        wav_file_path (list): 所有音频的路径
+    """
     wav_file_path = []
 
     cur_dir = os.getcwd()
@@ -138,22 +130,25 @@ def get_data_path(data_path: str, class_labels):
     shuffle(wav_file_path)
     return wav_file_path
 
+def load_feature(
+    config, feature_path: str, train: bool
+) -> Union[Tuple[np.ndarray], np.ndarray]:
+    """
+    从 `csv` 文件中加载特征数据
 
-'''
-load_feature(): 从 csv 加载特征数据
+    Args:
+        config: 配置项
+        feature_path (str): 特征文件路径
+        train (bool): 是否为训练数据
 
-输入:
-    config(Class)
-    feature_path: 特征文件路径
-    train: 是否为训练数据
-
-输出:
-    训练数据、测试数据和对应的标签
-'''
-
-def load_feature(config, feature_path: str, train: bool):
-
-    features = pd.DataFrame(data = joblib.load(feature_path), columns = ['file_name', 'features', 'emotion'])
+    Returns:
+        - X (Tuple[np.ndarray]): 训练特征、测试特征和对应的标签
+        - X (np.ndarray): 预测特征
+    """
+    features = pd.DataFrame(
+        data = joblib.load(feature_path),
+        columns = ['file_name', 'features', 'emotion']
+    )
 
     X = list(features['features'])
     Y = list(features['emotion'])
@@ -162,15 +157,15 @@ def load_feature(config, feature_path: str, train: bool):
     scaler_path = os.path.join(config.checkpoint_path, 'SCALER_OPENSMILE.m')
 
     if train == True:
-        # 标准化数据 
+        # 标准化数据
         scaler = StandardScaler().fit(X)
         # 保存标准化模型
         joblib.dump(scaler, scaler_path)
         X = scaler.transform(X)
 
-        x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size = 0.2, random_state = 42)
+        x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
         return x_train, x_test, y_train, y_test
-    
+
     else:
         # 标准化数据
         # 加载标准化模型
@@ -178,23 +173,23 @@ def load_feature(config, feature_path: str, train: bool):
         X = scaler.transform(X)
         return X
 
+def get_data(
+    config, data_path: str, feature_path: str, train: bool
+) -> Union[Tuple[np.ndarray], np.ndarray]:
+    """
+    提取所有音频的特征: 遍历所有文件夹, 读取每个文件夹中的音频, 提取每个音频的特征，把所有特征
+    保存在 `feature_path` 路径下。
 
-'''
-get_data(): 
-    提取所有音频的特征: 遍历所有文件夹, 读取每个文件夹中的音频, 提取每个音频的特征，把所有特征保存在 feature_path 中
+    Args:
+        confi: 配置项
+        data_path (str): 数据集文件夹/测试文件路径
+        feature_path (str): 保存特征的路径
+        train (bool): 是否为训练数据
 
-输入:
-    config(Class)
-    data_path: 数据集文件夹/测试文件路径
-    feature_path: 保存特征的路径
-    train: 是否为训练数据
-
-输出:
-    train = True: 训练数据、测试数据特征和对应的标签
-    train = False: 预测数据特征
-'''
-def get_data(config, data_path: str, feature_path: str, train: bool):
-    
+    Returns:
+        - train = True: 训练特征、测试特征和对应的标签
+        - train = False: 预测特征
+    """
     if(train == True):
         files = get_data_path(data_path, config.class_labels)
         max_, min_ = get_max_min(files)
@@ -220,7 +215,7 @@ def get_data(config, data_path: str, feature_path: str, train: bool):
 
 
     cols = ['file_name', 'features', 'emotion']
-    mfcc_pd = pd.DataFrame(data = mfcc_data, columns = cols)
+    mfcc_pd = pd.DataFrame(data=mfcc_data, columns=cols)
     pickle.dump(mfcc_data, open(feature_path, 'wb'))
-    
-    return load_feature(config, feature_path, train = train)
+
+    return load_feature(config, feature_path, train=train)

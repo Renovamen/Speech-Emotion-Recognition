@@ -26,6 +26,6 @@ checkpoint_name: MLP_OPENSMILE_IS10  # checkpoint 文件名
 
 # 模型参数
 params: {
-  alpha: 1.9, 
+  alpha: 1.9,
   max_iter: 700
 }

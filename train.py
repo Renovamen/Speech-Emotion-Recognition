@@ -6,24 +6,24 @@ import extract_feats.opensmile as of
 import extract_feats.librosa as lf
 import utils.opts as opts
 
-'''
-train(): 训练模型
+def train(config) -> None:
+    """
+    训练模型
 
-输入:
-	config(Class)
-    
-输出: 
-    model: 训练好的模型
-'''
-def train(config):
-    
+    Args:
+        config: 配置项
+
+    Returns:
+        model: 训练好的模型
+    """
+
     # 加载被 preprocess.py 预处理好的特征
     if(config.feature_method == 'o'):
         x_train, x_test, y_train, y_test = of.load_feature(config, config.train_feature_path_opensmile, train = True)
 
     elif(config.feature_method == 'l'):
         x_train, x_test, y_train, y_test = lf.load_feature(config, config.train_feature_path_librosa, train = True)
-    
+
     # x_train, x_test (n_samples, n_feats)
     # y_train, y_test (n_samples)
 
@@ -35,7 +35,7 @@ def train(config):
     if config.model in ['lstm', 'cnn1d', 'cnn2d']:
         y_train, y_val = np_utils.to_categorical(y_train), np_utils.to_categorical(y_test) # 独热编码
         model.train(
-            x_train, y_train, 
+            x_train, y_train,
             x_test, y_val,
             batch_size = config.batch_size,
             n_epochs = config.epochs
@@ -51,6 +51,5 @@ def train(config):
 
 
 if __name__ == '__main__':
-
     config = opts.parse_opt()
     train(config)

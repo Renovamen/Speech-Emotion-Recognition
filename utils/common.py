@@ -1,28 +1,29 @@
 import os
-from typing import Tuple
-import numpy as np
+from typing import Union
+import wave
 import matplotlib.pyplot as plt
-from keras.models import model_from_json
-from sklearn.externals import joblib
 import librosa
 import librosa.display
 import scipy.io.wavfile as wav
-import wave
+import numpy as np
+from keras.models import model_from_json, Sequential
+from sklearn.externals import joblib
+from sklearn.base import BaseEstimator
 
-'''
-load_model(): 
+def load_model(
+    checkpoint_path: str, checkpoint_name: str, model_name: str
+) -> Union[Sequential, BaseEstimator]:
+    """
     加载模型
 
-输入:
-    checkpoint_path(str): checkpoint 路径
-    checkpoint_name(str): checkpoint 文件名
-    model_name(str): 模型名称
+    Args:
+        checkpoint_path (str): checkpoint 路径
+        checkpoint_name (str): checkpoint 文件名
+        model_name (str): 模型名称
 
-输出:
-    model: 加载好的模型
-'''
-def load_model(checkpoint_path: str, checkpoint_name: str, model_name: str):
-    
+    Returns:
+        model (Union[keras.Sequential, sklearn.base.BaseEstimator]): 加载好的模型
+    """
     if model_name in ['lstm', 'cnn1d', 'cnn2d']:
         # 加载 json
         model_json_path = os.path.join(checkpoint_path, checkpoint_name + '.json')
@@ -41,17 +42,16 @@ def load_model(checkpoint_path: str, checkpoint_name: str, model_name: str):
 
     return model
 
-'''
-plotCurve(): 
+def plotCurve(train: list, val: list, title: str, y_label: str) -> None:
+    """
     绘制损失值和准确率曲线
 
-输入:
-    train(list): 训练集损失值或准确率数组
-    val(list): 测试集损失值或准确率数组
-    title(str): 图像标题
-    y_label(str): y 轴标题
-'''
-def plotCurve(train, val, title: str, y_label: str):
+    Args:
+        train (list): 训练集损失值或准确率数组
+        val (list): 测试集损失值或准确率数组
+        title (str): 图像标题
+        y_label (str): y 轴标题
+    """
     plt.plot(train)
     plt.plot(val)
     plt.title(title)
@@ -60,14 +60,13 @@ def plotCurve(train, val, title: str, y_label: str):
     plt.legend(['train', 'test'], loc='upper left')
     plt.show()
 
+def play_audio(file_path: str) -> None:
+    """
+    播放语音
 
-'''
-play_audio(): 播放语音
-
-输入:
-    file_path(str): 要播放的音频路径
-'''
-def play_audio(file_path: str):
+    Args:
+        file_path (str): 要播放的音频路径
+    """
     import pyaudio
     p = pyaudio.PyAudio()
     f = wave.open(file_path, 'rb')
@@ -82,17 +81,15 @@ def play_audio(file_path: str):
     stream.stop_stream()
     stream.close()
     f.close()
-    
-    
-'''
-Radar(): 置信概率雷达图
 
-输入:
-    data_prob(numpy.ndarray): 概率数组
-    class_labels(list): 情感标签
-'''
-def Radar(data_prob, class_labels):
+def Radar(data_prob: np.ndarray, class_labels: list) -> None:
+    """
+    绘制置信概率雷达图
 
+    Args:
+        data_prob (np.ndarray): 概率数组
+        class_labels (list): 情感标签
+    """
     angles = np.linspace(0, 2 * np.pi, len(class_labels), endpoint = False)
     data = np.concatenate((data_prob, [data_prob[0]]))  # 闭合
     angles = np.concatenate((angles, [angles[0]]))  # 闭合
@@ -115,27 +112,26 @@ def Radar(data_prob, class_labels):
     # plt.pause(4)
     # plt.close()
 
+def Waveform(file_path: str) -> None:
+    """
+    绘制音频波形图
 
-'''
-Waveform(): 音频波形图
-
-输入:
-    file_path(str): 音频路径
-'''
-
-def Waveform(file_path: str):
+    Args:
+        file_path (str): 音频路径
+    """
     data, sampling_rate = librosa.load(file_path)
     plt.figure(figsize=(15, 5))
     librosa.display.waveplot(data, sr = sampling_rate)
     plt.show()
 
-'''
-Spectrogram(): 频谱图
+def Spectrogram(file_path: str) -> None:
+    """
+    绘制频谱图
 
-输入:
-    file_path(str): 音频路径
-'''
-def Spectrogram(file_path: str):
+    Args:
+        file_path (str): 音频路径
+    """
+
     # sr: 采样率
     # x: 音频数据的numpy数组
     sr, x = wav.read(file_path)

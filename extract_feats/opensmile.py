@@ -2,9 +2,10 @@ import os
 import csv
 import sys
 import time
+from typing import Tuple, Union
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import StandardScaler
-from typing import Tuple
 from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
 
@@ -18,19 +19,18 @@ FEATURE_NUM = {
     'ComParE_2016': 6373
 }
 
+def get_feature_opensmile(config, filepath: str) -> list:
+    """
+    用 Opensmile 提取一个音频的特征
 
-'''
-get_feature_opensmile(): Opensmile 提取一个音频的特征
+    Args:
+        config: 配置项
+        file_path (str): 音频路径
 
-输入:
-    config(Class)
-    file_path: 音频路径
+    Returns:
+        vector (list): 该音频的特征向量
+    """
 
-输出：
-    该音频的特征向量
-'''
-
-def get_feature_opensmile(config, filepath: str):
     # 项目路径
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     # single_feature.csv 路径
@@ -42,26 +42,28 @@ def get_feature_opensmile(config, filepath: str):
     cmd = 'cd ' + config.opensmile_path + ' && ./SMILExtract -C ' + opensmile_config_path + ' -I ' + filepath + ' -O ' + single_feat_path
     print("Opensmile cmd: ", cmd)
     os.system(cmd)
-    
+
     reader = csv.reader(open(single_feat_path,'r'))
     rows = [row for row in reader]
     last_line = rows[-1]
     return last_line[1: FEATURE_NUM[config.opensmile_config] + 1]
 
+def load_feature(
+    config, feature_path: str, train: bool
+) -> Union[Tuple[np.ndarray], np.ndarray]:
+    """
+    从 `csv` 文件中加载特征数据
 
-'''
-load_feature(): 从 .csv 文件中加载特征数据
+    Args:
+        config: 配置项
+        feature_path (str): 特征文件路径
+        train (bool): 是否为训练数据
 
-输入:
-    config(Class)
-    feature_path: 特征文件路径
-    train: 是否为训练数据
+    Returns:
+        - X (Tuple[np.ndarray]): 训练特征、测试特征和对应的标签
+        - X (np.ndarray): 预测特征
+    """
 
-输出:
-    训练数据、测试数据和对应的标签
-'''
-
-def load_feature(config, feature_path: str, train: bool):
     # 加载特征数据
     df = pd.read_csv(feature_path)
     features = [str(i) for i in range(1, FEATURE_NUM[config.opensmile_config] + 1)]
@@ -73,7 +75,7 @@ def load_feature(config, feature_path: str, train: bool):
     scaler_path = os.path.join(config.checkpoint_path, 'SCALER_OPENSMILE.m')
 
     if train == True:
-        # 标准化数据 
+        # 标准化数据
         scaler = StandardScaler().fit(X)
         # 保存标准化模型
         joblib.dump(scaler, scaler_path)
@@ -89,25 +91,22 @@ def load_feature(config, feature_path: str, train: bool):
         X = scaler.transform(X)
         return X
 
+def get_data(
+    config, data_path: str, feature_path: str, train: bool
+) -> Union[Tuple[np.ndarray], np.ndarray]:
+    """
+    用 Opensmile 提取所有音频的特征: 遍历所有文件夹, 读取每个文件夹中的音频, 提取每个音频的
+    特征，把所有特征保存在 `feature_path` 路径下。
 
-'''
-get_data(): 
-    提取所有音频的特征: 遍历所有文件夹, 读取每个文件夹中的音频, 提取每个音频的特征，把所有特征保存在 feature_path 中
+    Args:
+        data_path (str): 数据集文件夹 / 测试文件路径
+        feature_path (str): 保存特征的路径
+        train (bool): 是否为训练数据
 
-输入:
-    config(Class)
-    data_path: 数据集文件夹/测试文件路径
-    feature_path: 保存特征的路径
-    train: 是否为训练数据
-
-输出:
-    train = True: 训练数据、测试数据特征和对应的标签
-    train = False: 预测数据特征
-'''
-
-# Opensmile 提取特征
-def get_data(config, data_path, feature_path: str, train: bool):
-
+    Returns:
+        - train = True: 训练特征、测试特征和对应的标签
+        - train = False: 预测特征
+    """
     writer = csv.writer(open(feature_path, 'w'))
     first_row = ['label']
     for i in range(1, FEATURE_NUM[config.opensmile_config] + 1):
@@ -134,7 +133,7 @@ def get_data(config, data_path, feature_path: str, train: bool):
                 if not filename.endswith('wav'):
                     continue
                 filepath = os.path.join(os.getcwd(), filename)
-                
+
                 # 提取该音频的特征
                 feature_vector = get_feature_opensmile(config, filepath)
                 feature_vector.insert(0, label)
@@ -144,7 +143,7 @@ def get_data(config, data_path, feature_path: str, train: bool):
             sys.stderr.write("Ended reading folder %s\n" % directory)
             os.chdir('..')
         os.chdir(cur_dir)
-    
+
     else:
         feature_vector = get_feature_opensmile(config, data_path)
         feature_vector.insert(0, '-1')
