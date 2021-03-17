@@ -1,13 +1,14 @@
 import os
 import pickle
+from abc import ABC
 import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from .base import BaseModel
 
-class MLModel(BaseModel):
-    def __init__(self, **params) -> None:
-        super(MLModel, self).__init__(**params)
+class MLModel(BaseModel, ABC):
+    def __init__(self) -> None:
+        super(MLModel, self).__init__()
 
     def save_model(self, config) -> None:
         """
@@ -19,28 +20,20 @@ class MLModel(BaseModel):
         save_path = os.path.join(config.checkpoint_path, config.checkpoint_name + '.m')
         pickle.dump(self.model, open(save_path, "wb"))
 
-    def train(
-        self,
-        x_train: np.ndarray,
-        y_train: np.ndarray,
-        x_val: np.ndarray = None,
-        y_val: np.ndarray = None
-    ) -> None:
+    def train(self, x_train: np.ndarray, y_train: np.ndarray) -> None:
         """
-        在给定训练集上训练模型
+        训练模型
 
         Args:
             x_train (np.ndarray): 训练集样本
             y_train (np.ndarray): 训练集标签
-            x_val (np.ndarray, optional): 测试集样本
-            y_val (np.ndarray, optional): 测试集标签
         """
         self.model.fit(x_train, y_train)
         self.trained = True
 
     def predict(self, samples: np.ndarray) -> np.ndarray:
         """
-        识别音频的情感
+        预测音频的情感
 
         Args:
             samples (np.ndarray): 需要识别的音频特征
@@ -54,14 +47,12 @@ class MLModel(BaseModel):
 
 
 class SVM(MLModel):
-    def __init__(self, model_params, **params) -> None:
-        params['name'] = 'SVM'
-        super(SVM, self).__init__(**params)
+    def __init__(self, model_params) -> None:
+        super(SVM, self).__init__()
         self.model = SVC(**model_params)
 
 
 class MLP(MLModel):
-    def __init__(self, model_params, **params) -> None:
-        params['name'] = 'Neural Network'
-        super(MLP, self).__init__(**params)
+    def __init__(self, model_params) -> None:
+        super(MLP, self).__init__()
         self.model = MLPClassifier(**model_params)

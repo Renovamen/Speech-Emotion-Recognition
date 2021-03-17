@@ -1,5 +1,6 @@
 import os
 from typing import Tuple, Optional
+from abc import ABC, abstractmethod
 import numpy as np
 import keras
 from keras import Sequential
@@ -7,7 +8,7 @@ from keras.layers import Dense
 from ..base import BaseModel
 from utils.common import plotCurve
 
-class DNN(BaseModel):
+class DNN(BaseModel, ABC):
     """
     所有基于 Keras 的深度学习模型的基本类
 
@@ -46,9 +47,6 @@ class DNN(BaseModel):
         with open(save_json_path, "w") as json_file:
             json_file.write(self.model.to_json())
 
-    def reshape_input(self):
-        NotImplementedError()
-
     def train(
         self,
         x_train: np.ndarray,
@@ -59,7 +57,7 @@ class DNN(BaseModel):
         n_epochs: int = 50
     ) -> None:
         """
-        在给定训练集上训练模型
+        训练模型
 
         Args:
             x_train (np.ndarray): 训练集样本
@@ -96,7 +94,7 @@ class DNN(BaseModel):
 
     def predict(self, sample: np.ndarray) -> np.ndarray:
         """
-        识别音频的情感
+        预测音频的情感
 
         Args:
             samples (np.ndarray): 需要识别的音频特征
@@ -112,5 +110,10 @@ class DNN(BaseModel):
 
         return np.argmax(self.model.predict(sample), axis=1)
 
+    @abstractmethod
+    def reshape_input(self):
+        pass
+
+    @abstractmethod
     def make_model(self):
-        raise NotImplementedError()
+        pass
