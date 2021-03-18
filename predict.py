@@ -3,8 +3,7 @@ import numpy as np
 import extract_feats.opensmile as of
 import extract_feats.librosa as lf
 import models
-from utils.common import Radar, play_audio
-import utils.opts as opts
+import utils
 
 def predict(config, audio_path: str, model) -> None:
     """
@@ -16,7 +15,7 @@ def predict(config, audio_path: str, model) -> None:
         model: 加载的模型
     """
 
-    # play_audio(audio_path)
+    # utils.play_audio(audio_path)
 
     if(config.feature_method == 'o'):
         # 一个玄学 bug 的暂时性解决方案
@@ -29,12 +28,12 @@ def predict(config, audio_path: str, model) -> None:
     result_prob = model.predict_proba(test_feature)
     print('Recogntion: ', config.class_labels[int(result)])
     print('Probability: ', result_prob)
-    Radar(result_prob, config.class_labels)
+    utils.radar(result_prob, config.class_labels)
 
 
 if __name__ == '__main__':
     audio_path = '/Users/zou/Renovamen/Developing/Speech-Emotion-Recognition/datasets/CASIA/angry/201-angry-liuchanhg.wav'
 
-    config = opts.parse_opt()
+    config = utils.parse_opt()
     model = models.load(config)
     predict(config, audio_path, model)

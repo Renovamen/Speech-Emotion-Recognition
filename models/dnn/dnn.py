@@ -4,11 +4,11 @@ from abc import ABC, abstractmethod
 import numpy as np
 from keras.models import Sequential, model_from_json
 from ..base import BaseModel
-from utils.common import plotCurve
+from utils import curve
 
 class DNN(BaseModel, ABC):
     """
-    所有基于 Keras 的深度学习模型的基本类
+    所有基于 Keras 的深度学习模型的基类
 
     Args:
         n_classes (int): 标签种类数量
@@ -95,8 +95,8 @@ class DNN(BaseModel, ABC):
         val_acc = history.history['val_acc']
         val_loss = history.history['val_loss']
 
-        plotCurve(acc, val_acc, 'Accuracy', 'acc')
-        plotCurve(loss, val_loss, 'Loss', 'loss')
+        curve(acc, val_acc, 'Accuracy', 'acc')
+        curve(loss, val_loss, 'Loss', 'loss')
 
         self.trained = True
 

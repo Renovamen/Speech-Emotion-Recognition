@@ -6,13 +6,14 @@ We have improved the feature extracting method and achieved higher accuracy (abo
 
 English Document | [中文文档](README.md)
 
+
 &nbsp;
 
-## Environment
+## Environments
 
-Python 3.6.7
+- Python 3.6.7
+- Keras 2.2.4
 
-Keras 2.2.4
 
 &nbsp;
 
@@ -20,24 +21,26 @@ Keras 2.2.4
 
 ```
 ├── models/                // models
-│   ├── common.py          // common part for all models
+│   ├── common.py          // base class for all models
 │   ├── dnn                // neural networks
-│   │   ├── dnn.py         // common part for all neural networks models
+│   │   ├── dnn.py         // base class for all neural networks models
 │   │   ├── cnn.py         // CNN
 │   │   └── lstm.py        // LSTM
+│   └── ml.py              // SVM & MLP
 ├── extract_feats/         // features extraction
 │   ├── librosa.py         // extract features using librosa
 │   └── opensmile.py       // extract features using Opensmile
 ├── utils/
 │   ├── files.py           // setup dataset (classify and rename)
 │   ├── opts.py            // argparse
-│   └── common.py          // load models, plot graphs
+│   └── plot.py            // plot graphs
 ├── features/              // store extracted features
 ├── config.py              // configure parameters
 ├── train.py               // train
 ├── predict.py             // recognize the emotion of a given audio
 └── preprocess.py          // data preprocessing (extract features and store them locally)
 ```
+
 
 &nbsp;
 
@@ -58,6 +61,7 @@ Keras 2.2.4
 
 - [Opensmile](https://github.com/naxingyu/opensmile): extract features
 
+
 &nbsp;
 
 ## Datasets
@@ -77,6 +81,7 @@ Keras 2.2.4
 4. CASIA
 
    Chinese, around 1200 audios from 4 people (2 male and 2 female) including 6 different emotions: neutral, happy, sad, angry, fearful and surprised.
+
 
 &nbsp;
 
@@ -135,7 +140,6 @@ The path of the datasets can be configured in [`config.py`](config.py). Audios w
     ...
 ```
 
-
 Then:
 
 ```python
@@ -160,6 +164,7 @@ Then:
 python predict.py --config configs/example.yaml
 ```
 
+
 &nbsp;
 
 ### Functions
@@ -171,13 +176,13 @@ Plot a radar chart for demonstrating predicted probabilities.
 Source: [Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
 ```python
-from utils.common import Radar
-'''
-Input:
-    data_prob: probabilities
-    class_labels: labels
-'''
-Radar(data_prob, class_labels)
+import utils
+"""
+Args:
+    data_prob (np.ndarray): probabilities
+    class_labels (list): labels
+"""
+utils.radar(data_prob, class_labels)
 ```
 
 &nbsp;
@@ -185,8 +190,8 @@ Radar(data_prob, class_labels)
 #### Play Audio
 
 ```python
-from utils.common import playAudio
-playAudio(file_path)
+import utils
+utils.play_audio(file_path)
 ```
 
 &nbsp;
@@ -196,15 +201,15 @@ playAudio(file_path)
 Plot loss curve or accuracy curve.
 
 ```python
-from utils.common import plotCurve
-'''
-Input:
-    train(list): loss or accuracy on train set
-    val(list): loss or accuracy on validation set
-    title(str): title of figure
-    y_label(str): label of y axis
-'''
-plotCurve(train, val, title, y_label)
+import utils
+"""
+Args:
+    train (list): loss or accuracy on train set
+    val (list): loss or accuracy on validation set
+    title (str): title of figure
+    y_label (str): label of y axis
+"""
+utils.curve(train, val, title, y_label)
 ```
 
 &nbsp;
@@ -214,8 +219,8 @@ plotCurve(train, val, title, y_label)
 Plot a waveform for an audio file.
 
 ```python
-from utils.common import Waveform
-Waveform(file_path)
+import utils
+utils.waveform(file_path)
 ```
 
 &nbsp;
@@ -225,9 +230,10 @@ Waveform(file_path)
 Plot a spectrogram for an audio file.
 
 ```python
-from Utils import Spectrogram
-Spectrogram(file_path)
+import utils
+utils.spectrogram(file_path)
 ```
+
 
 &nbsp;
 

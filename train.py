@@ -4,7 +4,7 @@ from keras.utils import np_utils
 import models
 import extract_feats.opensmile as of
 import extract_feats.librosa as lf
-import utils.opts as opts
+from utils import parse_opt
 
 def train(config) -> None:
     """
@@ -51,5 +51,5 @@ def train(config) -> None:
 
 
 if __name__ == '__main__':
-    config = opts.parse_opt()
+    config = parse_opt()
     train(config)

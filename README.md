@@ -6,13 +6,14 @@
 
 [English Document](README_EN.md) | 中文文档
 
+
 &nbsp;
 
-## Environment
+## Environments
 
-Python 3.6.7
+- Python 3.6.7
+- Keras 2.2.4
 
-Keras 2.2.4
 
 &nbsp;
 
@@ -20,9 +21,9 @@ Keras 2.2.4
 
 ```
 ├── models/                // 模型实现
-│   ├── common.py          // 所有模型的通用部分（即所有模型都会继承这个类）
+│   ├── common.py          // 所有模型的基类
 │   ├── dnn                // 神经网络模型
-│   │   ├── dnn.py         // 神经网络的通用部分
+│   │   ├── dnn.py         // 所有神经网络模型的基类
 │   │   ├── cnn.py         // CNN
 │   │   └── lstm.py        // LSTM
 │   └── ml.py              // SVM & MLP
@@ -32,13 +33,14 @@ Keras 2.2.4
 ├── utils/
 │   ├── files.py           // 用于整理数据集（分类、批量重命名）
 │   ├── opts.py            // 使用 argparse 从命令行读入参数
-│   └── common.py          // 加载模型、绘图（雷达图、频谱图、波形图）
+│   └── plot.py            // 绘图（雷达图、频谱图、波形图）
 ├── features/              // 存储提取好的特征
 ├── config/                // 配置参数（.yaml）
 ├── train.py               // 训练模型
 ├── predict.py             // 用训练好的模型预测指定音频的情感
 └── preprocess.py          // 数据预处理（提取数据集中音频的特征并保存）
 ```
+
 
 &nbsp;
 
@@ -59,6 +61,7 @@ Keras 2.2.4
 
 - [Opensmile](https://github.com/naxingyu/opensmile)：提取特征
 
+
 &nbsp;
 
 ## Datasets
@@ -78,6 +81,7 @@ Keras 2.2.4
 4. CASIA
 
    汉语，4 个人（2 名男性，2 名女性）的大约 1200 个音频，表达了 6 种不同的情绪：neutral，happy，sad，angry，fearful，surprised。
+
 
 &nbsp;
 
@@ -150,9 +154,12 @@ python train.py --config configs/example.yaml
 ```python
 python predict.py --config configs/example.yaml
 ```
+
+
 &nbsp;
 
 ### Functions
+
 #### Radar Chart
 
 画出预测概率的雷达图。
@@ -160,13 +167,13 @@ python predict.py --config configs/example.yaml
 来源：[Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/master/leidatu.py)
 
 ```python
-from utils.common import Radar
-'''
-输入:
-    data_prob: 概率数组
-    class_labels: 情感标签
-'''
-Radar(data_prob, class_labels)
+import utils
+"""
+Args:
+    data_prob (np.ndarray): 概率数组
+    class_labels (list): 情感标签
+"""
+utils.radar(data_prob, class_labels)
 ```
 
 &nbsp;
@@ -176,8 +183,8 @@ Radar(data_prob, class_labels)
 播放一段音频
 
 ```python
-from utils.common import playAudio
-playAudio(file_path)
+import utils
+utils.play_audio(file_path)
 ```
 
 &nbsp;
@@ -187,15 +194,15 @@ playAudio(file_path)
 画训练过程的准确率曲线和损失曲线。
 
 ```python
-from utils.common import plotCurve
-'''
-输入:
-    train(list): 训练集损失值或准确率数组
-    val(list): 验证集损失值或准确率数组
-    title(str): 图像标题
-    y_label(str): y 轴标签
-'''
-plotCurve(train, val, title, y_label)
+import utils
+"""
+Args:
+    train (list): 训练集损失值或准确率数组
+    val (list): 测试集损失值或准确率数组
+    title (str): 图像标题
+    y_label (str): y 轴标题
+"""
+utils.curve(train, val, title, y_label)
 ```
 
 &nbsp;
@@ -205,8 +212,8 @@ plotCurve(train, val, title, y_label)
 画出音频的波形图。
 
 ```python
-from utils.common import Waveform
-Waveform(file_path)
+import utils
+utils.waveform(file_path)
 ```
 
 &nbsp;
@@ -216,9 +223,10 @@ Waveform(file_path)
 画出音频的频谱图。
 
 ```python
-from utils.common import Spectrogram
-Spectrogram(file_path)
+import utils
+utils.spectrogram(file_path)
 ```
+
 
 &nbsp;
 

@@ -5,24 +5,6 @@ import librosa
 import scipy.io.wavfile as wav
 import numpy as np
 
-def plotCurve(train: list, val: list, title: str, y_label: str) -> None:
-    """
-    绘制损失值和准确率曲线
-
-    Args:
-        train (list): 训练集损失值或准确率数组
-        val (list): 测试集损失值或准确率数组
-        title (str): 图像标题
-        y_label (str): y 轴标题
-    """
-    plt.plot(train)
-    plt.plot(val)
-    plt.title(title)
-    plt.ylabel(y_label)
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
-    plt.show()
-
 def play_audio(file_path: str) -> None:
     """
     播放语音
@@ -45,7 +27,25 @@ def play_audio(file_path: str) -> None:
     stream.close()
     f.close()
 
-def Radar(data_prob: np.ndarray, class_labels: list) -> None:
+def curve(train: list, val: list, title: str, y_label: str) -> None:
+    """
+    绘制损失值和准确率曲线
+
+    Args:
+        train (list): 训练集损失值或准确率数组
+        val (list): 测试集损失值或准确率数组
+        title (str): 图像标题
+        y_label (str): y 轴标题
+    """
+    plt.plot(train)
+    plt.plot(val)
+    plt.title(title)
+    plt.ylabel(y_label)
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+
+def radar(data_prob: np.ndarray, class_labels: list) -> None:
     """
     绘制置信概率雷达图
 
@@ -53,18 +53,18 @@ def Radar(data_prob: np.ndarray, class_labels: list) -> None:
         data_prob (np.ndarray): 概率数组
         class_labels (list): 情感标签
     """
-    angles = np.linspace(0, 2 * np.pi, len(class_labels), endpoint = False)
+    angles = np.linspace(0, 2 * np.pi, len(class_labels), endpoint=False)
     data = np.concatenate((data_prob, [data_prob[0]]))  # 闭合
     angles = np.concatenate((angles, [angles[0]]))  # 闭合
 
     fig = plt.figure()
 
     # polar参数
-    ax = fig.add_subplot(111, polar = True)
+    ax = fig.add_subplot(111, polar=True)
     ax.plot(angles, data, 'bo-', linewidth=2)
     ax.fill(angles, data, facecolor='r', alpha=0.25)
     ax.set_thetagrids(angles * 180 / np.pi, class_labels)
-    ax.set_title("Emotion Recognition", va = 'bottom')
+    ax.set_title("Emotion Recognition", va='bottom')
 
     # 设置雷达图的数据最大值
     ax.set_rlim(0, 1)
@@ -75,7 +75,7 @@ def Radar(data_prob: np.ndarray, class_labels: list) -> None:
     # plt.pause(4)
     # plt.close()
 
-def Waveform(file_path: str) -> None:
+def waveform(file_path: str) -> None:
     """
     绘制音频波形图
 
@@ -84,10 +84,10 @@ def Waveform(file_path: str) -> None:
     """
     data, sampling_rate = librosa.load(file_path)
     plt.figure(figsize=(15, 5))
-    librosa.display.waveplot(data, sr = sampling_rate)
+    librosa.display.waveplot(data, sr=sampling_rate)
     plt.show()
 
-def Spectrogram(file_path: str) -> None:
+def spectrogram(file_path: str) -> None:
     """
     绘制频谱图
 
@@ -113,5 +113,5 @@ def Spectrogram(file_path: str) -> None:
         z = np.fft.fft(window * xseg, nfft)
         X[i,:] = np.log(np.abs(z[:nfft//2]))
 
-    plt.imshow(X.T, interpolation = 'nearest', origin = 'lower', aspect = 'auto')
+    plt.imshow(X.T, interpolation='nearest', origin='lower', aspect='auto')
     plt.show()

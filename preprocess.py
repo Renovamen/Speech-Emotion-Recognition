@@ -2,10 +2,10 @@
 
 import extract_feats.opensmile as of
 import extract_feats.librosa as lf
-import utils.opts as opts
+from utils import parse_opt
 
 if __name__ == '__main__':
-    config = opts.parse_opt()
+    config = parse_opt()
 
     if(config.feature_method == 'o'):
         of.get_data(config, config.data_path, config.train_feature_path_opensmile, train=True)
