@@ -1,10 +1,8 @@
 import os
-from typing import Tuple, Optional
+from typing import Optional
 from abc import ABC, abstractmethod
 import numpy as np
-import keras
-from keras import Sequential
-from keras.layers import Dense
+from keras.models import Sequential, model_from_json
 from ..base import BaseModel
 from utils.common import plotCurve
 
@@ -13,39 +11,49 @@ class DNN(BaseModel, ABC):
     所有基于 Keras 的深度学习模型的基本类
 
     Args:
-        input_shape (Tuple[int]): 特征维度
-        num_classes (int): 标签种类数量
+        n_classes (int): 标签种类数量
         lr (float): 学习率
     """
-    def __init__(
-        self, input_shape: Tuple[int], num_classes: int, lr: float, **params
-    ) -> None:
-        super(DNN, self).__init__()
-
-        self.input_shape = input_shape
-
-        self.model = Sequential()
-        self.make_model(**params)
-        self.model.add(Dense(num_classes, activation = 'softmax'))
-
-        optimzer = keras.optimizers.Adam(lr = lr)
-        self.model.compile(loss = 'categorical_crossentropy', optimizer = optimzer, metrics = ['accuracy'])
-
+    def __init__(self, model: Sequential, trained: bool = False) -> None:
+        super(DNN, self).__init__(model, trained)
         print(self.model.summary())
 
-    def save_model(self, config) -> None:
+    def save(self, path: str, name: str) -> None:
         """
-        将模型存储在 `config.checkpoint_path` 路径下
+        保存模型
 
         Args:
-            config: 配置项
+            path (str): 模型路径
+            name (str): 模型文件名
         """
-        h5_save_path = os.path.join(config.checkpoint_path, config.checkpoint_name + '.h5')
+        h5_save_path = os.path.join(path, name + '.h5')
         self.model.save_weights(h5_save_path)
 
-        save_json_path = os.path.join(config.checkpoint_path, config.checkpoint_name + '.json')
+        save_json_path = os.path.join(path, name + '.json')
         with open(save_json_path, "w") as json_file:
             json_file.write(self.model.to_json())
+
+    @classmethod
+    def load(cls, path: str, name: str):
+        """
+        加载模型
+
+        Args:
+            path (str): 模型路径
+            name (str): 模型文件名
+        """
+        # 加载 json
+        model_json_path = os.path.abspath(os.path.join(path, name + '.json'))
+        json_file = open(model_json_path, 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        model = model_from_json(loaded_model_json)
+
+        # 加载权重
+        model_path = os.path.abspath(os.path.join(path, name + '.h5'))
+        model.load_weights(model_path)
+
+        return cls(model, True)
 
     def train(
         self,
@@ -92,7 +100,7 @@ class DNN(BaseModel, ABC):
 
         self.trained = True
 
-    def predict(self, sample: np.ndarray) -> np.ndarray:
+    def predict(self, samples: np.ndarray) -> np.ndarray:
         """
         预测音频的情感
 
@@ -102,18 +110,14 @@ class DNN(BaseModel, ABC):
         Returns:
             results (np.ndarray): 识别结果
         """
-        sample = self.reshape_input(sample)
 
         # 没有训练和加载过模型
         if not self.trained:
             raise RuntimeError('There is no trained model.')
 
-        return np.argmax(self.model.predict(sample), axis=1)
+        samples = self.reshape_input(samples)
+        return np.argmax(self.model.predict(samples), axis=1)
 
     @abstractmethod
     def reshape_input(self):
-        pass
-
-    @abstractmethod
-    def make_model(self):
         pass

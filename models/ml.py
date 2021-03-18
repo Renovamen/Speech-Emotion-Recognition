@@ -4,21 +4,37 @@ from abc import ABC
 import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
+from sklearn.base import BaseEstimator
+from sklearn.externals import joblib
 from .base import BaseModel
 
 class MLModel(BaseModel, ABC):
-    def __init__(self) -> None:
-        super(MLModel, self).__init__()
+    def __init__(self, model: BaseEstimator, trained: bool = False) -> None:
+        super(MLModel, self).__init__(model, trained)
 
-    def save_model(self, config) -> None:
+    def save(self, path: str, name: str) -> None:
         """
-        将模型存储在 `config.checkpoint_path` 路径下
+        保存模型
 
         Args:
-            config: 配置项
+            path (str): 模型路径
+            name (str): 模型文件名
         """
-        save_path = os.path.join(config.checkpoint_path, config.checkpoint_name + '.m')
+        save_path = os.path.abspath(os.path.join(path, name + '.m'))
         pickle.dump(self.model, open(save_path, "wb"))
+
+    @classmethod
+    def load(cls, path: str, name: str):
+        """
+        加载模型
+
+        Args:
+            path (str): 模型路径
+            name (str): 模型文件名
+        """
+        model_path = os.path.abspath(os.path.join(path, name + '.m'))
+        model = joblib.load(model_path)
+        return cls(model, True)
 
     def train(self, x_train: np.ndarray, y_train: np.ndarray) -> None:
         """
@@ -47,12 +63,20 @@ class MLModel(BaseModel, ABC):
 
 
 class SVM(MLModel):
-    def __init__(self, model_params) -> None:
-        super(SVM, self).__init__()
-        self.model = SVC(**model_params)
+    def __init__(self, model: BaseEstimator, trained: bool = False) -> None:
+        super(SVM, self).__init__(model, trained)
+
+    @classmethod
+    def make(cls, params):
+        model = SVC(**params)
+        return cls(model)
 
 
 class MLP(MLModel):
-    def __init__(self, model_params) -> None:
-        super(MLP, self).__init__()
-        self.model = MLPClassifier(**model_params)
+    def __init__(self, model: BaseEstimator, trained: bool = False) -> None:
+        super(MLP, self).__init__(model, trained)
+
+    @classmethod
+    def make(cls, params):
+        model = MLPClassifier(**params)
+        return cls(model)

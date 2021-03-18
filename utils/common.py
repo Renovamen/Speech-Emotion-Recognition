@@ -1,46 +1,9 @@
 import os
-from typing import Union
 import wave
 import matplotlib.pyplot as plt
 import librosa
-import librosa.display
 import scipy.io.wavfile as wav
 import numpy as np
-from keras.models import model_from_json, Sequential
-from sklearn.externals import joblib
-from sklearn.base import BaseEstimator
-
-def load_model(
-    checkpoint_path: str, checkpoint_name: str, model_name: str
-) -> Union[Sequential, BaseEstimator]:
-    """
-    加载模型
-
-    Args:
-        checkpoint_path (str): checkpoint 路径
-        checkpoint_name (str): checkpoint 文件名
-        model_name (str): 模型名称
-
-    Returns:
-        model (Union[keras.Sequential, sklearn.base.BaseEstimator]): 加载好的模型
-    """
-    if model_name in ['lstm', 'cnn1d', 'cnn2d']:
-        # 加载 json
-        model_json_path = os.path.join(checkpoint_path, checkpoint_name + '.json')
-        json_file = open(model_json_path, 'r')
-        loaded_model_json = json_file.read()
-        json_file.close()
-        model = model_from_json(loaded_model_json)
-
-        # 加载权重
-        model_path = os.path.join(checkpoint_path, checkpoint_name + '.h5')
-        model.load_weights(model_path)
-
-    else:
-        model_path = os.path.join(checkpoint_path, checkpoint_name + '.m')
-        model = joblib.load(model_path)
-
-    return model
 
 def plotCurve(train: list, val: list, title: str, y_label: str) -> None:
     """

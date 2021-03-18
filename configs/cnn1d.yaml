@@ -25,7 +25,7 @@ checkpoint_path: checkpoints/  # checkpoint 存储路径
 checkpoint_name: CNN1D_OPENSMILE_IS10  # checkpoint 文件名
 
 # 训练参数
-epochs: 20  # 训练 epoch 数
+epochs: 15  # 训练 epoch 数
 batch_size: 32  # 批大小
 lr: 0.001  # 学习率
 

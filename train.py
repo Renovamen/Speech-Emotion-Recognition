@@ -19,16 +19,16 @@ def train(config) -> None:
 
     # 加载被 preprocess.py 预处理好的特征
     if(config.feature_method == 'o'):
-        x_train, x_test, y_train, y_test = of.load_feature(config, config.train_feature_path_opensmile, train = True)
+        x_train, x_test, y_train, y_test = of.load_feature(config, config.train_feature_path_opensmile, train=True)
 
     elif(config.feature_method == 'l'):
-        x_train, x_test, y_train, y_test = lf.load_feature(config, config.train_feature_path_librosa, train = True)
+        x_train, x_test, y_train, y_test = lf.load_feature(config, config.train_feature_path_librosa, train=True)
 
     # x_train, x_test (n_samples, n_feats)
     # y_train, y_test (n_samples)
 
     # 搭建模型
-    model = models.setup(config = config, n_feats = x_train.shape[1])
+    model = models.make(config=config, n_feats=x_train.shape[1])
 
     # 训练模型
     print('----- start training', config.model, '-----')
@@ -47,7 +47,7 @@ def train(config) -> None:
     # 验证模型
     model.evaluate(x_test, y_test)
     # 保存训练好的模型
-    model.save_model(config)
+    model.save(config.checkpoint_path, config.checkpoint_name)
 
 
 if __name__ == '__main__':

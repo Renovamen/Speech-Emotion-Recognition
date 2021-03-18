@@ -1,13 +1,20 @@
 from abc import ABC, abstractmethod
+from typing import Union
 import numpy as np
+from keras.models import Sequential
 from sklearn.metrics import accuracy_score
+from sklearn.base import BaseEstimator
 
 class BaseModel(ABC):
     """所有模型的基础类"""
 
-    def __init__(self) -> None:
-        self.model = None
-        self.trained = False  # 模型是否已训练
+    def __init__(
+        self,
+        model: Union[Sequential, BaseEstimator],
+        trained: bool = False
+    ) -> None:
+        self.model = model
+        self.trained = trained  # 模型是否已训练
 
     @abstractmethod
     def train(self) -> None:
@@ -31,11 +38,26 @@ class BaseModel(ABC):
         """
         if not self.trained:
             raise RuntimeError('There is no trained model.')
-        return self.model.predict_proba(samples)
+
+        if hasattr(self, 'reshape_input'):
+            samples = self.reshape_input(samples)
+        return self.model.predict_proba(samples)[0]
 
     @abstractmethod
-    def save_model(self, config) -> None:
+    def save(self, path: str, name: str) -> None:
         """保存模型"""
+        pass
+
+    @classmethod
+    @abstractmethod
+    def load(cls, path: str, name: str):
+        """加载模型"""
+        pass
+
+    @classmethod
+    @abstractmethod
+    def make(cls):
+        """搭建模型"""
         pass
 
     def evaluate(self, x_test: np.ndarray, y_test: np.ndarray) -> None:
@@ -44,17 +66,11 @@ class BaseModel(ABC):
 
         Args:
             x_test (np.ndarray): 样本
-            y_test (np.ndarray): 标签
+            y_test (np.ndarray): 标签（ground truth）
         """
         predictions = self.predict(x_test)
-        print(y_test)
-        print(predictions)
-        print('Accuracy: %.3f\n' % accuracy_score(y_pred = predictions, y_true = y_test))
+        accuracy = accuracy_score(y_pred=predictions, y_true=y_test)
+        # accuracy = self.model.score(x_test, y_test)
+        print('Accuracy: %.3f\n' % accuracy)
 
-        """
-        predictions = self.predict(x_test)
-        score = self.model.score(x_test, y_test)
-        print("True Lable: ", y_test)
-        print("Predict Lable: ", predictions)
-        print("Score: ", score)
-        """
+        return accuracy

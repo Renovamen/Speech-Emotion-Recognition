@@ -2,18 +2,9 @@ import os
 import numpy as np
 import extract_feats.opensmile as of
 import extract_feats.librosa as lf
-from utils.common import load_model, Radar, play_audio
+import models
+from utils.common import Radar, play_audio
 import utils.opts as opts
-
-def reshape_input(model, data):
-    if model == 'lstm':
-        # (n_samples, n_feats) -> (n_samples, time_steps = 1, input_size = n_feats)
-        data = np.reshape(data, (data.shape[0], 1, data.shape[1]))
-    elif model == 'cnn1d':
-        # (n_samples, n_feats) -> (n_samples, n_feats, 1)
-        data = np.reshape(data, (data.shape[0], data.shape[1], 1))
-
-    return data
 
 def predict(config, audio_path: str, model) -> None:
     """
@@ -29,33 +20,21 @@ def predict(config, audio_path: str, model) -> None:
 
     if(config.feature_method == 'o'):
         # 一个玄学 bug 的暂时性解决方案
-        of.get_data(config, audio_path, config.predict_feature_path_opensmile, train = False)
-        test_feature = of.load_feature(config, config.predict_feature_path_opensmile, train = False)
+        of.get_data(config, audio_path, config.predict_feature_path_opensmile, train=False)
+        test_feature = of.load_feature(config, config.predict_feature_path_opensmile, train=False)
     elif(config.feature_method == 'l'):
-        test_feature = lf.get_data(config, audio_path, config.predict_feature_path_librosa, train = False)
-
-    test_feature = reshape_input(config.model, test_feature)
+        test_feature = lf.get_data(config, audio_path, config.predict_feature_path_librosa, train=False)
 
     result = model.predict(test_feature)
-    if config.model in ['lstm', 'cnn1d', 'cnn2d']:
-        result = np.argmax(result)
-
-    result_prob = model.predict_proba(test_feature)[0]
+    result_prob = model.predict_proba(test_feature)
     print('Recogntion: ', config.class_labels[int(result)])
     print('Probability: ', result_prob)
     Radar(result_prob, config.class_labels)
 
 
 if __name__ == '__main__':
-    audio_path = '/Users/zou/Desktop/Speech-Emotion-Recognition/test/angry.wav'
+    audio_path = '/Users/zou/Renovamen/Developing/Speech-Emotion-Recognition/datasets/CASIA/angry/201-angry-liuchanhg.wav'
 
     config = opts.parse_opt()
-
-    # 加载模型
-    model = load_model(
-        checkpoint_path = config.checkpoint_path,
-        checkpoint_name = config.checkpoint_name,
-        model_name = config.model
-    )
-
+    model = models.load(config)
     predict(config, audio_path, model)
