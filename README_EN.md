@@ -11,8 +11,8 @@ English Document | [中文文档](README.md)
 
 ## Environments
 
-- Python 3.6.7
-- Keras 2.2.4
+- Python 3.8
+- Keras & TensorFlow 2
 
 
 &nbsp;
@@ -49,11 +49,10 @@ English Document | [中文文档](README.md)
 ### Python
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn): SVM & MLP, split data into training set and testing set
-- [Keras](https://github.com/keras-team/keras): LSTM
-- [TensorFlow](https://github.com/tensorflow/tensorflow): backend of Keras
+- [TensorFlow 2](https://github.com/tensorflow/tensorflow) / [Keras](https://github.com/keras-team/keras): LSTM & CNN (`tensorflow.keras`)
 - [librosa](https://github.com/librosa/librosa): extract features, waveform
 - [SciPy](https://github.com/scipy/scipy): spectrogram
-- [pandas](https://github.com/pandas-dev/pandas): Load features
+- [pandas](https://github.com/pandas-dev/pandas): load features
 - [Matplotlib](https://github.com/matplotlib/matplotlib): plot graphs
 - [numpy](github.com/numpy/numpy)
 

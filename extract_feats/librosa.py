@@ -2,21 +2,21 @@ import os
 import re
 import sys
 import librosa
-import librosa.display
 from random import shuffle
 import numpy as np
 from typing import Tuple, Union
 import pickle
 import pandas as pd
-from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+import joblib
+import utils
 
 def features(X, sample_rate: float) -> np.ndarray:
     stft = np.abs(librosa.stft(X))
 
     # fmin 和 fmax 对应于人类语音的最小最大基本频率
-    pitches, magnitudes = librosa.piptrack(X, sr=sample_rate, S=stft, fmin=70, fmax=400)
+    pitches, magnitudes = librosa.piptrack(y=X, sr=sample_rate, S=stft, fmin=70, fmax=400)
     pitch = []
     for i in range(magnitudes.shape[1]):
         index = magnitudes[:, 1].argmax()
@@ -47,7 +47,7 @@ def features(X, sample_rate: float) -> np.ndarray:
     chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T, axis=0)
 
     # 梅尔频率
-    mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T, axis=0)
+    mel = np.mean(librosa.feature.melspectrogram(y=X, sr=sample_rate).T, axis=0)
 
     # ottava对比
     contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T, axis=0)
@@ -61,7 +61,7 @@ def features(X, sample_rate: float) -> np.ndarray:
     maxMagnitude = np.max(S)
 
     # 均方根能量
-    rmse = librosa.feature.rmse(S=S)[0]
+    rmse = librosa.feature.rms(S=S)[0]
     meanrms = np.mean(rmse)
     stdrms = np.std(rmse)
     maxrms = np.max(rmse)
@@ -130,21 +130,20 @@ def get_data_path(data_path: str, class_labels: list) -> list:
     shuffle(wav_file_path)
     return wav_file_path
 
-def load_feature(
-    config, feature_path: str, train: bool
-) -> Union[Tuple[np.ndarray], np.ndarray]:
+def load_feature(config, train: bool) -> Union[Tuple[np.ndarray], np.ndarray]:
     """
-    从 `csv` 文件中加载特征数据
+    从 "{config.feature_folder}/*.p" 文件中加载特征数据
 
     Args:
         config: 配置项
-        feature_path (str): 特征文件路径
         train (bool): 是否为训练数据
 
     Returns:
         - X (Tuple[np.ndarray]): 训练特征、测试特征和对应的标签
         - X (np.ndarray): 预测特征
     """
+    feature_path = os.path.join(config.feature_folder, "train.p" if train == True else "predict.p")
+
     features = pd.DataFrame(
         data = joblib.load(feature_path),
         columns = ['file_name', 'features', 'emotion']
@@ -154,12 +153,13 @@ def load_feature(
     Y = list(features['emotion'])
 
     # 标准化模型路径
-    scaler_path = os.path.join(config.checkpoint_path, 'SCALER_OPENSMILE.m')
+    scaler_path = os.path.join(config.checkpoint_path, 'SCALER_LIBROSA.m')
 
     if train == True:
         # 标准化数据
         scaler = StandardScaler().fit(X)
         # 保存标准化模型
+        utils.mkdirs(config.checkpoint_path)
         joblib.dump(scaler, scaler_path)
         X = scaler.transform(X)
 
@@ -173,24 +173,21 @@ def load_feature(
         X = scaler.transform(X)
         return X
 
-def get_data(
-    config, data_path: str, feature_path: str, train: bool
-) -> Union[Tuple[np.ndarray], np.ndarray]:
+def get_data(config, data_path: str, train: bool) -> Union[Tuple[np.ndarray], np.ndarray]:
     """
     提取所有音频的特征: 遍历所有文件夹, 读取每个文件夹中的音频, 提取每个音频的特征，把所有特征
-    保存在 `feature_path` 路径下。
+    保存在 "{config.feature_folder}/*.p" 文件中。
 
     Args:
-        confi: 配置项
+        config: 配置项
         data_path (str): 数据集文件夹/测试文件路径
-        feature_path (str): 保存特征的路径
         train (bool): 是否为训练数据
 
     Returns:
         - train = True: 训练特征、测试特征和对应的标签
         - train = False: 预测特征
     """
-    if(train == True):
+    if train == True:
         files = get_data_path(data_path, config.class_labels)
         max_, min_ = get_max_min(files)
 
@@ -213,9 +210,11 @@ def get_data(
         features = extract_features(data_path)
         mfcc_data = [[data_path, features, -1]]
 
-
-    cols = ['file_name', 'features', 'emotion']
-    mfcc_pd = pd.DataFrame(data=mfcc_data, columns=cols)
+    # 如果 config.feature_folder 文件夹不存在，则新建一个
+    utils.mkdirs(config.feature_folder)
+    # 特征存储路径
+    feature_path = os.path.join(config.feature_folder, "train.p" if train == True else "predict.p")
+    # 保存特征
     pickle.dump(mfcc_data, open(feature_path, 'wb'))
 
-    return load_feature(config, feature_path, train=train)
+    return load_feature(config, train=train)

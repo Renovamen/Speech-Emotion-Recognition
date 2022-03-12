@@ -17,12 +17,12 @@ def predict(config, audio_path: str, model) -> None:
 
     # utils.play_audio(audio_path)
 
-    if(config.feature_method == 'o'):
+    if config.feature_method == 'o':
         # 一个玄学 bug 的暂时性解决方案
-        of.get_data(config, audio_path, config.predict_feature_path_opensmile, train=False)
-        test_feature = of.load_feature(config, config.predict_feature_path_opensmile, train=False)
-    elif(config.feature_method == 'l'):
-        test_feature = lf.get_data(config, audio_path, config.predict_feature_path_librosa, train=False)
+        of.get_data(config, audio_path, train=False)
+        test_feature = of.load_feature(config, train=False)
+    elif config.feature_method == 'l':
+        test_feature = lf.get_data(config, audio_path, train=False)
 
     result = model.predict(test_feature)
     result_prob = model.predict_proba(test_feature)

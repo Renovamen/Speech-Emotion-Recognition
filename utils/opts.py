@@ -22,7 +22,7 @@ def load_config(file_path: str) -> dict:
         config (dict): 配置项
     """
     f = open(file_path, 'r', encoding = 'utf-8')
-    config = yaml.load(f.read(), Loader = yaml.FullLoader)
+    config = yaml.load(f.read(), Loader=yaml.FullLoader)
     return config
 
 def parse_opt():
