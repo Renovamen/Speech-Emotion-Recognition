@@ -48,13 +48,14 @@ English Document | [中文文档](README.md)
 
 ### Python
 
-- [scikit-learn](https://github.com/scikit-learn/scikit-learn): SVM & MLP, split data into training set and testing set
 - [TensorFlow 2](https://github.com/tensorflow/tensorflow) / [Keras](https://github.com/keras-team/keras): LSTM & CNN (`tensorflow.keras`)
+- [scikit-learn](https://github.com/scikit-learn/scikit-learn): SVM & MLP, split data into training set and testing set
+- [joblib](https://github.com/joblib/joblib)：save and load models trained by scikit-learn
 - [librosa](https://github.com/librosa/librosa): extract features, waveform
 - [SciPy](https://github.com/scipy/scipy): spectrogram
 - [pandas](https://github.com/pandas-dev/pandas): load features
 - [Matplotlib](https://github.com/matplotlib/matplotlib): plot graphs
-- [numpy](github.com/numpy/numpy)
+- [NumPy](https://github.com/numpy/numpy)
 
 ### Tools
 
@@ -176,6 +177,7 @@ Source: [Radar](https://github.com/Zhaofan-Su/SpeechEmotionRecognition/blob/mast
 
 ```python
 import utils
+
 """
 Args:
     data_prob (np.ndarray): probabilities
@@ -190,6 +192,7 @@ utils.radar(data_prob, class_labels)
 
 ```python
 import utils
+
 utils.play_audio(file_path)
 ```
 
@@ -201,6 +204,7 @@ Plot loss curve or accuracy curve.
 
 ```python
 import utils
+
 """
 Args:
     train (list): loss or accuracy on train set
@@ -219,6 +223,7 @@ Plot a waveform for an audio file.
 
 ```python
 import utils
+
 utils.waveform(file_path)
 ```
 
@@ -230,6 +235,7 @@ Plot a spectrogram for an audio file.
 
 ```python
 import utils
+
 utils.spectrogram(file_path)
 ```
 

@@ -48,13 +48,14 @@
 
 ### Python
 
+- [TensorFlow 2](https://github.com/tensorflow/tensorflow) / [Keras](https://github.com/keras-team/keras)：LSTM & CNN (`tensorflow.keras`)
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
-- [TensorFlow 2](https://github.com/tensorflow/tensorflow) / [Keras](https://github.com/keras-team/keras)：LSTM、CNN (`tensorflow.keras`)
+- [joblib](https://github.com/joblib/joblib)：保存和加载用 scikit-learn 训练的模型
 - [librosa](https://github.com/librosa/librosa)：提取特征、波形图
 - [SciPy](https://github.com/scipy/scipy)：频谱图
 - [pandas](https://github.com/pandas-dev/pandas)：加载特征
 - [Matplotlib](https://github.com/matplotlib/matplotlib)：绘图
-- [numpy](github.com/numpy/numpy)
+- [NumPy](https://github.com/numpy/numpy)
 
 ### Tools
 
@@ -167,6 +168,7 @@ python predict.py --config configs/example.yaml
 
 ```python
 import utils
+
 """
 Args:
     data_prob (np.ndarray): 概率数组
@@ -183,6 +185,7 @@ utils.radar(data_prob, class_labels)
 
 ```python
 import utils
+
 utils.play_audio(file_path)
 ```
 
@@ -194,6 +197,7 @@ utils.play_audio(file_path)
 
 ```python
 import utils
+
 """
 Args:
     train (list): 训练集损失值或准确率数组
@@ -212,6 +216,7 @@ utils.curve(train, val, title, y_label)
 
 ```python
 import utils
+
 utils.waveform(file_path)
 ```
 
@@ -223,6 +228,7 @@ utils.waveform(file_path)
 
 ```python
 import utils
+
 utils.spectrogram(file_path)
 ```
 
