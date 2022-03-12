@@ -53,8 +53,11 @@ def radar(data_prob: np.ndarray, class_labels: list) -> None:
         class_labels (list): 情感标签
     """
     angles = np.linspace(0, 2 * np.pi, len(class_labels), endpoint=False)
-    data = np.concatenate((data_prob, [data_prob[0]]))  # 闭合
-    angles = np.concatenate((angles, [angles[0]]))  # 闭合
+
+    # 闭合
+    data = np.concatenate((data_prob, [data_prob[0]]))
+    angles = np.concatenate((angles, [angles[0]]))
+    class_labels = class_labels + [class_labels[0]]
 
     fig = plt.figure()
 

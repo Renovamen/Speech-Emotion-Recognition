@@ -26,22 +26,10 @@ class BaseModel(ABC):
         """预测音频的情感"""
         pass
 
+    @abstractmethod
     def predict_proba(self, samples: np.ndarray) -> np.ndarray:
-        """
-        预测音频的情感的置信概率
-
-        Args:
-            samples (np.ndarray): 需要识别的音频特征
-
-        Returns:
-            results (np.ndarray): 每种情感的概率
-        """
-        if not self.trained:
-            raise RuntimeError('There is no trained model.')
-
-        if hasattr(self, 'reshape_input'):
-            samples = self.reshape_input(samples)
-        return self.model.predict_proba(samples)[0]
+        """预测音频的情感的置信概率"""
+        pass
 
     @abstractmethod
     def save(self, path: str, name: str) -> None:

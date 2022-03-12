@@ -61,6 +61,23 @@ class MLModel(BaseModel, ABC):
             raise RuntimeError('There is no trained model.')
         return self.model.predict(samples)
 
+    def predict_proba(self, samples: np.ndarray) -> np.ndarray:
+        """
+        预测音频的情感的置信概率
+
+        Args:
+            samples (np.ndarray): 需要识别的音频特征
+
+        Returns:
+            results (np.ndarray): 每种情感的概率
+        """
+        if not self.trained:
+            raise RuntimeError('There is no trained model.')
+
+        if hasattr(self, 'reshape_input'):
+            samples = self.reshape_input(samples)
+        return self.model.predict_proba(samples)[0]
+
 
 class SVM(MLModel):
     def __init__(self, model: BaseEstimator, trained: bool = False) -> None:

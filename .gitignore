@@ -2,6 +2,7 @@ datasets/
 checkpoints/
 test/
 single_feature.csv
+predict.csv
 
 # Editors
 .vscode/
