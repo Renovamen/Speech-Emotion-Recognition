@@ -1,6 +1,7 @@
 import wave
 import matplotlib.pyplot as plt
 import librosa
+import librosa.display
 import scipy.io.wavfile as wav
 import numpy as np
 
@@ -86,7 +87,7 @@ def waveform(file_path: str) -> None:
     """
     data, sampling_rate = librosa.load(file_path)
     plt.figure(figsize=(15, 5))
-    librosa.display.waveplot(y=data, sr=sampling_rate)
+    librosa.display.waveshow(y=data, sr=sampling_rate)
     plt.show()
 
 def spectrogram(file_path: str) -> None:
