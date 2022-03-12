@@ -1,4 +1,3 @@
-import os
 import wave
 import matplotlib.pyplot as plt
 import librosa
@@ -14,7 +13,7 @@ def play_audio(file_path: str) -> None:
     """
     import pyaudio
     p = pyaudio.PyAudio()
-    f = wave.open(file_path, 'rb')
+    f = wave.open(file_path, "rb")
     stream = p.open(
         format = p.get_format_from_width(f.getsampwidth()),
         channels = f.getnchannels(),
@@ -41,8 +40,8 @@ def curve(train: list, val: list, title: str, y_label: str) -> None:
     plt.plot(val)
     plt.title(title)
     plt.ylabel(y_label)
-    plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
+    plt.xlabel("epoch")
+    plt.legend(["train", "test"], loc="upper left")
     plt.show()
 
 def radar(data_prob: np.ndarray, class_labels: list) -> None:
@@ -61,10 +60,10 @@ def radar(data_prob: np.ndarray, class_labels: list) -> None:
 
     # polar参数
     ax = fig.add_subplot(111, polar=True)
-    ax.plot(angles, data, 'bo-', linewidth=2)
-    ax.fill(angles, data, facecolor='r', alpha=0.25)
+    ax.plot(angles, data, "bo-", linewidth=2)
+    ax.fill(angles, data, facecolor="r", alpha=0.25)
     ax.set_thetagrids(angles * 180 / np.pi, class_labels)
-    ax.set_title("Emotion Recognition", va='bottom')
+    ax.set_title("Emotion Recognition", va="bottom")
 
     # 设置雷达图的数据最大值
     ax.set_rlim(0, 1)
@@ -84,7 +83,7 @@ def waveform(file_path: str) -> None:
     """
     data, sampling_rate = librosa.load(file_path)
     plt.figure(figsize=(15, 5))
-    librosa.display.waveplot(data, sr=sampling_rate)
+    librosa.display.waveplot(y=data, sr=sampling_rate)
     plt.show()
 
 def spectrogram(file_path: str) -> None:
@@ -113,5 +112,5 @@ def spectrogram(file_path: str) -> None:
         z = np.fft.fft(window * xseg, nfft)
         X[i,:] = np.log(np.abs(z[:nfft//2]))
 
-    plt.imshow(X.T, interpolation='nearest', origin='lower', aspect='auto')
+    plt.imshow(X.T, interpolation="nearest", origin="lower", aspect="auto")
     plt.show()

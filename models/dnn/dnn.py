@@ -2,7 +2,7 @@ import os
 from typing import Optional
 from abc import ABC, abstractmethod
 import numpy as np
-from keras.models import Sequential, model_from_json
+from tensorflow.keras.models import Sequential, model_from_json
 from ..base import BaseModel
 from utils import curve
 
@@ -26,10 +26,10 @@ class DNN(BaseModel, ABC):
             path (str): 模型路径
             name (str): 模型文件名
         """
-        h5_save_path = os.path.join(path, name + '.h5')
+        h5_save_path = os.path.join(path, name + ".h5")
         self.model.save_weights(h5_save_path)
 
-        save_json_path = os.path.join(path, name + '.json')
+        save_json_path = os.path.join(path, name + ".json")
         with open(save_json_path, "w") as json_file:
             json_file.write(self.model.to_json())
 
@@ -43,14 +43,14 @@ class DNN(BaseModel, ABC):
             name (str): 模型文件名
         """
         # 加载 json
-        model_json_path = os.path.abspath(os.path.join(path, name + '.json'))
-        json_file = open(model_json_path, 'r')
+        model_json_path = os.path.abspath(os.path.join(path, name + ".json"))
+        json_file = open(model_json_path, "r")
         loaded_model_json = json_file.read()
         json_file.close()
         model = model_from_json(loaded_model_json)
 
         # 加载权重
-        model_path = os.path.abspath(os.path.join(path, name + '.h5'))
+        model_path = os.path.abspath(os.path.join(path, name + ".h5"))
         model.load_weights(model_path)
 
         return cls(model, True)
@@ -62,7 +62,7 @@ class DNN(BaseModel, ABC):
         x_val: Optional[np.ndarray] = None,
         y_val: Optional[np.ndarray] = None,
         batch_size: int = 32,
-        n_epochs: int = 50
+        n_epochs: int = 20
     ) -> None:
         """
         训练模型
@@ -84,19 +84,19 @@ class DNN(BaseModel, ABC):
             x_train, y_train,
             batch_size = batch_size,
             epochs = n_epochs,
-            shuffle = True, # 每个 epoch 开始前随机排列训练数据
+            shuffle = True,  # 每个 epoch 开始前随机排列训练数据
             validation_data = (x_val, y_val)
         )
 
         # 训练集上的损失和准确率
-        acc = history.history['acc']
-        loss = history.history['loss']
+        acc = history.history["accuracy"]
+        loss = history.history["loss"]
         # 验证集上的损失和准确率
-        val_acc = history.history['val_acc']
-        val_loss = history.history['val_loss']
+        val_acc = history.history["val_accuracy"]
+        val_loss = history.history["val_loss"]
 
-        curve(acc, val_acc, 'Accuracy', 'acc')
-        curve(loss, val_loss, 'Loss', 'loss')
+        curve(acc, val_acc, "Accuracy", "acc")
+        curve(loss, val_loss, "Loss", "loss")
 
         self.trained = True
 
@@ -113,7 +113,7 @@ class DNN(BaseModel, ABC):
 
         # 没有训练和加载过模型
         if not self.trained:
-            raise RuntimeError('There is no trained model.')
+            raise RuntimeError("There is no trained model.")
 
         samples = self.reshape_input(samples)
         return np.argmax(self.model.predict(samples), axis=1)

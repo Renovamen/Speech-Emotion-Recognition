@@ -1,9 +1,7 @@
-import os
-import numpy as np
-from keras.utils import np_utils
-import models
+from tensorflow.keras.utils import to_categorical
 import extract_feats.opensmile as of
 import extract_feats.librosa as lf
+import models
 from utils import parse_opt
 
 def train(config) -> None:
@@ -18,11 +16,11 @@ def train(config) -> None:
     """
 
     # 加载被 preprocess.py 预处理好的特征
-    if(config.feature_method == 'o'):
-        x_train, x_test, y_train, y_test = of.load_feature(config, config.train_feature_path_opensmile, train=True)
+    if config.feature_method == 'o':
+        x_train, x_test, y_train, y_test = of.load_feature(config, train=True)
 
-    elif(config.feature_method == 'l'):
-        x_train, x_test, y_train, y_test = lf.load_feature(config, config.train_feature_path_librosa, train=True)
+    elif config.feature_method == 'l':
+        x_train, x_test, y_train, y_test = lf.load_feature(config, train=True)
 
     # x_train, x_test (n_samples, n_feats)
     # y_train, y_test (n_samples)
@@ -33,7 +31,7 @@ def train(config) -> None:
     # 训练模型
     print('----- start training', config.model, '-----')
     if config.model in ['lstm', 'cnn1d', 'cnn2d']:
-        y_train, y_val = np_utils.to_categorical(y_train), np_utils.to_categorical(y_test) # 独热编码
+        y_train, y_val = to_categorical(y_train), to_categorical(y_test)  # 独热编码
         model.train(
             x_train, y_train,
             x_test, y_val,

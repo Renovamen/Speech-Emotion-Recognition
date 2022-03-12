@@ -11,8 +11,8 @@
 
 ## Environments
 
-- Python 3.6.7
-- Keras 2.2.4
+- Python >= 3.6
+- Keras & TensorFlow 2
 
 
 &nbsp;
@@ -49,8 +49,7 @@
 ### Python
 
 - [scikit-learn](https://github.com/scikit-learn/scikit-learn)：SVM & MLP 模型，划分训练集和测试集
-- [Keras](https://github.com/keras-team/keras)：LSTM、CNN
-- [TensorFlow](https://github.com/tensorflow/tensorflow)：Keras 的后端
+- [TensorFlow 2](https://github.com/tensorflow/tensorflow) / [Keras](https://github.com/keras-team/keras)：LSTM、CNN（`tensorflow.keras`）
 - [librosa](https://github.com/librosa/librosa)：提取特征、波形图
 - [SciPy](https://github.com/scipy/scipy)：频谱图
 - [pandas](https://github.com/pandas-dev/pandas)：加载特征

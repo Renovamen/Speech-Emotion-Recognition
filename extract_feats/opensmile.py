@@ -1,13 +1,13 @@
 import os
 import csv
 import sys
-import time
 from typing import Tuple, Union
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from sklearn.externals import joblib
 from sklearn.model_selection import train_test_split
+import joblib
+import utils
 
 # 每个特征集的特征数量
 FEATURE_NUM = {
@@ -34,7 +34,7 @@ def get_feature_opensmile(config, filepath: str) -> list:
     # 项目路径
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
     # single_feature.csv 路径
-    single_feat_path = os.path.join(BASE_DIR, config.feature_path, 'single_feature.csv')
+    single_feat_path = os.path.join(BASE_DIR, config.feature_folder, 'single_feature.csv')
     # Opensmile 配置文件路径
     opensmile_config_path = os.path.join(config.opensmile_path, 'config', config.opensmile_config + '.conf')
 
@@ -48,21 +48,20 @@ def get_feature_opensmile(config, filepath: str) -> list:
     last_line = rows[-1]
     return last_line[1: FEATURE_NUM[config.opensmile_config] + 1]
 
-def load_feature(
-    config, feature_path: str, train: bool
-) -> Union[Tuple[np.ndarray], np.ndarray]:
+def load_feature(config, train: bool) -> Union[Tuple[np.ndarray], np.ndarray]:
     """
-    从 `csv` 文件中加载特征数据
+    从 "{config.feature_folder}/*.csv" 文件中加载特征数据
 
     Args:
         config: 配置项
-        feature_path (str): 特征文件路径
         train (bool): 是否为训练数据
 
     Returns:
         - X (Tuple[np.ndarray]): 训练特征、测试特征和对应的标签
         - X (np.ndarray): 预测特征
     """
+
+    feature_path = os.path.join(config.feature_folder, "train.csv" if train == True else "predict.csv")
 
     # 加载特征数据
     df = pd.read_csv(feature_path)
@@ -78,9 +77,9 @@ def load_feature(
         # 标准化数据
         scaler = StandardScaler().fit(X)
         # 保存标准化模型
+        utils.mkdirs(config.checkpoint_path)
         joblib.dump(scaler, scaler_path)
         X = scaler.transform(X)
-
         # 划分训练集和测试集
         x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size = 0.2, random_state = 42)
         return x_train, x_test, y_train, y_test
@@ -91,22 +90,27 @@ def load_feature(
         X = scaler.transform(X)
         return X
 
-def get_data(
-    config, data_path: str, feature_path: str, train: bool
-) -> Union[Tuple[np.ndarray], np.ndarray]:
+def get_data(config, data_path: str, train: bool) -> Union[Tuple[np.ndarray], np.ndarray]:
     """
     用 Opensmile 提取所有音频的特征: 遍历所有文件夹, 读取每个文件夹中的音频, 提取每个音频的
-    特征，把所有特征保存在 `feature_path` 路径下。
+    特征，把所有特征保存在 "{config.feature_path}/*.csv" 文件中。
 
     Args:
+        config: 配置项
         data_path (str): 数据集文件夹 / 测试文件路径
-        feature_path (str): 保存特征的路径
         train (bool): 是否为训练数据
 
     Returns:
         - train = True: 训练特征、测试特征和对应的标签
         - train = False: 预测特征
     """
+    # 如果 config.feature_folder 文件夹不存在，则新建一个
+    utils.mkdirs(config.feature_folder)
+
+    # 特征存储路径
+    feature_path = os.path.join(config.feature_folder, "train.csv" if train == True else "predict.csv")
+
+    # 写表头
     writer = csv.writer(open(feature_path, 'w'))
     first_row = ['label']
     for i in range(1, FEATURE_NUM[config.opensmile_config] + 1):
@@ -120,6 +124,7 @@ def get_data(
         cur_dir = os.getcwd()
         sys.stderr.write('Curdir: %s\n' % cur_dir)
         os.chdir(data_path)
+
         # 遍历文件夹
         for i, directory in enumerate(config.class_labels):
             sys.stderr.write("Started reading folder %s\n" % directory)
@@ -153,5 +158,5 @@ def get_data(
 
     # 一个玄学 bug 的暂时性解决方案
     # 这里无法直接加载除了 IS10_paraling 以外的其他特征集的预测数据特征，非常玄学
-    if(train == True):
-        return load_feature(config, feature_path, train = train)
+    if train == True:
+        return load_feature(config, train=train)

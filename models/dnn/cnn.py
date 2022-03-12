@@ -1,7 +1,7 @@
-from keras.layers import Dense, Dropout, Flatten, Conv1D, Activation, \
-    BatchNormalization, MaxPooling1D
-from keras.models import Sequential
-from keras.optimizers import Adam
+from tensorflow.keras.layers import Dense, Dropout, Flatten, Conv1D, \
+    Activation, BatchNormalization, MaxPooling1D
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
 import numpy as np
 from .dnn import DNN
 

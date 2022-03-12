@@ -1,7 +1,7 @@
 datasets/
 checkpoints/
 test/
-features/6-category/train_opensmile_casia_compare.csv
+single_feature.csv
 
 # Editors
 .vscode/
