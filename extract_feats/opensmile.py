@@ -39,7 +39,7 @@ def get_feature_opensmile(config, filepath: str) -> list:
     opensmile_config_path = os.path.join(config.opensmile_path, 'config', config.opensmile_config + '.conf')
 
     # Opensmile 命令
-    cmd = 'cd ' + config.opensmile_path + ' && ./SMILExtract -C ' + opensmile_config_path + ' -I ' + filepath + ' -O ' + single_feat_path
+    cmd = 'cd ' + config.opensmile_path + ' && ./SMILExtract -C ' + opensmile_config_path + ' -I ' + filepath + ' -O ' + single_feat_path + ' -appendarff 0'
     print("Opensmile cmd: ", cmd)
     os.system(cmd)
 
