@@ -6,3 +6,4 @@ scipy==1.8.0
 pandas==1.4.1
 matplotlib==3.4.2
 joblib==1.1.0
+pyyaml==6.0
