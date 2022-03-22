@@ -59,7 +59,7 @@
 
 ### Tools
 
-- [Opensmile](https://github.com/naxingyu/opensmile)：提取特征
+- [可选] [Opensmile](https://github.com/naxingyu/opensmile)：提取特征
 
 
 &nbsp;
@@ -95,7 +95,7 @@
 pip install -r requirements.txt
 ```
 
-安装 [Opensmile](https://github.com/naxingyu/opensmile)。
+（可选）安装 [Opensmile](https://github.com/naxingyu/opensmile)。
 
 &nbsp;
 

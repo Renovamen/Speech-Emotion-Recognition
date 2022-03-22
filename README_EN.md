@@ -59,7 +59,7 @@ English Document | [中文文档](README.md)
 
 ### Tools
 
-- [Opensmile](https://github.com/naxingyu/opensmile): extract features
+- [Optional] [Opensmile](https://github.com/naxingyu/opensmile): extract features
 
 
 &nbsp;
@@ -95,7 +95,7 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Install [Opensmile](https://github.com/naxingyu/opensmile).
+(Optional) Install [Opensmile](https://github.com/naxingyu/opensmile).
 
 &nbsp;
 
