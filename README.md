@@ -34,8 +34,9 @@
 │   ├── files.py           // 用于整理数据集（分类、批量重命名）
 │   ├── opts.py            // 使用 argparse 从命令行读入参数
 │   └── plot.py            // 绘图（雷达图、频谱图、波形图）
-├── features/              // 存储提取好的特征
 ├── config/                // 配置参数（.yaml）
+├── features/              // 存储提取好的特征
+├── checkpoints/           // 存储训练好的模型权重
 ├── train.py               // 训练模型
 ├── predict.py             // 用训练好的模型预测指定音频的情感
 └── preprocess.py          // 数据预处理（提取数据集中音频的特征并保存）
@@ -129,7 +130,7 @@ python preprocess.py --config configs/example.yaml
 
 ### Train
 
-数据集路径可以在 [`configs/`](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/master/configs) 中配置，相同情感的音频放在同一个文件夹里（可以参考 [`utils/files.py`](utils/files.py) 整理数据），如：
+数据集路径可以在 [`configs/`](configs) 中配置，相同情感的音频放在同一个文件夹里（可以参考 [`utils/files.py`](utils/files.py) 整理数据），如：
 
 ```
 └── datasets
@@ -149,7 +150,7 @@ python train.py --config configs/example.yaml
 
 ### Predict
 
-用训练好的模型来预测指定音频的情感。[checkpoints 分支](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/checkpoints )和 [release 页面](https://github.com/Renovamen/Speech-Emotion-Recognition/releases)有一些已经训练好的模型。
+用训练好的模型来预测指定音频的情感。[`checkpoints/`](checkpoints)里有一些已经训练好的模型。
 
 ```python
 python predict.py --config configs/example.yaml

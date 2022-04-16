@@ -1,8 +1,9 @@
 datasets/
-checkpoints/
+# checkpoints/
 test/
 single_feature.csv
 predict.csv
+predict.p
 
 # Editors
 .vscode/

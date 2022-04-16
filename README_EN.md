@@ -34,8 +34,9 @@ English Document | [中文文档](README.md)
 │   ├── files.py           // setup dataset (classify and rename)
 │   ├── opts.py            // argparse
 │   └── plot.py            // plot graphs
+├── config/                // configure hyper parameters (.yaml)
 ├── features/              // store extracted features
-├── config.py              // configure parameters
+├── checkpoints/           // store model weights
 ├── train.py               // train
 ├── predict.py             // recognize the emotion of a given audio
 └── preprocess.py          // data preprocessing (extract features and store them locally)
@@ -130,7 +131,7 @@ where `configs/test.yaml` is the path to your config file
 
 ### Train
 
-The path of the datasets can be configured in [`config.py`](config.py). Audios which express the same emotion should be put in the same folder (you may want to refer to [`utils/files.py`](utils/files.py) when setting up datasets), for example:
+The path of the datasets can be configured in [`configs/`](configs). Audios which express the same emotion should be put in the same folder (you may want to refer to [`utils/files.py`](utils/files.py) when setting up datasets), for example:
 
 ```
 └── datasets
@@ -150,7 +151,7 @@ python train.py --config configs/example.yaml
 
 ### Predict
 
-This is for when you have trained a model and want to predict the emotion for an audio. Check out [checkpoints branch](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/checkpoints) or [release page](https://github.com/Renovamen/Speech-Emotion-Recognition/releases) for some checkpoints.
+This is for when you have trained a model and want to predict the emotion for an audio. Check out [`checkpoints/`](https://github.com/Renovamen/Speech-Emotion-Recognition/tree/master/checkpoints) for some checkpoints.
 
 First modify following things in [`predict.py`](predict.py):
 
