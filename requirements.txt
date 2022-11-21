@@ -1,4 +1,4 @@
-tensorflow==2.8.0
+tensorflow==2.9.3
 scikit-learn==1.0.2
 numpy==1.21.5
 librosa==0.9.1
